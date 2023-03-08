@@ -35,16 +35,31 @@ export function CardLayout(props: Props) {
   return (
     <>
       <div className='flex-div flex-wrap'>
-        <CardList
-          data={
-            DataFilteredBySearch.length <= 9
-              ? DataFilteredBySearch
-              : DataFilteredBySearch.filter(
-                  (_d, i) =>
-                    i >= (paginationValue - 1) * 9 && i < paginationValue * 9,
-                )
-          }
-        />
+        {DataFilteredBySearch.length > 0 ? (
+          <CardList
+            data={
+              DataFilteredBySearch.length <= 9
+                ? DataFilteredBySearch
+                : DataFilteredBySearch.filter(
+                    (_d, i) =>
+                      i >= (paginationValue - 1) * 9 && i < paginationValue * 9,
+                  )
+            }
+          />
+        ) : (
+          <h5
+            className='undp-typography bold'
+            style={{
+              backgroundColor: 'var(--gray-200)',
+              textAlign: 'center',
+              padding: 'var(--spacing-07)',
+              width: 'calc(100% - 4rem)',
+              border: '1px solid var(--gray-400)',
+            }}
+          >
+            No trends available matching your criteria
+          </h5>
+        )}
       </div>
       {DataFilteredBySearch.length <= 9 ? null : (
         <div className='flex-div flex-hor-align-center margin-top-07'>

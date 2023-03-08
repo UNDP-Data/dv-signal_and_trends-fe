@@ -22,7 +22,7 @@ export function CardLayout(props: Props) {
   const DataFilterBySDG =
     filteredSDG === 'All SDGs'
       ? data
-      : data.filter(d => d.sdgs.indexOf(filteredSDG) !== -1);
+      : data.filter(d => d.sdgs && d.sdgs?.indexOf(filteredSDG) !== -1);
   const DataFilterBySteep =
     filteredSteep === 'All STEEP+V'
       ? DataFilterBySDG
@@ -45,16 +45,31 @@ export function CardLayout(props: Props) {
   return (
     <>
       <div className='flex-div flex-wrap'>
-        <CardList
-          data={
-            DataFilteredBySearch.length <= 9
-              ? DataFilteredBySearch
-              : DataFilteredBySearch.filter(
-                  (_d, i) =>
-                    i >= (paginationValue - 1) * 9 && i < paginationValue * 9,
-                )
-          }
-        />
+        {DataFilteredBySearch.length > 0 ? (
+          <CardList
+            data={
+              DataFilteredBySearch.length <= 9
+                ? DataFilteredBySearch
+                : DataFilteredBySearch.filter(
+                    (_d, i) =>
+                      i >= (paginationValue - 1) * 9 && i < paginationValue * 9,
+                  )
+            }
+          />
+        ) : (
+          <h5
+            className='undp-typography bold'
+            style={{
+              backgroundColor: 'var(--gray-200)',
+              textAlign: 'center',
+              padding: 'var(--spacing-07)',
+              width: 'calc(100% - 4rem)',
+              border: '1px solid var(--gray-400)',
+            }}
+          >
+            No signals available matching your criteria
+          </h5>
+        )}
       </div>
 
       {DataFilteredBySearch.length <= 9 ? null : (
