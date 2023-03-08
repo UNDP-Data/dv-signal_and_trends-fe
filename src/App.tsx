@@ -1,24 +1,20 @@
-import undpLogo from './assets/undp-logo-blue.svg';
+import { Route, Routes } from 'react-router-dom';
+import { Footer } from './Components/FooterEl';
+import { Header } from './Components/HeaderEl';
+import { HomePage } from './HomePage';
+import { SignalsListing } from './Signals';
+import { TrendsListing } from './Trends';
 
 function App() {
   return (
-    <div className='undp-container flex-div flex-wrap flex-hor-align-center margin-top-13 margin-bottom-13'>
-      <div>
-        <img
-          src={undpLogo}
-          className='logo react'
-          alt='React logo'
-          width='72px'
-          style={{ margin: 'auto' }}
-        />
-      </div>
-      <h3
-        className='undp-typography'
-        style={{ textAlign: 'center', width: '100%' }}
-      >
-        This is template for building visualization and frontend project for
-        UNDP Data Futures Platform
-      </h3>
+    <div className='undp-container'>
+      <Header />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/signals' element={<SignalsListing />} />
+        <Route path='/trends' element={<TrendsListing />} />
+      </Routes>
+      <Footer />
     </div>
   );
 }

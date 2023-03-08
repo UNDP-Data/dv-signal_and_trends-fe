@@ -37,6 +37,7 @@
       "react/react-in-jsx-scope": 0,
       "jsx-quotes": [2, "prefer-single"],
       "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "react/jsx-props-no-spreading": 0
     }
 }
