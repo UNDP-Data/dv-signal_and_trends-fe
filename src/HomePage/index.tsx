@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import sortBy from 'lodash.sortby';
@@ -28,7 +29,9 @@ export function HomePage() {
   );
   useEffect(() => {
     axios
-      .get('https://signals-and-trends-api.azurewebsites.net/v1/signals/list')
+      .get(
+        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5',
+      )
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at))
@@ -39,7 +42,9 @@ export function HomePage() {
   }, []);
   useEffect(() => {
     axios
-      .get('https://signals-and-trends-api.azurewebsites.net/v1/trends/list')
+      .get(
+        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5',
+      )
       .then((response: any) => {
         setTrendList(
           sortBy(response.data, d => Date.parse(d.created_at))
@@ -74,15 +79,11 @@ export function HomePage() {
               <h2 className='undp-typography margin-top-05 gap-07'>
                 Most Recent Signals
               </h2>
-              <NavLink
-                to='./signals'
-                style={{ textDecoration: 'none !important' }}
-              >
+              <NavLink to='./signals' style={{ textDecoration: 'auto' }}>
                 <div className='flex-div'>
                   <button
                     type='button'
                     className='undp-button button-tertiary button-arrow'
-                    style={{ textDecoration: 'none !important' }}
                   >
                     Explore All Signals
                   </button>
@@ -90,19 +91,22 @@ export function HomePage() {
               </NavLink>
             </div>
             {signalListing.map((d, i) => (
-              <div
+              <NavLink
+                to={`/signals/${d._id}`}
                 key={i}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',
                   alignItems: 'stretch',
                   backgroundColor: 'var(--gray-200)',
+                  textDecoration: 'none',
+                  color: 'var(--black)',
                 }}
               >
                 <CardEl>
                   <h3 className='undp-typography'>{d.headline}</h3>
                   <p className='undp-typography'>{d.description}</p>
                 </CardEl>
-              </div>
+              </NavLink>
             ))}
           </div>
         ) : (
@@ -119,15 +123,11 @@ export function HomePage() {
               <h2 className='undp-typography margin-top-05 gap-07'>
                 Most Recent Trends
               </h2>
-              <NavLink
-                to='./trends'
-                style={{ textDecoration: 'none !important' }}
-              >
+              <NavLink to='./trends' style={{ textDecoration: 'auto' }}>
                 <div className='flex-div'>
                   <button
                     type='button'
                     className='undp-button button-tertiary button-arrow'
-                    style={{ textDecoration: 'none !important' }}
                   >
                     Explore All Trends
                   </button>
@@ -135,19 +135,22 @@ export function HomePage() {
               </NavLink>
             </div>
             {trendListing.map((d, i) => (
-              <div
+              <NavLink
                 key={i}
+                to={`/trends/${d._id}`}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',
                   alignItems: 'stretch',
                   backgroundColor: 'var(--gray-200)',
+                  textDecoration: 'none',
+                  color: 'var(--black)',
                 }}
               >
                 <CardEl>
                   <h3 className='undp-typography'>{d.headline}</h3>
                   <p className='undp-typography'>{d.description}</p>
                 </CardEl>
-              </div>
+              </NavLink>
             ))}
           </div>
         ) : (

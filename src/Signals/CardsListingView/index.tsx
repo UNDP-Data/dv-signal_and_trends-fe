@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Pagination } from 'antd';
 import { SignalDataType } from '../../Types';
-import { ModalEl } from './ModalEl';
 import { CardList } from './CardsList';
 
 interface Props {
@@ -16,9 +15,6 @@ interface Props {
 export function CardLayout(props: Props) {
   const { data, filteredSDG, filteredSS, filteredSteep, search } = props;
   const [paginationValue, setPaginationValue] = useState(1);
-  const [mouseClickData, setMouseClickData] = useState<SignalDataType | null>(
-    null,
-  );
   const DataFilterBySDG =
     filteredSDG === 'All SDGs'
       ? data
@@ -71,7 +67,6 @@ export function CardLayout(props: Props) {
           </h5>
         )}
       </div>
-
       {DataFilteredBySearch.length <= 9 ? null : (
         <div className='flex-div flex-hor-align-center margin-top-07'>
           <Pagination
@@ -85,9 +80,6 @@ export function CardLayout(props: Props) {
           />
         </div>
       )}
-      {mouseClickData ? (
-        <ModalEl data={mouseClickData} setMouseClickData={setMouseClickData} />
-      ) : null}
     </>
   );
 }

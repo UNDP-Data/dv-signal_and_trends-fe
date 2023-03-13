@@ -27,7 +27,9 @@ export function SignalsListing() {
   );
   useEffect(() => {
     axios
-      .get('https://signals-and-trends-api.azurewebsites.net/v1/signals/list')
+      .get(
+        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=99999',
+      )
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),

@@ -19,12 +19,15 @@ export interface SignalDataType {
   steep: string;
   url: string;
   _id: string;
+  connected_trends: string[];
 }
 
 export interface TrendDataType {
   created_at: string;
   created_by: {
     email: string;
+    name: string;
+    unit: string;
   };
   description: string;
   headline: string;
@@ -34,4 +37,5 @@ export interface TrendDataType {
   time_horizon: 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)';
   signals: string[];
   _id: string;
+  connected_signals: string[];
 }

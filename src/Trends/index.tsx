@@ -26,7 +26,9 @@ export function TrendsListing() {
     useState<string>('All Impact Ratings');
   useEffect(() => {
     axios
-      .get('https://signals-and-trends-api.azurewebsites.net/v1/trends/list')
+      .get(
+        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=99999',
+      )
       .then((response: any) => {
         setTrendsList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Pagination } from 'antd';
 import { TrendDataType } from '../../Types';
-import { ModalEl } from './ModalEl';
 import { CardList } from './CardsList';
 
 interface Props {
@@ -14,9 +13,6 @@ interface Props {
 export function CardLayout(props: Props) {
   const { data, filteredHorizons, filteredImpactRating, search } = props;
   const [paginationValue, setPaginationValue] = useState(1);
-  const [mouseClickData, setMouseClickData] = useState<TrendDataType | null>(
-    null,
-  );
   const DataFilterByHorizon =
     filteredHorizons === 'All Horizons'
       ? data
@@ -74,9 +70,6 @@ export function CardLayout(props: Props) {
           />
         </div>
       )}
-      {mouseClickData ? (
-        <ModalEl data={mouseClickData} setMouseClickData={setMouseClickData} />
-      ) : null}
     </>
   );
 }

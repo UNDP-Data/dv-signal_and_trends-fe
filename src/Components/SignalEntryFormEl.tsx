@@ -1,13 +1,17 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Input, Select } from 'antd';
+import { Input, Modal, Select } from 'antd';
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import sortBy from 'lodash.sortby';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { LOCATION, SDG, SIGNATURE_SOLUTION, STEEP_V } from '../Constants';
+import { SignalDataType, TrendDataType } from '../Types';
 
 interface Props {
-  setOpenModal: (_d: boolean) => void;
+  updateSignal?: SignalDataType;
 }
 
 const UploadEl = styled.div`
@@ -49,28 +53,107 @@ const FileAttachmentButton = styled.input`
   display: none;
 `;
 
+const RadioOutline = styled.div`
+  border: 1px solid var(--blue-600);
+  border-radius: 1rem;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 4px;
+  background-color: var(--white);
+`;
+
+const RadioSolid = styled.div`
+  background-color: var(--blue-600);
+  border-radius: 1rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 2px;
+`;
+
+const ListEl = styled.button`
+  background-color: var(--gray-200);
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  padding: var(--spacing-05);
+  width: calc(100% - 2rem);
+  margin-bottom: 1rem;
+  margin-right: 0;
+`;
+
 export function SignalEntryFormEl(props: Props) {
-  const { setOpenModal } = props;
+  const { updateSignal } = props;
+  const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
+    undefined,
+  );
+  const [trendModal, setTrendModal] = useState(false);
+  const [selectedTrendsList, setSelectedTrendsList] = useState<string[]>(
+    updateSignal ? updateSignal.connected_trends : [],
+  );
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
   );
-  const [headline, setHeadline] = useState<undefined | string>(undefined);
-  const [sourceLink, setSourceLink] = useState<undefined | string>(undefined);
-  const [description, setDescription] = useState<undefined | string>(undefined);
-  const [steep, setSteep] = useState<undefined | string>(undefined);
-  const [sdg, setSdg] = useState<undefined | string>(undefined);
-  const [location, setLocation] = useState<undefined | string>(undefined);
-  const [relevance, setRelevance] = useState<undefined | string>(undefined);
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [keyword1, setKeyword1] = useState<string | null>(null);
-  const [keyword2, setKeyword2] = useState<string | null>(null);
-  const [keyword3, setKeyword3] = useState<string | null>(null);
-  const [primarySS, setPrimarySS] = useState<string | null>(null);
-  const [secondarySS, setSecondarySS] = useState<string | null>(null);
-  const [creatorEmail, setCreatorEmail] = useState<string | null>(null);
-  const [creator, setCreator] = useState<string | null>(null);
-  const [creatorOffice, setCreatorOffice] = useState<string | null>(null);
+  const [headline, setHeadline] = useState<undefined | string>(
+    updateSignal ? updateSignal.headline : undefined,
+  );
+  const [sourceLink, setSourceLink] = useState<undefined | string>(
+    updateSignal ? updateSignal.url : undefined,
+  );
+  const [description, setDescription] = useState<undefined | string>(
+    updateSignal ? updateSignal.description : undefined,
+  );
+  const [steep, setSteep] = useState<undefined | string>(
+    updateSignal ? updateSignal.steep : undefined,
+  );
+  const [sdg, setSdg] = useState<undefined | string[]>(
+    updateSignal ? updateSignal.sdgs : undefined,
+  );
+  const [location, setLocation] = useState<undefined | string | null>(
+    updateSignal ? updateSignal.location : undefined,
+  );
+  const [relevance, setRelevance] = useState<undefined | string>(
+    updateSignal ? updateSignal.relevance : undefined,
+  );
+  const [selectedFile, setSelectedFile] = useState<string | null>(
+    updateSignal ? updateSignal.attachments : null,
+  );
+  const [keyword1, setKeyword1] = useState<string | null>(
+    updateSignal ? updateSignal.keywords[0] : null,
+  );
+  const [keyword2, setKeyword2] = useState<string | null>(
+    updateSignal ? updateSignal.keywords[1] : null,
+  );
+  const [keyword3, setKeyword3] = useState<string | null>(
+    updateSignal ? updateSignal.keywords[2] : null,
+  );
+  const [primarySS, setPrimarySS] = useState<string | null>(
+    updateSignal ? updateSignal.signature_primary : null,
+  );
+  const [secondarySS, setSecondarySS] = useState<string | null>(
+    updateSignal ? updateSignal.signature_secondary : null,
+  );
+  const [creatorEmail, setCreatorEmail] = useState<string | null>(
+    updateSignal ? updateSignal.created_by.email : null,
+  );
+  const [creator, setCreator] = useState<string | null>(
+    updateSignal ? updateSignal.created_by.name : null,
+  );
+  const [creatorOffice, setCreatorOffice] = useState<string | null>(
+    updateSignal ? updateSignal.created_by.unit : null,
+  );
+  const [updateBy, setUpdateBy] = useState<string | null>(null);
+  useEffect(() => {
+    axios
+      .get(
+        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=99999',
+      )
+      .then((response: any) => {
+        setTrendsList(
+          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+        );
+      });
+  }, []);
   function isValidUrl(url?: string) {
     if (!url) return false;
     try {
@@ -101,19 +184,12 @@ export function SignalEntryFormEl(props: Props) {
   };
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
-      <h3 className='undp-typography'>Signal Entry Form</h3>
-      <p className='undp-typography'>
-        A Signal is defined as a single piece of evidence or indicator that
-        points to, relates to, or otherwise supports a trend. A signal can also
-        stand alone as a potential indicator of future change in one or more
-        trends
-      </p>
-      <h4 className='undp-typography'>Signal Information</h4>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography bold'>Signal headline</h5>
+        <h5 className='undp-typography'>Signal headline</h5>
         <Input
           className='undp-input'
           placeholder='Enter signal headline (max 50 characters)'
+          value={headline}
           maxLength={50}
           onChange={d => {
             setHeadline(d.target.value);
@@ -130,7 +206,7 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Link to Source Material</h5>
+          <h5 className='undp-typography'>Link to Source Material</h5>
           <Input
             className='undp-input'
             placeholder='Enter source url'
@@ -138,6 +214,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={d => {
               setSourceLink(d.target.value);
             }}
+            value={sourceLink}
           />
           <p
             className='undp-typography margin-top-02 margin-bottom-00'
@@ -147,13 +224,14 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Location of the signal</h5>
+          <h5 className='undp-typography'>Location of the signal</h5>
           <Select
             className='undp-select'
             placeholder='Select location'
             onChange={e => {
               setLocation(e);
             }}
+            value={location}
           >
             {LOCATION.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -165,7 +243,7 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Signal Description</h5>
+          <h5 className='undp-typography'>Signal Description</h5>
           <Input.TextArea
             className='undp-input'
             placeholder='Signal description'
@@ -173,6 +251,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setDescription(e.target.value);
             }}
+            value={description}
           />
           <p
             className='undp-typography margin-top-02 margin-bottom-00'
@@ -183,13 +262,14 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Signal Relevance</h5>
+          <h5 className='undp-typography'>Signal Relevance</h5>
           <Input.TextArea
             className='undp-input'
             placeholder='Signal relevance'
             onChange={e => {
               setRelevance(e.target.value);
             }}
+            value={relevance}
           />
           <p
             className='undp-typography margin-top-02 margin-bottom-00'
@@ -200,13 +280,14 @@ export function SignalEntryFormEl(props: Props) {
         </div>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography bold'>STEEP+V Category</h5>
+        <h5 className='undp-typography'>STEEP+V Category</h5>
         <Select
           className='undp-select'
           placeholder='Select STEEP+V'
           onChange={e => {
             setSteep(e);
           }}
+          value={steep}
         >
           {STEEP_V.map((d, i) => (
             <Select.Option className='undp-select-option' key={i} value={d}>
@@ -216,7 +297,7 @@ export function SignalEntryFormEl(props: Props) {
         </Select>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography bold'>Attachments</h5>
+        <h5 className='undp-typography'>Attachments</h5>
         <p className='label'>
           Attach an image here to illustrate this Signal, if available. Only use
           images that are licensed or license-free/Creative Commons. You can
@@ -246,7 +327,7 @@ export function SignalEntryFormEl(props: Props) {
         </UploadEl>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography bold'>Keywords</h5>
+        <h5 className='undp-typography'>Keywords</h5>
         <p className='label'>
           Add keywords for this signal. Max 3 keywords allowed.
         </p>
@@ -257,6 +338,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setKeyword1(e.target.value);
             }}
+            value={keyword1 || undefined}
           />
           <Input
             className='undp-input'
@@ -264,6 +346,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setKeyword2(e.target.value);
             }}
+            value={keyword2 || undefined}
           />
           <Input
             className='undp-input'
@@ -271,18 +354,20 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setKeyword3(e.target.value);
             }}
+            value={keyword3 || undefined}
           />
         </div>
       </div>
       <div className='flex-div flex-wrap'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Primary Signature Solution</h5>
+          <h5 className='undp-typography'>Primary Signature Solution</h5>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
             onChange={e => {
               setPrimarySS(e);
             }}
+            value={primarySS}
           >
             {SIGNATURE_SOLUTION.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -292,13 +377,14 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography bold'>Secondary Signature Solution</h5>
+          <h5 className='undp-typography'>Secondary Signature Solution</h5>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
             onChange={e => {
               setSecondarySS(e);
             }}
+            value={secondarySS}
           >
             {SIGNATURE_SOLUTION.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -308,7 +394,7 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
-          <h5 className='undp-typography bold'>SDG</h5>
+          <h5 className='undp-typography'>SDG</h5>
           <Select
             className='undp-select'
             mode='multiple'
@@ -317,6 +403,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setSdg(e.length === 0 ? undefined : e);
             }}
+            value={sdg}
           >
             {SDG.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -332,131 +419,285 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
       </div>
-      <hr className='undp-style margin-top-07 margin-bottom-07' />
-      <h4 className='undp-typography'>Scanner Information</h4>
-      <div className='flex-div'>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
-          <p className='label'>Full Name</p>
-          <Input
-            className='undp-input'
-            placeholder='Enter name here'
-            onChange={e => {
-              setCreator(e.target.value);
-            }}
-          />
-        </div>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
-          <p className='label'>Email id</p>
-          <Input
-            className='undp-input'
-            placeholder='Enter email here'
-            onChange={e => {
-              setCreatorEmail(e.target.value);
-            }}
-          />
-          <p
-            className='undp-typography margin-top-02'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Your email must end with @undp.org
-          </p>
-        </div>
+      <div className='margin-bottom-09'>
+        <h5 className='undp-typography'>Add signal to trends</h5>
+        {trendsList ? (
+          <>
+            {selectedTrendsList.map((d, i) => (
+              <div
+                className='flex-div flex-space-between flex-vert-align-center'
+                key={i}
+                style={{
+                  width: 'calc(100% - 2rem)',
+                  padding: 'var(--spacing-05)',
+                  backgroundColor: 'var(--gray-200)',
+                  border: '1px solid var(--gray-400)',
+                  marginBottom: 'var(--spacing-05)',
+                }}
+              >
+                <p className='undp-typography margin-bottom-00'>
+                  {
+                    // eslint-disable-next-line no-underscore-dangle
+                    trendsList[trendsList.findIndex(el => el._id === d)]
+                      .headline
+                  }
+                </p>
+                <button
+                  onClick={() => {
+                    const arr = [...selectedTrendsList.filter(el => el !== d)];
+                    setSelectedTrendsList(arr);
+                  }}
+                  type='button'
+                  className='undp-button button-tertiary padding-bottom-00 padding-top-00'
+                >
+                  <img
+                    src='https://design.undp.org/icons/times.svg'
+                    alt='close-icon'
+                  />
+                </button>
+              </div>
+            ))}
+            <button
+              className='undp-button button-tertiary'
+              type='button'
+              onClick={() => {
+                setTrendModal(true);
+              }}
+              style={{
+                backgroundColor: 'var(--gray-300)',
+                padding: 'var(--spacing-05)',
+              }}
+            >
+              Add trend
+            </button>
+          </>
+        ) : (
+          <p className='undp-typography'>Loading trends...</p>
+        )}
       </div>
-      <div className='margin-bottom-07'>
-        <p className='label'>Country Office / Unit</p>
-        <Select
-          className='undp-select'
-          placeholder='Select Office'
-          onChange={e => {
-            setCreatorOffice(e);
-          }}
+      {!updateSignal ? (
+        <div>
+          <hr className='undp-style margin-top-07 margin-bottom-07' />
+          <h4 className='undp-typography'>Scanner Information</h4>
+          <div className='flex-div'>
+            <div style={{ width: 'calc(50% - 1rem)' }}>
+              <p className='label'>Full Name</p>
+              <Input
+                className='undp-input'
+                placeholder='Enter name here'
+                onChange={e => {
+                  setCreator(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ width: 'calc(50% - 1rem)' }}>
+              <p className='label'>Email id</p>
+              <Input
+                className='undp-input'
+                placeholder='Enter email here'
+                onChange={e => {
+                  setCreatorEmail(e.target.value);
+                }}
+              />
+              <p
+                className='undp-typography margin-top-02'
+                style={{ color: 'var(--gray-500)' }}
+              >
+                Your email must end with @undp.org
+              </p>
+            </div>
+          </div>
+          <div className='margin-bottom-07'>
+            <p className='label'>Country Office / Unit</p>
+            <Select
+              className='undp-select'
+              placeholder='Select Office'
+              onChange={e => {
+                setCreatorOffice(e);
+              }}
+            >
+              {LOCATION.map((d, i) => (
+                <Select.Option className='undp-select-option' key={i} value={d}>
+                  {d}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+      ) : (
+        <div
+          className='margin-top-07 margin-bottom-09'
+          style={{ width: '100%' }}
         >
-          {LOCATION.map((d, i) => (
-            <Select.Option className='undp-select-option' key={i} value={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
+          <h5 className='undp-typography'>Modified by</h5>
+          <Input
+            className='undp-input'
+            placeholder='Enter Nave'
+            onChange={e => {
+              setUpdateBy(e.target.value);
+            }}
+          />
+        </div>
+      )}
       <div className='flex-div flex-vert-align-center'>
-        <button
-          className={`${
-            !headline ||
-            !isValidUrl(sourceLink) ||
-            !description ||
-            description?.length < 30 ||
-            !steep ||
-            !sdg ||
-            !location ||
-            !relevance ||
-            !keyword1 ||
-            !primarySS ||
-            !secondarySS ||
-            !creatorEmail ||
-            !creator ||
-            !creatorOffice ||
-            buttonDisabled
-              ? 'disabled '
-              : ''
-          }undp-button button-secondary button-arrow`}
-          type='button'
-          disabled={
-            !headline ||
-            !isValidUrl(sourceLink) ||
-            !description ||
-            description?.length < 30 ||
-            !steep ||
-            !sdg ||
-            !location ||
-            !relevance ||
-            !keyword1 ||
-            !primarySS ||
-            !secondarySS ||
-            !creatorEmail ||
-            !creator ||
-            !creatorOffice ||
-            buttonDisabled
-          }
-          onClick={() => {
-            setButtonDisabled(true);
-            setSubmittingError(undefined);
-            axios({
-              method: 'post',
-              url: 'https://signals-and-trends-api.azurewebsites.net//v1/signals/submit',
-              data: {
-                attachments: selectedFile,
-                created_by: {
-                  email: creatorEmail,
-                  name: creator,
-                  unit: creatorOffice,
+        {updateSignal ? (
+          <button
+            className={`${
+              !headline ||
+              !isValidUrl(sourceLink) ||
+              !description ||
+              description?.length < 30 ||
+              !steep ||
+              !sdg ||
+              !location ||
+              !relevance ||
+              !keyword1 ||
+              !primarySS ||
+              !secondarySS ||
+              !updateBy ||
+              buttonDisabled
+                ? 'disabled '
+                : ''
+            }undp-button button-secondary button-arrow`}
+            type='button'
+            disabled={
+              !headline ||
+              !isValidUrl(sourceLink) ||
+              !description ||
+              description?.length < 30 ||
+              !steep ||
+              !sdg ||
+              !location ||
+              !relevance ||
+              !keyword1 ||
+              !primarySS ||
+              !secondarySS ||
+              !updateBy ||
+              buttonDisabled
+            }
+            onClick={() => {
+              setButtonDisabled(true);
+              setSubmittingError(undefined);
+              axios({
+                method: 'put',
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${updateBy}`,
+                data: {
+                  attachments: selectedFile,
+                  created_by: {
+                    email: creatorEmail,
+                    name: creator,
+                    unit: creatorOffice,
+                  },
+                  description,
+                  headline,
+                  keywords: [keyword1, keyword2, keyword3].filter(
+                    d => d !== null && d !== undefined,
+                  ),
+                  location,
+                  relevance,
+                  sdgs: sdg || [],
+                  signature_primary: primarySS,
+                  signature_secondary: secondarySS,
+                  steep,
+                  url: sourceLink,
+                  connected_trends: selectedTrendsList,
+                  _id: updateSignal._id,
                 },
-                description,
-                headline,
-                keywords: [keyword1, keyword2, keyword3].filter(
-                  d => d !== null && d !== undefined,
-                ),
-                location,
-                relevance,
-                sdgs: sdg,
-                signature_primary: primarySS,
-                signature_secondary: secondarySS,
-                steep,
-                url: sourceLink,
-              },
-              headers: { 'Content-Type': 'application/json' },
-            })
-              .then(() => {
-                setButtonDisabled(false);
-                setOpenModal(false);
+                headers: { 'Content-Type': 'application/json' },
               })
-              .catch(err => {
-                setButtonDisabled(false);
-                setSubmittingError(err.message);
-              });
-          }}
-        >
-          Submit Signal
-        </button>
+                .then(() => {
+                  setButtonDisabled(false);
+                  navigate(`/signals/${updateSignal._id}`);
+                })
+                .catch(err => {
+                  setButtonDisabled(false);
+                  setSubmittingError(err.message);
+                });
+            }}
+          >
+            Update Signal
+          </button>
+        ) : (
+          <button
+            className={`${
+              !headline ||
+              !isValidUrl(sourceLink) ||
+              !description ||
+              description?.length < 30 ||
+              !steep ||
+              !sdg ||
+              !location ||
+              !relevance ||
+              !keyword1 ||
+              !primarySS ||
+              !secondarySS ||
+              !creatorEmail ||
+              !creator ||
+              !creatorOffice ||
+              buttonDisabled
+                ? 'disabled '
+                : ''
+            }undp-button button-secondary button-arrow`}
+            type='button'
+            disabled={
+              !headline ||
+              !isValidUrl(sourceLink) ||
+              !description ||
+              description?.length < 30 ||
+              !steep ||
+              !sdg ||
+              !location ||
+              !relevance ||
+              !keyword1 ||
+              !primarySS ||
+              !secondarySS ||
+              !creatorEmail ||
+              !creator ||
+              !creatorOffice ||
+              buttonDisabled
+            }
+            onClick={() => {
+              setButtonDisabled(true);
+              setSubmittingError(undefined);
+              axios({
+                method: 'post',
+                url: 'https://signals-and-trends-api.azurewebsites.net//v1/signals/submit',
+                data: {
+                  attachments: selectedFile,
+                  created_by: {
+                    email: creatorEmail,
+                    name: creator,
+                    unit: creatorOffice,
+                  },
+                  description,
+                  headline,
+                  keywords: [keyword1, keyword2, keyword3].filter(
+                    d => d !== null && d !== undefined,
+                  ),
+                  location,
+                  relevance,
+                  sdgs: sdg || [],
+                  signature_primary: primarySS,
+                  signature_secondary: secondarySS,
+                  steep,
+                  url: sourceLink,
+                  connected_trends: selectedTrendsList,
+                },
+                headers: { 'Content-Type': 'application/json' },
+              })
+                .then(() => {
+                  setButtonDisabled(false);
+                  navigate('/signals');
+                })
+                .catch(err => {
+                  setButtonDisabled(false);
+                  setSubmittingError(err.message);
+                });
+            }}
+          >
+            Submit Signal
+          </button>
+        )}
         {buttonDisabled ? <div className='undp-loader' /> : null}
         {submittingError ? (
           <p
@@ -467,6 +708,47 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         ) : null}
       </div>
+      {trendModal ? (
+        <Modal
+          className='undp-modal'
+          open
+          title='Select Trends'
+          onOk={() => {
+            setTrendModal(false);
+          }}
+          onCancel={() => {
+            setTrendModal(false);
+          }}
+          width={960}
+        >
+          {trendsList?.map((d, i) => (
+            <ListEl
+              key={i}
+              className='flex-div flex-space-between'
+              onClick={() => {
+                if (selectedTrendsList.findIndex(el => el === d._id) === -1) {
+                  const arr = [...selectedTrendsList];
+                  arr.push(d._id);
+                  setSelectedTrendsList(arr);
+                } else {
+                  setSelectedTrendsList([
+                    ...selectedTrendsList.filter(el => el !== d._id),
+                  ]);
+                }
+              }}
+            >
+              <p className='undp-typography margin-bottom-00'>{d.headline}</p>
+              <RadioOutline>
+                {selectedTrendsList.findIndex(
+                  selTrend => selTrend === d._id,
+                ) === -1 ? null : (
+                  <RadioSolid />
+                )}
+              </RadioOutline>
+            </ListEl>
+          ))}
+        </Modal>
+      ) : null}
     </div>
   );
 }
