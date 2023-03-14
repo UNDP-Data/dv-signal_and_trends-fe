@@ -661,7 +661,7 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'post',
-                url: 'https://signals-and-trends-api.azurewebsites.net//v1/signals/submit',
+                url: 'https://signals-and-trends-api.azurewebsites.net/v1/signals/submit',
                 data: {
                   attachments: selectedFile,
                   created_by: {
