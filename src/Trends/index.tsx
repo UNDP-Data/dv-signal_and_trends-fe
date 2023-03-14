@@ -27,7 +27,7 @@ export function TrendsListing() {
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=99999',
+        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100',
       )
       .then((response: any) => {
         setTrendsList(
