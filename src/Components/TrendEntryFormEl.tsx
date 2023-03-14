@@ -349,7 +349,7 @@ export function TrendEntryFormEl(props: Props) {
               setButtonDisabled(true);
               setSubmittingError(undefined);
               axios({
-                method: 'put',
+                method: 'post',
                 url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/submit',
                 data: {
                   created_by: {
