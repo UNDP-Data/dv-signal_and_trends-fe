@@ -106,8 +106,8 @@ export function SignalEntryFormEl(props: Props) {
   const [steep, setSteep] = useState<undefined | string>(
     updateSignal ? updateSignal.steep : undefined,
   );
-  const [sdg, setSdg] = useState<undefined | string[]>(
-    updateSignal ? updateSignal.sdgs : undefined,
+  const [sdg, setSdg] = useState<string[]>(
+    updateSignal ? updateSignal.sdgs : [],
   );
   const [location, setLocation] = useState<undefined | string | null>(
     updateSignal ? updateSignal.location : undefined,
@@ -185,12 +185,12 @@ export function SignalEntryFormEl(props: Props) {
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal headline</h5>
+        <h5 className='undp-typography'>Signal headline*</h5>
         <Input
           className='undp-input'
           placeholder='Enter signal headline (max 50 characters)'
           value={headline}
-          maxLength={50}
+          maxLength={100}
           onChange={d => {
             setHeadline(d.target.value);
           }}
@@ -200,13 +200,13 @@ export function SignalEntryFormEl(props: Props) {
           style={{ color: 'var(--gray-500)' }}
         >
           Useful headlines are clear, concise and can stand alone as a simple
-          description of the Signal. {headline ? 50 - headline.length : 50}{' '}
+          description of the Signal. {headline ? 100 - headline.length : 100}{' '}
           characters left
         </p>
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Link to Source Material</h5>
+          <h5 className='undp-typography'>Link to Source Material*</h5>
           <Input
             className='undp-input'
             placeholder='Enter source url'
@@ -224,7 +224,7 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Location of the signal</h5>
+          <h5 className='undp-typography'>Location of the signal*</h5>
           <Select
             className='undp-select'
             placeholder='Select location'
@@ -243,7 +243,7 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Signal Description</h5>
+          <h5 className='undp-typography'>Signal Description*</h5>
           <Input.TextArea
             className='undp-input'
             placeholder='Signal description'
@@ -262,7 +262,7 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Signal Relevance</h5>
+          <h5 className='undp-typography'>Signal Relevance*</h5>
           <Input.TextArea
             className='undp-input'
             placeholder='Signal relevance'
@@ -280,7 +280,7 @@ export function SignalEntryFormEl(props: Props) {
         </div>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>STEEP+V Category</h5>
+        <h5 className='undp-typography'>STEEP+V Category*</h5>
         <Select
           className='undp-select'
           placeholder='Select STEEP+V'
@@ -327,7 +327,7 @@ export function SignalEntryFormEl(props: Props) {
         </UploadEl>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Keywords</h5>
+        <h5 className='undp-typography'>Keywords*</h5>
         <p className='label'>
           Add keywords for this signal. Max 3 keywords allowed.
         </p>
@@ -360,7 +360,7 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div flex-wrap'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Primary Signature Solution</h5>
+          <h5 className='undp-typography'>Primary Signature Solution*</h5>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
@@ -385,6 +385,8 @@ export function SignalEntryFormEl(props: Props) {
               setSecondarySS(e);
             }}
             value={secondarySS}
+            clearIcon={<div className='clearIcon' />}
+            allowClear
           >
             {SIGNATURE_SOLUTION.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -401,8 +403,10 @@ export function SignalEntryFormEl(props: Props) {
             placeholder='Select SDG'
             maxTagCount='responsive'
             onChange={e => {
-              setSdg(e.length === 0 ? undefined : e);
+              setSdg(e.length === 0 || !e ? [] : e);
             }}
+            clearIcon={<div className='clearIcon' />}
+            allowClear
             value={sdg}
           >
             {SDG.map((d, i) => (
@@ -481,7 +485,7 @@ export function SignalEntryFormEl(props: Props) {
           <h4 className='undp-typography'>Scanner Information</h4>
           <div className='flex-div'>
             <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Full Name</p>
+              <p className='label'>Full Name*</p>
               <Input
                 className='undp-input'
                 placeholder='Enter name here'
@@ -491,7 +495,7 @@ export function SignalEntryFormEl(props: Props) {
               />
             </div>
             <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Email id</p>
+              <p className='label'>Email id*</p>
               <Input
                 className='undp-input'
                 placeholder='Enter email here'
@@ -508,7 +512,7 @@ export function SignalEntryFormEl(props: Props) {
             </div>
           </div>
           <div className='margin-bottom-07'>
-            <p className='label'>Country Office / Unit</p>
+            <p className='label'>Country Office / Unit*</p>
             <Select
               className='undp-select'
               placeholder='Select Office'
@@ -529,7 +533,7 @@ export function SignalEntryFormEl(props: Props) {
           className='margin-top-07 margin-bottom-09'
           style={{ width: '100%' }}
         >
-          <h5 className='undp-typography'>Modified by</h5>
+          <h5 className='undp-typography'>Modified by*</h5>
           <Input
             className='undp-input'
             placeholder='Enter Nave'
@@ -553,7 +557,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !secondarySS ||
               !updateBy ||
               buttonDisabled
                 ? 'disabled '
@@ -571,7 +574,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !secondarySS ||
               !updateBy ||
               buttonDisabled
             }
@@ -630,7 +632,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !secondarySS ||
               !creatorEmail ||
               !creator ||
               !creatorOffice ||
@@ -650,7 +651,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !secondarySS ||
               !creatorEmail ||
               !creator ||
               !creatorOffice ||
@@ -721,32 +721,46 @@ export function SignalEntryFormEl(props: Props) {
           }}
           width={960}
         >
-          {trendsList?.map((d, i) => (
-            <ListEl
-              key={i}
-              className='flex-div flex-space-between'
-              onClick={() => {
-                if (selectedTrendsList.findIndex(el => el === d._id) === -1) {
-                  const arr = [...selectedTrendsList];
-                  arr.push(d._id);
-                  setSelectedTrendsList(arr);
-                } else {
-                  setSelectedTrendsList([
-                    ...selectedTrendsList.filter(el => el !== d._id),
-                  ]);
-                }
-              }}
-            >
-              <p className='undp-typography margin-bottom-00'>{d.headline}</p>
-              <RadioOutline>
-                {selectedTrendsList.findIndex(
-                  selTrend => selTrend === d._id,
-                ) === -1 ? null : (
-                  <RadioSolid />
-                )}
-              </RadioOutline>
-            </ListEl>
-          ))}
+          <p className='undp-typography italics margin-bottom-07'>
+            Trends are connected or decoupled when you click on the trends
+          </p>
+          <div className='margin-bottom-09'>
+            {trendsList?.map((d, i) => (
+              <ListEl
+                key={i}
+                className='flex-div flex-space-between'
+                onClick={() => {
+                  if (selectedTrendsList.findIndex(el => el === d._id) === -1) {
+                    const arr = [...selectedTrendsList];
+                    arr.push(d._id);
+                    setSelectedTrendsList(arr);
+                  } else {
+                    setSelectedTrendsList([
+                      ...selectedTrendsList.filter(el => el !== d._id),
+                    ]);
+                  }
+                }}
+              >
+                <p className='undp-typography margin-bottom-00'>{d.headline}</p>
+                <RadioOutline>
+                  {selectedTrendsList.findIndex(
+                    selTrend => selTrend === d._id,
+                  ) === -1 ? null : (
+                    <RadioSolid />
+                  )}
+                </RadioOutline>
+              </ListEl>
+            ))}
+          </div>
+          <button
+            className='undp-button button-secondary button-arrow'
+            type='button'
+            onClick={() => {
+              setTrendModal(false);
+            }}
+          >
+            Done
+          </button>
         </Modal>
       ) : null}
     </div>

@@ -40,7 +40,6 @@ export function AddNewTrendEl() {
       >
         ← Back
       </button>
-      <h3 className='undp-typography margin-top-05'>Add New Trend</h3>
       <TrendEntryFormEl />
     </div>
   );

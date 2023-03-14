@@ -94,11 +94,11 @@ export function TrendEntryFormEl(props: Props) {
         {!updateTrend ? 'Add New Trend' : 'Update Trend'}
       </h3>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Trend headline</h5>
+        <h5 className='undp-typography'>Trend headline*</h5>
         <Input
           className='undp-input'
           placeholder='Enter trend headline (max 50 characters)'
-          maxLength={50}
+          maxLength={100}
           onChange={d => {
             setHeadline(d.target.value);
           }}
@@ -109,12 +109,12 @@ export function TrendEntryFormEl(props: Props) {
           style={{ color: 'var(--gray-500)' }}
         >
           Useful headlines are clear, concise and can stand alone as a simple
-          description of the Signal. {headline ? 50 - headline.length : 50}{' '}
+          description of the Signal. {headline ? 100 - headline.length : 100}{' '}
           characters left
         </p>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Trend Description</h5>
+        <h5 className='undp-typography'>Trend Description*</h5>
         <Input.TextArea
           className='undp-input'
           placeholder='Trend description'
@@ -136,7 +136,7 @@ export function TrendEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Signals related to the trend</h5>
         {signalList ? (
           <>
-            {trendsSignal.map((d, i) => (
+            {trendsSignal?.map((d, i) => (
               <div
                 className='flex-div flex-space-between flex-vert-align-center'
                 key={i}
@@ -190,7 +190,7 @@ export function TrendEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Time Horizon</h5>
+          <h5 className='undp-typography'>Time Horizon*</h5>
           <Select
             className='undp-select'
             placeholder='Select time horizon'
@@ -205,15 +205,9 @@ export function TrendEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Time horizon
-          </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Impact Rating</h5>
+          <h5 className='undp-typography'>Impact Rating*</h5>
           <Select
             className='undp-select'
             placeholder='Select impact rating'
@@ -228,16 +222,10 @@ export function TrendEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Consider both the near term and longer term futures of development.
-          </p>
         </div>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Impact Description</h5>
+        <h5 className='undp-typography'>Impact Description*</h5>
         <Input.TextArea
           className='undp-input'
           placeholder='Impact description'
@@ -267,7 +255,7 @@ export function TrendEntryFormEl(props: Props) {
           <h4 className='undp-typography'>Scanner Information</h4>
           <div className='flex-div'>
             <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Full Name</p>
+              <p className='label'>Full Name*</p>
               <Input
                 className='undp-input'
                 placeholder='Enter name here'
@@ -277,7 +265,7 @@ export function TrendEntryFormEl(props: Props) {
               />
             </div>
             <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Email id</p>
+              <p className='label'>Email id*</p>
               <Input
                 className='undp-input'
                 placeholder='Enter email here'
@@ -294,7 +282,7 @@ export function TrendEntryFormEl(props: Props) {
             </div>
           </div>
           <div className='margin-bottom-07'>
-            <p className='label'>Country Office / Unit</p>
+            <p className='label'>Country Office / Unit*</p>
             <Select
               className='undp-select'
               placeholder='Select Office'
@@ -315,7 +303,7 @@ export function TrendEntryFormEl(props: Props) {
           className='margin-top-07 margin-bottom-09'
           style={{ width: '100%' }}
         >
-          <h5 className='undp-typography'>Modified by</h5>
+          <h5 className='undp-typography'>Modified by*</h5>
           <Input
             className='undp-input'
             placeholder='Enter Nave'
@@ -490,29 +478,47 @@ export function TrendEntryFormEl(props: Props) {
           }}
           width={960}
         >
-          {signalList?.map((d, i) => (
-            <ListEl
-              key={i}
-              className='flex-div flex-space-between'
-              onClick={() => {
-                if (trendsSignal.findIndex(el => el === d._id) === -1) {
-                  const arr = [...trendsSignal];
-                  arr.push(d._id);
-                  setTrendsSignal(arr);
-                } else {
-                  setTrendsSignal([...trendsSignal.filter(el => el !== d._id)]);
-                }
-              }}
-            >
-              <p className='undp-typography margin-bottom-00'>{d.headline}</p>
-              <RadioOutline>
-                {trendsSignal.findIndex(selTrend => selTrend === d._id) ===
-                -1 ? null : (
-                  <RadioSolid />
-                )}
-              </RadioOutline>
-            </ListEl>
-          ))}
+          <p className='undp-typography italics margin-bottom-07'>
+            Signals are connected or decoupled when you click on the signal
+          </p>
+          <div className='margin-bottom-09'>
+            {signalList?.map((d, i) => (
+              <ListEl
+                key={i}
+                className='flex-div flex-space-between'
+                onClick={() => {
+                  if (trendsSignal.findIndex(el => el === d._id) === -1) {
+                    const arr = [...trendsSignal];
+                    arr.push(d._id);
+                    setTrendsSignal(arr);
+                  } else {
+                    setTrendsSignal([
+                      ...trendsSignal.filter(el => el !== d._id),
+                    ]);
+                  }
+                }}
+              >
+                <p className='undp-typography margin-bottom-00'>{d.headline}</p>
+                <RadioOutline>
+                  {trendsSignal ? (
+                    trendsSignal.findIndex(selTrend => selTrend === d._id) ===
+                    -1 ? null : (
+                      <RadioSolid />
+                    )
+                  ) : null}
+                </RadioOutline>
+              </ListEl>
+            ))}
+          </div>
+          <button
+            className='undp-button button-secondary button-arrow'
+            type='button'
+            onClick={() => {
+              setSignalModal(false);
+            }}
+          >
+            Done
+          </button>
         </Modal>
       ) : null}
     </div>
