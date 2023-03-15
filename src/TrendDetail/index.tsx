@@ -19,13 +19,13 @@ export function TrendDetail() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
         setData(response.data[0]);
-        if (response.data[0].connected_trends?.length) {
-          const trendsIds = response.data[0].connected_trends
+        if (response.data[0].connected_signals?.length) {
+          const signalIds = response.data[0].connected_signals
             .toString()
             .replaceAll(',', '&ids=');
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${trendsIds}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
             )
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .then((res: any) => {
@@ -126,7 +126,7 @@ export function TrendDetail() {
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
           {connectedSignals ? (
-            <div className='flex-div'>
+            <div className='flex-div flex-wrap'>
               {connectedSignals.length > 0 ? (
                 <>
                   {connectedSignals.map((d, i) => (
@@ -178,7 +178,7 @@ export function TrendDetail() {
           </p>
           <NavLink to={`/edit-trend/${id}`} style={{ textDecoration: 'none' }}>
             <button
-              className='undp-button button-primary button-arrow'
+              className='undp-button button-secondary button-arrow'
               type='button'
             >
               Edit Trend

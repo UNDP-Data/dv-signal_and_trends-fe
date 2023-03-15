@@ -1,7 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Input, Modal, Select } from 'antd';
+import { Input, Select } from 'antd';
 import axios from 'axios';
 import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { LOCATION, SDG, SIGNATURE_SOLUTION, STEEP_V } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
+import { AddTrendsModal } from './AddTrendsModal';
 
 interface Props {
   updateSignal?: SignalDataType;
@@ -53,33 +55,6 @@ const FileAttachmentButton = styled.input`
   display: none;
 `;
 
-const RadioOutline = styled.div`
-  border: 1px solid var(--blue-600);
-  border-radius: 1rem;
-  width: 1rem;
-  height: 1rem;
-  margin-top: 4px;
-  background-color: var(--white);
-`;
-
-const RadioSolid = styled.div`
-  background-color: var(--blue-600);
-  border-radius: 1rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  margin: 2px;
-`;
-
-const ListEl = styled.button`
-  background-color: var(--gray-200);
-  border: 1px solid var(--gray-400);
-  border-radius: 4px;
-  padding: var(--spacing-05);
-  width: calc(100% - 2rem);
-  margin-bottom: 1rem;
-  margin-right: 0;
-`;
-
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal } = props;
   const navigate = useNavigate();
@@ -89,7 +64,7 @@ export function SignalEntryFormEl(props: Props) {
   );
   const [trendModal, setTrendModal] = useState(false);
   const [selectedTrendsList, setSelectedTrendsList] = useState<string[]>(
-    updateSignal ? updateSignal.connected_trends : [],
+    updateSignal ? updateSignal.connected_trends || [] : [],
   );
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
@@ -146,7 +121,7 @@ export function SignalEntryFormEl(props: Props) {
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=99999',
+        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100',
       )
       .then((response: any) => {
         setTrendsList(
@@ -427,7 +402,7 @@ export function SignalEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Add signal to trends</h5>
         {trendsList ? (
           <>
-            {selectedTrendsList.map((d, i) => (
+            {selectedTrendsList?.map((d, i) => (
               <div
                 className='flex-div flex-space-between flex-vert-align-center'
                 key={i}
@@ -709,59 +684,11 @@ export function SignalEntryFormEl(props: Props) {
         ) : null}
       </div>
       {trendModal ? (
-        <Modal
-          className='undp-modal'
-          open
-          title='Select Trends'
-          onOk={() => {
-            setTrendModal(false);
-          }}
-          onCancel={() => {
-            setTrendModal(false);
-          }}
-          width={960}
-        >
-          <p className='undp-typography italics margin-bottom-07'>
-            Trends are connected or decoupled when you click on the trends
-          </p>
-          <div className='margin-bottom-09'>
-            {trendsList?.map((d, i) => (
-              <ListEl
-                key={i}
-                className='flex-div flex-space-between'
-                onClick={() => {
-                  if (selectedTrendsList.findIndex(el => el === d._id) === -1) {
-                    const arr = [...selectedTrendsList];
-                    arr.push(d._id);
-                    setSelectedTrendsList(arr);
-                  } else {
-                    setSelectedTrendsList([
-                      ...selectedTrendsList.filter(el => el !== d._id),
-                    ]);
-                  }
-                }}
-              >
-                <p className='undp-typography margin-bottom-00'>{d.headline}</p>
-                <RadioOutline>
-                  {selectedTrendsList.findIndex(
-                    selTrend => selTrend === d._id,
-                  ) === -1 ? null : (
-                    <RadioSolid />
-                  )}
-                </RadioOutline>
-              </ListEl>
-            ))}
-          </div>
-          <button
-            className='undp-button button-secondary button-arrow'
-            type='button'
-            onClick={() => {
-              setTrendModal(false);
-            }}
-          >
-            Done
-          </button>
-        </Modal>
+        <AddTrendsModal
+          setTrendModal={setTrendModal}
+          selectedTrendsList={selectedTrendsList}
+          setSelectedTrendsList={setSelectedTrendsList}
+        />
       ) : null}
     </div>
   );

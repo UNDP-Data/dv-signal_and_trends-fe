@@ -38,6 +38,8 @@ export function TrendCard(props: Props) {
         textDecoration: 'none',
         width: 'calc(33.33% - 0.67rem)',
         backgroundColor: 'var(--gray-100)',
+        flexGrow: 1,
+        flexBasis: '26.25rem',
       }}
     >
       <CardEl>

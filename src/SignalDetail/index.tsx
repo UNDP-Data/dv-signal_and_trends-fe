@@ -214,7 +214,7 @@ export function SignalDetail() {
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
           {connectedTrends ? (
-            <div className='flex-div'>
+            <div className='flex-div flex-wrap'>
               {connectedTrends.length > 0 ? (
                 <>
                   {connectedTrends.map((d, i) => (
@@ -241,7 +241,7 @@ export function SignalDetail() {
           </p>
           <NavLink to={`/edit-signal/${id}`} style={{ textDecoration: 'none' }}>
             <button
-              className='undp-button button-primary button-arrow'
+              className='undp-button button-secondary button-arrow'
               type='button'
             >
               Edit Signal

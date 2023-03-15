@@ -1,45 +1,18 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Input, Modal, Select } from 'antd';
+import { Input, Select } from 'antd';
 import axios from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
 import { redirect } from 'react-router-dom';
-import styled from 'styled-components';
 import { HORIZON, LOCATION } from '../Constants';
 import { TrendDataType, SignalDataType } from '../Types';
+import { AddSignalsModal } from './AddSignalsModal';
 
 interface Props {
   updateTrend?: TrendDataType;
 }
-
-const RadioOutline = styled.div`
-  border: 1px solid var(--blue-600);
-  border-radius: 1rem;
-  width: 1rem;
-  height: 1rem;
-  margin-top: 4px;
-  background-color: var(--white);
-`;
-
-const RadioSolid = styled.div`
-  background-color: var(--blue-600);
-  border-radius: 1rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  margin: 2px;
-`;
-
-const ListEl = styled.button`
-  background-color: var(--gray-200);
-  border: 1px solid var(--gray-400);
-  border-radius: 4px;
-  padding: var(--spacing-05);
-  width: calc(100% - 2rem);
-  margin-bottom: 1rem;
-  margin-right: 0;
-`;
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
@@ -77,10 +50,13 @@ export function TrendEntryFormEl(props: Props) {
   const [trendsSignal, setTrendsSignal] = useState<string[]>(
     updateTrend ? updateTrend.connected_signals : [],
   );
+  const [connectedSignal, setConnectedSignals] = useState<
+    SignalDataType[] | null
+  >(null);
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=99999',
+        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100',
       )
       .then((response: any) => {
         setSignalList(
@@ -88,11 +64,23 @@ export function TrendEntryFormEl(props: Props) {
         );
       });
   }, []);
+  useEffect(() => {
+    if (trendsSignal.length > 0) {
+      const signalIds = trendsSignal.toString().replaceAll(',', '&ids=');
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+        )
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((res: any) => {
+          setConnectedSignals(res.data);
+        });
+    } else {
+      setConnectedSignals([]);
+    }
+  }, [trendsSignal]);
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
-      <h3 className='undp-typography margin-top-05'>
-        {!updateTrend ? 'Add New Trend' : 'Update Trend'}
-      </h3>
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Trend headline*</h5>
         <Input
@@ -136,7 +124,7 @@ export function TrendEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Signals related to the trend</h5>
         {signalList ? (
           <>
-            {trendsSignal?.map((d, i) => (
+            {connectedSignal?.map((d, i) => (
               <div
                 className='flex-div flex-space-between flex-vert-align-center'
                 key={i}
@@ -151,13 +139,13 @@ export function TrendEntryFormEl(props: Props) {
                 <p className='undp-typography margin-bottom-00'>
                   {
                     // eslint-disable-next-line no-underscore-dangle
-                    signalList[signalList.findIndex(el => el._id === d)]
+                    signalList[signalList.findIndex(el => el._id === d._id)]
                       .headline
                   }
                 </p>
                 <button
                   onClick={() => {
-                    const arr = [...trendsSignal.filter(el => el !== d)];
+                    const arr = [...trendsSignal.filter(el => el !== d._id)];
                     setTrendsSignal(arr);
                   }}
                   type='button'
@@ -466,60 +454,11 @@ export function TrendEntryFormEl(props: Props) {
         </div>
       )}
       {signalModal ? (
-        <Modal
-          className='undp-modal'
-          open
-          title='Select Signals'
-          onOk={() => {
-            setSignalModal(false);
-          }}
-          onCancel={() => {
-            setSignalModal(false);
-          }}
-          width={960}
-        >
-          <p className='undp-typography italics margin-bottom-07'>
-            Signals are connected or decoupled when you click on the signal
-          </p>
-          <div className='margin-bottom-09'>
-            {signalList?.map((d, i) => (
-              <ListEl
-                key={i}
-                className='flex-div flex-space-between'
-                onClick={() => {
-                  if (trendsSignal.findIndex(el => el === d._id) === -1) {
-                    const arr = [...trendsSignal];
-                    arr.push(d._id);
-                    setTrendsSignal(arr);
-                  } else {
-                    setTrendsSignal([
-                      ...trendsSignal.filter(el => el !== d._id),
-                    ]);
-                  }
-                }}
-              >
-                <p className='undp-typography margin-bottom-00'>{d.headline}</p>
-                <RadioOutline>
-                  {trendsSignal ? (
-                    trendsSignal.findIndex(selTrend => selTrend === d._id) ===
-                    -1 ? null : (
-                      <RadioSolid />
-                    )
-                  ) : null}
-                </RadioOutline>
-              </ListEl>
-            ))}
-          </div>
-          <button
-            className='undp-button button-secondary button-arrow'
-            type='button'
-            onClick={() => {
-              setSignalModal(false);
-            }}
-          >
-            Done
-          </button>
-        </Modal>
+        <AddSignalsModal
+          setSignalModal={setSignalModal}
+          trendsSignal={trendsSignal}
+          setTrendsSignal={setTrendsSignal}
+        />
       ) : null}
     </div>
   );
