@@ -20,6 +20,15 @@ const CardEl = styled.div`
   padding: var(--spacing-07);
 `;
 
+const DescriptionEl = styled.p`
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
+`;
+
 export function HomePage() {
   const [signalListing, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
@@ -70,50 +79,6 @@ export function HomePage() {
         </div>
       </HeroImageEl>
       <div className='margin-top-05 margin-bottom-05 max-width'>
-        {signalListing ? (
-          <div
-            className='flex-div flex-wrap margin-bottom-11'
-            style={{ alignItems: 'stretch' }}
-          >
-            <div style={{ width: 'calc(33.33% - 1.33rem)' }}>
-              <h2 className='undp-typography margin-top-05 gap-07'>
-                Most Recent Signals
-              </h2>
-              <NavLink to='./signals' style={{ textDecoration: 'auto' }}>
-                <div className='flex-div'>
-                  <button
-                    type='button'
-                    className='undp-button button-tertiary button-arrow'
-                  >
-                    Explore All Signals
-                  </button>
-                </div>
-              </NavLink>
-            </div>
-            {signalListing.map((d, i) => (
-              <NavLink
-                to={`/signals/${d._id}`}
-                key={i}
-                style={{
-                  width: 'calc(33.33% - 1.33rem)',
-                  alignItems: 'stretch',
-                  backgroundColor: 'var(--gray-200)',
-                  textDecoration: 'none',
-                  color: 'var(--black)',
-                }}
-              >
-                <CardEl>
-                  <h3 className='undp-typography'>{d.headline}</h3>
-                  <p className='undp-typography'>{d.description}</p>
-                </CardEl>
-              </NavLink>
-            ))}
-          </div>
-        ) : (
-          <div className='undp-loader-container'>
-            <div className='undp-loader' />
-          </div>
-        )}
         {trendListing ? (
           <div
             className='flex-div flex-wrap margin-bottom-09'
@@ -148,7 +113,55 @@ export function HomePage() {
               >
                 <CardEl>
                   <h3 className='undp-typography'>{d.headline}</h3>
-                  <p className='undp-typography'>{d.description}</p>
+                  <DescriptionEl className='undp-typography'>
+                    {d.description}
+                  </DescriptionEl>
+                </CardEl>
+              </NavLink>
+            ))}
+          </div>
+        ) : (
+          <div className='undp-loader-container'>
+            <div className='undp-loader' />
+          </div>
+        )}
+        {signalListing ? (
+          <div
+            className='flex-div flex-wrap margin-bottom-11'
+            style={{ alignItems: 'stretch' }}
+          >
+            <div style={{ width: 'calc(33.33% - 1.33rem)' }}>
+              <h2 className='undp-typography margin-top-05 gap-07'>
+                Most Recent Signals
+              </h2>
+              <NavLink to='./signals' style={{ textDecoration: 'auto' }}>
+                <div className='flex-div'>
+                  <button
+                    type='button'
+                    className='undp-button button-tertiary button-arrow'
+                  >
+                    Explore All Signals
+                  </button>
+                </div>
+              </NavLink>
+            </div>
+            {signalListing.map((d, i) => (
+              <NavLink
+                to={`/signals/${d._id}`}
+                key={i}
+                style={{
+                  width: 'calc(33.33% - 1.33rem)',
+                  alignItems: 'stretch',
+                  backgroundColor: 'var(--gray-200)',
+                  textDecoration: 'none',
+                  color: 'var(--black)',
+                }}
+              >
+                <CardEl>
+                  <h3 className='undp-typography'>{d.headline}</h3>
+                  <DescriptionEl className='undp-typography'>
+                    {d.description}
+                  </DescriptionEl>
                 </CardEl>
               </NavLink>
             ))}
