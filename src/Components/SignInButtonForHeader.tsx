@@ -2,7 +2,7 @@ import { IPublicClientApplication } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 
 function signInClickHandler(instance: IPublicClientApplication) {
-  instance.loginPopup();
+  instance.loginRedirect();
 }
 
 export function SignInButtonForHeader() {

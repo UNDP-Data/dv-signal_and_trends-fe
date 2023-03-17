@@ -1,25 +1,21 @@
+import { IPublicClientApplication } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
-import { loginRequest } from '../Config';
 
 interface Props {
   buttonText?: string;
 }
+
+function signInClickHandler(instance: IPublicClientApplication) {
+  instance.loginRedirect();
+}
+
 export function SignInButton(props: Props) {
   const { buttonText } = props;
   const { instance } = useMsal();
-
-  const handleLogin = (loginType: string) => {
-    if (loginType === 'popup') {
-      instance.loginPopup(loginRequest).catch(e => {
-        // eslint-disable-next-line no-console
-        console.log(e);
-      });
-    }
-  };
   return (
     <button
       className='undp-button button-secondary button-arrow'
-      onClick={() => handleLogin('popup')}
+      onClick={() => signInClickHandler(instance)}
       type='button'
       style={{ width: 'fit-content' }}
     >
