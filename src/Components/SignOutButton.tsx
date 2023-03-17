@@ -3,9 +3,7 @@ import { Dropdown, MenuProps } from 'antd';
 
 function UserName() {
   const { accounts } = useMsal();
-  console.log(accounts[0]);
   const { name, username } = accounts[0];
-  console.log(name?.split(' ')[0]);
   return name?.split(' ')[0] || username;
 }
 

@@ -58,7 +58,9 @@ export function TrendEntryFormEl(props: Props) {
   >(null);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}signals/list?offset=0&limit=100`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
+      )
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
@@ -69,7 +71,9 @@ export function TrendEntryFormEl(props: Props) {
     if (trendsSignal.length > 0) {
       const signalIds = trendsSignal.toString().replaceAll(',', '&ids=');
       axios
-        .get(`${import.meta.env.VITE_API_LINK}signals/fetch?ids=${signalIds}`)
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((res: any) => {
           setConnectedSignals(res.data);
@@ -313,7 +317,7 @@ export function TrendEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'post',
-                url: `${import.meta.env.VITE_API_LINK}trends/submit`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
                 data: {
                   created_by: {
                     name: creator,

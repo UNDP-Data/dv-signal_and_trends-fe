@@ -38,7 +38,9 @@ export function HomePage() {
   );
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}signals/list?offset=0&limit=5`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5`,
+      )
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at))
@@ -49,7 +51,9 @@ export function HomePage() {
   }, []);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}trends/list?offset=0&limit=5`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5`,
+      )
       .then((response: any) => {
         setTrendList(
           sortBy(response.data, d => Date.parse(d.created_at))

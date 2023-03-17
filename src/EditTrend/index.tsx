@@ -16,7 +16,9 @@ export function EditTrend() {
   useEffect(() => {
     if (isAuthenticated) {
       axios
-        .get(`${import.meta.env.VITE_API_LINK}trends/fetch?ids=${id}`)
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((error: any) => {
           setError(error.toJSON());

@@ -16,7 +16,9 @@ export function SignalDetail() {
   const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}signals/fetch?ids=${id}`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
+      )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
         setData(response.data[0]);
@@ -26,7 +28,7 @@ export function SignalDetail() {
             .replaceAll(',', '&ids=');
           axios
             .get(
-              `${import.meta.env.VITE_API_LINK}trends/fetch?ids=${trendsIds}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
             )
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .then((res: any) => {

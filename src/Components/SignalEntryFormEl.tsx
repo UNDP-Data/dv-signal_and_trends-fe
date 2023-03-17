@@ -122,7 +122,9 @@ export function SignalEntryFormEl(props: Props) {
   const updateBy = accounts[0].username;
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}trends/list?offset=0&limit=100`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
+      )
       .then((response: any) => {
         setTrendsList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
@@ -629,7 +631,7 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'post',
-                url: `${import.meta.env.VITE_API_LINK}signals/submit`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
                 data: {
                   attachments: selectedFile,
                   created_by: {

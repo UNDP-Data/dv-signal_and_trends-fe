@@ -40,7 +40,9 @@ export function AddTrendsModal(props: Props) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}trends/list?offset=0&limit=100`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
+      )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
         setTrendsList(

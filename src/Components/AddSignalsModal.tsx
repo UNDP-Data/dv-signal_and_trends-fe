@@ -44,7 +44,9 @@ export function AddSignalsModal(props: Props) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_LINK}signals/list?offset=0&limit=100`)
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
+      )
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
