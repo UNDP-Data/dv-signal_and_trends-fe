@@ -392,9 +392,7 @@ export function TrendEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `${
-                  import.meta.env.VITE_API_LINK
-                }trends/update?modified_by=${updateBy}`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/update?modified_by=${updateBy}`,
                 data: {
                   created_by: {
                     name: creator,

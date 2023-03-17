@@ -550,9 +550,7 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `${
-                  import.meta.env.VITE_API_LINK
-                }signals/update?modified_by=${updateBy}`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${updateBy}`,
                 data: {
                   attachments: selectedFile,
                   created_by: {
