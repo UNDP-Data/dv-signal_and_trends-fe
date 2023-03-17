@@ -1,7 +1,7 @@
 export const msalConfig = {
   auth: {
     clientId: 'b2654b80-5b9a-4452-bc77-f39f3e834d4d',
-    redirectUri: 'http://localhost:5173/',
+    redirectUri: 'https://undp-signal-and-trends.netlify.app/',
   },
 };
 
