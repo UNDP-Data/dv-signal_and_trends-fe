@@ -45,7 +45,7 @@ export function AddSignalsModal(props: Props) {
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100',
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
       )
       .then((response: any) => {
         setSignalList(

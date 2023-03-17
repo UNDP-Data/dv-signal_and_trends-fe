@@ -8,6 +8,7 @@ import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useMsal } from '@azure/msal-react';
 import { LOCATION, SDG, SIGNATURE_SOLUTION, STEEP_V } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { AddTrendsModal } from './AddTrendsModal';
@@ -57,6 +58,7 @@ const FileAttachmentButton = styled.input`
 
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal } = props;
+  const { accounts } = useMsal();
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
@@ -108,20 +110,20 @@ export function SignalEntryFormEl(props: Props) {
   const [secondarySS, setSecondarySS] = useState<string | null>(
     updateSignal ? updateSignal.signature_secondary : null,
   );
-  const [creatorEmail, setCreatorEmail] = useState<string | null>(
-    updateSignal ? updateSignal.created_by.email : null,
-  );
-  const [creator, setCreator] = useState<string | null>(
-    updateSignal ? updateSignal.created_by.name : null,
-  );
+  const creatorEmail = updateSignal
+    ? updateSignal.created_by.email
+    : accounts[0].username;
+  const creator = updateSignal
+    ? updateSignal.created_by.name
+    : accounts[0].name || '';
   const [creatorOffice, setCreatorOffice] = useState<string | null>(
     updateSignal ? updateSignal.created_by.unit : null,
   );
-  const [updateBy, setUpdateBy] = useState<string | null>(null);
+  const updateBy = accounts[0].username;
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100',
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
       )
       .then((response: any) => {
         setTrendsList(
@@ -458,15 +460,14 @@ export function SignalEntryFormEl(props: Props) {
         <div>
           <hr className='undp-style margin-top-07 margin-bottom-07' />
           <h4 className='undp-typography'>Scanner Information</h4>
-          <div className='flex-div'>
+          <div className='flex-div margin-bottom-07'>
             <div style={{ width: 'calc(50% - 1rem)' }}>
               <p className='label'>Full Name*</p>
               <Input
                 className='undp-input'
                 placeholder='Enter name here'
-                onChange={e => {
-                  setCreator(e.target.value);
-                }}
+                disabled
+                value={creator}
               />
             </div>
             <div style={{ width: 'calc(50% - 1rem)' }}>
@@ -474,16 +475,9 @@ export function SignalEntryFormEl(props: Props) {
               <Input
                 className='undp-input'
                 placeholder='Enter email here'
-                onChange={e => {
-                  setCreatorEmail(e.target.value);
-                }}
+                disabled
+                value={creatorEmail}
               />
-              <p
-                className='undp-typography margin-top-02'
-                style={{ color: 'var(--gray-500)' }}
-              >
-                Your email must end with @undp.org
-              </p>
             </div>
           </div>
           <div className='margin-bottom-07'>
@@ -511,10 +505,9 @@ export function SignalEntryFormEl(props: Props) {
           <h5 className='undp-typography'>Modified by*</h5>
           <Input
             className='undp-input'
-            placeholder='Enter Nave'
-            onChange={e => {
-              setUpdateBy(e.target.value);
-            }}
+            placeholder='Enter email'
+            value={updateBy}
+            disabled
           />
         </div>
       )}
@@ -557,7 +550,9 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${updateBy}`,
+                url: `${
+                  import.meta.env.VITE_API_LINK
+                }signals/update?modified_by=${updateBy}`,
                 data: {
                   attachments: selectedFile,
                   created_by: {
@@ -636,7 +631,7 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'post',
-                url: 'https://signals-and-trends-api.azurewebsites.net/v1/signals/submit',
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
                 data: {
                   attachments: selectedFile,
                   created_by: {

@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import { useMsal } from '@azure/msal-react';
 import { Input, Select } from 'antd';
 import axios from 'axios';
 import sortBy from 'lodash.sortby';
@@ -16,11 +17,11 @@ interface Props {
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
+  const { accounts } = useMsal();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
   );
-  const [updateBy, setUpdateBy] = useState<string | null>(null);
   const [signalModal, setSignalModal] = useState(false);
   const [headline, setHeadline] = useState<undefined | string>(
     updateTrend ? updateTrend.headline : undefined,
@@ -31,15 +32,17 @@ export function TrendEntryFormEl(props: Props) {
   const [timeHorizon, setTimeHorizon] = useState<
     undefined | 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)'
   >(updateTrend ? updateTrend.time_horizon : undefined);
-  const [creatorEmail, setCreatorEmail] = useState<string | null>(
-    updateTrend ? updateTrend.created_by.email : null,
-  );
-  const [creator, setCreator] = useState<string | null>(
-    updateTrend ? updateTrend.created_by.name : null,
-  );
+
+  const creatorEmail = updateTrend
+    ? updateTrend.created_by.email
+    : accounts[0].username;
+  const creator = updateTrend
+    ? updateTrend.created_by.name
+    : accounts[0].name || '';
   const [creatorOffice, setCreatorOffice] = useState<string | null>(
     updateTrend ? updateTrend.created_by.unit : null,
   );
+  const updateBy = accounts[0].username;
   const [impactRating, setImpactRating] = useState<number | null>(
     updateTrend ? updateTrend.impact_rating : null,
   );
@@ -56,7 +59,7 @@ export function TrendEntryFormEl(props: Props) {
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100',
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
       )
       .then((response: any) => {
         setSignalList(
@@ -241,32 +244,14 @@ export function TrendEntryFormEl(props: Props) {
         <div>
           <hr className='undp-style margin-top-07 margin-bottom-07' />
           <h4 className='undp-typography'>Scanner Information</h4>
-          <div className='flex-div'>
+          <div className='flex-div margin-bottom-07'>
             <div style={{ width: 'calc(50% - 1rem)' }}>
               <p className='label'>Full Name*</p>
-              <Input
-                className='undp-input'
-                placeholder='Enter name here'
-                onChange={e => {
-                  setCreator(e.target.value);
-                }}
-              />
+              <Input className='undp-input' disabled value={creator} />
             </div>
             <div style={{ width: 'calc(50% - 1rem)' }}>
               <p className='label'>Email id*</p>
-              <Input
-                className='undp-input'
-                placeholder='Enter email here'
-                onChange={e => {
-                  setCreatorEmail(e.target.value);
-                }}
-              />
-              <p
-                className='undp-typography margin-top-02'
-                style={{ color: 'var(--gray-500)' }}
-              >
-                Your email must end with @undp.org
-              </p>
+              <Input className='undp-input' disabled value={creatorEmail} />
             </div>
           </div>
           <div className='margin-bottom-07'>
@@ -292,13 +277,7 @@ export function TrendEntryFormEl(props: Props) {
           style={{ width: '100%' }}
         >
           <h5 className='undp-typography'>Modified by*</h5>
-          <Input
-            className='undp-input'
-            placeholder='Enter Nave'
-            onChange={e => {
-              setUpdateBy(e.target.value);
-            }}
-          />
+          <Input className='undp-input' disabled value={updateBy} />
         </div>
       )}
       {!updateTrend ? (
@@ -338,7 +317,7 @@ export function TrendEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'post',
-                url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/submit',
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
                 data: {
                   created_by: {
                     name: creator,
@@ -413,7 +392,9 @@ export function TrendEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/update?modified_by=${updateBy}`,
+                url: `${
+                  import.meta.env.VITE_API_LINK
+                }trends/update?modified_by=${updateBy}`,
                 data: {
                   created_by: {
                     name: creator,

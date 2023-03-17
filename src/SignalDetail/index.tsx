@@ -1,9 +1,11 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useIsAuthenticated } from '@azure/msal-react';
 import { SignalDataType, TrendDataType } from '../Types';
 import { MONTHS, SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../Constants';
 import { TrendCard } from '../Components/TrendCard';
+import { SignInButton } from '../Components/SignInButton';
 
 export function SignalDetail() {
   const [data, setData] = useState<SignalDataType | undefined>(undefined);
@@ -11,6 +13,7 @@ export function SignalDetail() {
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
+  const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     axios
       .get(
@@ -39,7 +42,13 @@ export function SignalDetail() {
   return (
     <div
       className='margin-top-13 padding-top-09'
-      style={{ maxWidth: '60rem', marginLeft: 'auto', marginRight: 'auto' }}
+      style={{
+        maxWidth: '60rem',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+      }}
     >
       {data ? (
         <>
@@ -239,14 +248,21 @@ export function SignalDetail() {
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
-          <NavLink to={`/edit-signal/${id}`} style={{ textDecoration: 'none' }}>
-            <button
-              className='undp-button button-secondary button-arrow'
-              type='button'
+          {isAuthenticated ? (
+            <NavLink
+              to={`/signals/${id}/edit`}
+              style={{ textDecoration: 'none' }}
             >
-              Edit Signal
-            </button>
-          </NavLink>
+              <button
+                className='undp-button button-secondary button-arrow'
+                type='button'
+              >
+                Edit Signal
+              </button>
+            </NavLink>
+          ) : (
+            <SignInButton buttonText='Sign In to Edit Signal' />
+          )}
         </>
       ) : (
         <div className='undp-loader-container'>

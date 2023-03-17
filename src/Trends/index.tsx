@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import sortBy from 'lodash.sortby';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Input, Select } from 'antd';
+import { Input, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { TrendDataType } from '../Types';
 import { CardLayout } from './CardsListingView';
@@ -21,13 +21,14 @@ export function TrendsListing() {
   );
   const [filteredHorizons, setFilteredHorizons] =
     useState<string>('All Horizons');
+  const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [search, setSearch] = useState<string | undefined>(undefined);
   const [filteredImpactRating, setFilteredImpactRating] =
     useState<string>('All Impact Ratings');
   useEffect(() => {
     axios
       .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100',
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
       )
       .then((response: any) => {
         setTrendsList(
@@ -51,7 +52,29 @@ export function TrendsListing() {
           </h5>
         </div>
       </HeroImageEl>
-      <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
+      <div
+        className='flex-div margin-top-07 margin-bottom-05 flex-wrap flex-vert-align-center'
+        style={{
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h4 className='undp-typography margin-bottom-00'>All Trends</h4>
+        <Radio.Group
+          defaultValue='cardView'
+          onChange={e => {
+            setViewType(e.target.value as 'cardView' | 'listView');
+          }}
+        >
+          <Radio.Button value='cardView'>Card View</Radio.Button>
+          <Radio.Button value='listView'>List View</Radio.Button>
+        </Radio.Group>
+      </div>
+      <div
+        className='flex-div margin-top-07 margin-bottom-05 flex-wrap'
+        style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
+      >
         <Select
           className='undp-select'
           style={{ width: 'calc(33.33% - 0.667rem)' }}
@@ -115,6 +138,7 @@ export function TrendsListing() {
           filteredHorizons={filteredHorizons}
           search={search}
           data={trendsList}
+          view={viewType}
         />
       ) : (
         <div className='undp-loader-container'>

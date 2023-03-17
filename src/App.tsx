@@ -12,21 +12,33 @@ import { TrendsListing } from './Trends';
 
 function App() {
   return (
-    <div className='undp-container'>
+    <>
       <Header />
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/signals' element={<SignalsListing />} />
-        <Route path='/signals/:id' element={<SignalDetail />} />
-        <Route path='/trends' element={<TrendsListing />} />
-        <Route path='/trends/:id' element={<TrendDetail />} />
-        <Route path='/add-new-signal' element={<AddNewSignalEl />} />
-        <Route path='/edit-signal/:id' element={<EditSignal />} />
-        <Route path='/add-new-trend' element={<AddNewTrendEl />} />
-        <Route path='/edit-trend/:id' element={<EditTrend />} />
-      </Routes>
-      <Footer />
-    </div>
+      <div
+        className='undp-container'
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/signals' element={<SignalsListing />} />
+            <Route path='/signals/:id' element={<SignalDetail />} />
+            <Route path='/signals/:id/edit' element={<EditSignal />} />
+            <Route path='/trends' element={<TrendsListing />} />
+            <Route path='/trends/:id' element={<TrendDetail />} />
+            <Route path='/trends/:id/edit' element={<EditTrend />} />
+            <Route path='/add-new-signal' element={<AddNewSignalEl />} />
+            <Route path='/add-new-trend' element={<AddNewTrendEl />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+    </>
   );
 }
 
