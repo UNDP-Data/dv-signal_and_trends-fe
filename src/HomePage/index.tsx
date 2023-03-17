@@ -38,9 +38,7 @@ export function HomePage() {
   );
   useEffect(() => {
     axios
-      .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5',
-      )
+      .get(`${import.meta.env.VITE_API_LINK}signals/list?offset=0&limit=5`)
       .then((response: any) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at))
@@ -51,9 +49,7 @@ export function HomePage() {
   }, []);
   useEffect(() => {
     axios
-      .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5',
-      )
+      .get(`${import.meta.env.VITE_API_LINK}trends/list?offset=0&limit=5`)
       .then((response: any) => {
         setTrendList(
           sortBy(response.data, d => Date.parse(d.created_at))
@@ -78,7 +74,10 @@ export function HomePage() {
           </h5>
         </div>
       </HeroImageEl>
-      <div className='margin-top-05 margin-bottom-05 max-width'>
+      <div
+        className='margin-top-05 margin-bottom-05 max-width'
+        style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
+      >
         {trendListing ? (
           <div
             className='flex-div flex-wrap margin-bottom-09'

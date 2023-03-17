@@ -1,9 +1,11 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useIsAuthenticated } from '@azure/msal-react';
 import { SignalDataType, TrendDataType } from '../Types';
 import { HORIZONVALUES, MONTHS } from '../Constants';
 import { SignalCard } from '../Components/SignalCard';
+import { SignInButton } from '../Components/SignInButton';
 
 export function TrendDetail() {
   const [data, setData] = useState<TrendDataType | undefined>(undefined);
@@ -11,11 +13,10 @@ export function TrendDetail() {
     SignalDataType[] | undefined
   >(undefined);
   const { id } = useParams();
+  const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     axios
-      .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
-      )
+      .get(`${import.meta.env.VITE_API_LINK}trends/fetch?ids=${id}`)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
         setData(response.data[0]);
@@ -25,7 +26,7 @@ export function TrendDetail() {
             .replaceAll(',', '&ids=');
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+              `${import.meta.env.VITE_API_LINK}signals/fetch?ids=${signalIds}`,
             )
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .then((res: any) => {
@@ -39,7 +40,13 @@ export function TrendDetail() {
   return (
     <div
       className='margin-top-13 padding-top-09'
-      style={{ maxWidth: '60rem', marginLeft: 'auto', marginRight: 'auto' }}
+      style={{
+        maxWidth: '60rem',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+      }}
     >
       {data ? (
         <>
@@ -124,6 +131,20 @@ export function TrendDetail() {
           </div>
           <p className='undp-typography'>{data.description}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
+          <h6 className='undp-typography margin-bottom-00 margin-top-00'>
+            Impact
+          </h6>
+          <p>
+            <span className='bold'>Impact Rating: {data.impact_rating}</span>
+            {data.impact_description ? (
+              <>
+                <br />
+                <br />
+                {data.impact_description}
+              </>
+            ) : null}
+          </p>
+          <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
           {connectedSignals ? (
             <div className='flex-div flex-wrap'>
@@ -143,29 +164,6 @@ export function TrendDetail() {
             </div>
           )}
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-bottom-00 margin-top-00'>
-            Impact
-          </h6>
-          <p>
-            <span className='bold'>Impact Rating: {data.impact_rating}</span>
-            {data.impact_description ? (
-              <>
-                <br />
-                <br />
-                {data.impact_description}
-              </>
-            ) : null}
-          </p>
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-top-00 margin-bottom-00'>
-            Created On
-          </h6>
-          <p className='undp-typography margin-top-05'>
-            {`${new Date(data.created_at).getDate()}-${
-              MONTHS[new Date(data.created_at).getMonth()]
-            }-${new Date(data.created_at).getFullYear()}`}
-          </p>
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00 margin-bottom-00'>
             Created by
           </h6>
@@ -176,14 +174,21 @@ export function TrendDetail() {
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
-          <NavLink to={`/edit-trend/${id}`} style={{ textDecoration: 'none' }}>
-            <button
-              className='undp-button button-secondary button-arrow'
-              type='button'
+          {isAuthenticated ? (
+            <NavLink
+              to={`/trends/${id}/edit`}
+              style={{ textDecoration: 'none' }}
             >
-              Edit Trend
-            </button>
-          </NavLink>
+              <button
+                className='undp-button button-secondary button-arrow'
+                type='button'
+              >
+                Edit Trend
+              </button>
+            </NavLink>
+          ) : (
+            <SignInButton buttonText='Sign In to Edit Trends' />
+          )}
         </>
       ) : (
         <div className='undp-loader-container'>

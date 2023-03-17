@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.34.0",
+    "@azure/msal-react": "^1.5.4",
     "@types/lodash.remove": "^4.7.7",
     "@types/lodash.sortby": "^4.7.7",
     "@types/styled-components": "^5.1.26",

@@ -26,9 +26,7 @@ export function TrendsListing() {
     useState<string>('All Impact Ratings');
   useEffect(() => {
     axios
-      .get(
-        'https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100',
-      )
+      .get(`${import.meta.env.VITE_API_LINK}trends/list?offset=0&limit=100`)
       .then((response: any) => {
         setTrendsList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
@@ -51,7 +49,10 @@ export function TrendsListing() {
           </h5>
         </div>
       </HeroImageEl>
-      <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
+      <div
+        className='flex-div margin-top-07 margin-bottom-05 flex-wrap'
+        style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
+      >
         <Select
           className='undp-select'
           style={{ width: 'calc(33.33% - 0.667rem)' }}
