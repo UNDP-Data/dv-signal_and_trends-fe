@@ -1,12 +1,19 @@
 import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { useIsAuthenticated } from '@azure/msal-react';
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+} from '@azure/msal-react';
 import { SignOutButton } from './SignOutButton';
 import { SignInButtonForHeader } from './SignInButtonForHeader';
 
-export function Header() {
-  const isAuthenticated = useIsAuthenticated();
+interface Props {
+  signOutClickHandler: () => void;
+}
+
+export function Header(props: Props) {
+  const { signOutClickHandler } = props;
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -64,7 +71,7 @@ export function Header() {
             All Trends
           </NavLink>
         </div>
-        {isAuthenticated ? (
+        <AuthenticatedTemplate>
           <div className='flex-div flex-vert-align-center'>
             <Dropdown
               menu={{ items }}
@@ -74,11 +81,12 @@ export function Header() {
             >
               <div className='small-font'>Add A New</div>
             </Dropdown>
-            <SignOutButton />
+            <SignOutButton signOutClickHandler={signOutClickHandler} />
           </div>
-        ) : (
+        </AuthenticatedTemplate>
+        <UnauthenticatedTemplate>
           <SignInButtonForHeader />
-        )}
+        </UnauthenticatedTemplate>
       </div>
     </header>
   );

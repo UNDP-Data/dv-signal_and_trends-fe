@@ -7,7 +7,6 @@ function signInClickHandler(instance: IPublicClientApplication) {
 
 export function SignInButtonForHeader() {
   const { instance } = useMsal();
-
   return (
     <button
       className='undp-button button-secondary'

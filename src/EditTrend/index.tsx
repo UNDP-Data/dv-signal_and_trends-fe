@@ -1,4 +1,8 @@
-import { useIsAuthenticated } from '@azure/msal-react';
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+  useIsAuthenticated,
+} from '@azure/msal-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -34,42 +38,41 @@ export function EditTrend() {
       className='undp-container flex-wrap margin-bottom-13'
       style={{ maxWidth: '64rem', padding: '0 1rem', marginTop: '10rem' }}
     >
-      {isAuthenticated ? (
-        <>
-          <button
-            className='undp-button button-tertiary'
-            type='button'
-            onClick={() => {
-              navigate(-1);
+      <AuthenticatedTemplate>
+        <button
+          className='undp-button button-tertiary'
+          type='button'
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          ← Back
+        </button>
+        <h3 className='undp-typography margin-top-05'>
+          Edit Trend{trend ? `: ${trend.headline}` : null}
+        </h3>
+        {err ? (
+          <p
+            className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
+            style={{
+              textAlign: 'center',
+              backgroundColor: 'var(--gray-200)',
+              color: 'var(--dark-red)',
             }}
           >
-            ← Back
-          </button>
-          <h3 className='undp-typography margin-top-05'>
-            Edit Trend{trend ? `: ${trend.headline}` : null}
-          </h3>
-          {err ? (
-            <p
-              className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
-              style={{
-                textAlign: 'center',
-                backgroundColor: 'var(--gray-200)',
-                color: 'var(--dark-red)',
-              }}
-            >
-              Error {err.status}: There is an error loading the trend please try
-              again
-            </p>
-          ) : null}
-          {!err && !trend ? (
-            <div className='undp-loader-container'>
-              <div className='undp-loader' />
-            </div>
-          ) : trend ? (
-            <TrendEntryFormEl updateTrend={trend} />
-          ) : null}
-        </>
-      ) : (
+            Error {err.status}: There is an error loading the trend please try
+            again
+          </p>
+        ) : null}
+        {!err && !trend ? (
+          <div className='undp-loader-container'>
+            <div className='undp-loader' />
+          </div>
+        ) : trend ? (
+          <TrendEntryFormEl updateTrend={trend} />
+        ) : null}
+      </AuthenticatedTemplate>
+      <UnauthenticatedTemplate>
         <div
           className='flex-div flex-wrap flex-hor-align-center'
           style={{ flexDirection: 'column' }}
@@ -79,7 +82,7 @@ export function EditTrend() {
           </h6>
           <SignInButton />
         </div>
-      )}
+      </UnauthenticatedTemplate>
     </div>
   );
 }

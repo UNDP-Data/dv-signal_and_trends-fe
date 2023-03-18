@@ -2,6 +2,10 @@ export const msalConfig = {
   auth: {
     clientId: 'b2654b80-5b9a-4452-bc77-f39f3e834d4d',
     redirectUri: 'https://undp-signal-and-trends.netlify.app/',
+    authority: 'https://login.microsoftonline.com/common',
+  },
+  cache: {
+    cacheLocation: 'localStorage',
   },
 };
 

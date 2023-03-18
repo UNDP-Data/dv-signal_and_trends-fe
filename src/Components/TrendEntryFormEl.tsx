@@ -93,7 +93,7 @@ export function TrendEntryFormEl(props: Props) {
           onChange={d => {
             setHeadline(d.target.value);
           }}
-          value={updateTrend?.headline}
+          value={headline}
         />
         <p
           className='undp-typography margin-top-02 margin-bottom-00'
@@ -113,7 +113,7 @@ export function TrendEntryFormEl(props: Props) {
           onChange={e => {
             setDescription(e.target.value);
           }}
-          value={updateTrend?.description}
+          value={description}
         />
         <p
           className='undp-typography margin-top-02 margin-bottom-00'
@@ -188,7 +188,7 @@ export function TrendEntryFormEl(props: Props) {
             onChange={e => {
               setTimeHorizon(e);
             }}
-            value={updateTrend?.time_horizon}
+            value={timeHorizon}
           >
             {HORIZON.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -205,7 +205,7 @@ export function TrendEntryFormEl(props: Props) {
             onChange={e => {
               setImpactRating(e);
             }}
-            value={updateTrend?.impact_rating}
+            value={impactRating || undefined}
           >
             {[1, 2, 3, 4, 5].map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -227,7 +227,7 @@ export function TrendEntryFormEl(props: Props) {
                 : 'error'
               : ''
           }
-          value={updateTrend?.impact_description}
+          value={impactDescription || undefined}
           onChange={e => {
             setImpactDescription(e.target.value);
           }}

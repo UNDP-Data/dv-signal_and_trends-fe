@@ -1,7 +1,9 @@
+import { PublicClientApplication } from '@azure/msal-browser';
 import { Route, Routes } from 'react-router-dom';
 import { AddNewSignalEl, AddNewTrendEl } from './AddNew';
 import { Footer } from './Components/FooterEl';
 import { Header } from './Components/HeaderEl';
+import { msalConfig } from './Config';
 import { EditSignal } from './EditSignal';
 import { EditTrend } from './EditTrend';
 import { HomePage } from './HomePage';
@@ -10,10 +12,18 @@ import { SignalsListing } from './Signals';
 import { TrendDetail } from './TrendDetail';
 import { TrendsListing } from './Trends';
 
+function signOutClickHandler() {
+  const msalInstance = new PublicClientApplication(msalConfig);
+  const logoutRequest = {
+    postLogoutRedirectUri: '/',
+  };
+  msalInstance.logoutRedirect(logoutRequest);
+}
+
 function App() {
   return (
     <>
-      <Header />
+      <Header signOutClickHandler={signOutClickHandler} />
       <div
         className='undp-container'
         style={{

@@ -66,6 +66,7 @@ export function TrendsListing() {
           onChange={e => {
             setViewType(e.target.value as 'cardView' | 'listView');
           }}
+          className='undp-button-radio'
         >
           <Radio.Button value='cardView'>Card View</Radio.Button>
           <Radio.Button value='listView'>List View</Radio.Button>

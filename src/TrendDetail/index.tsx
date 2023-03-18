@@ -1,7 +1,10 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useIsAuthenticated } from '@azure/msal-react';
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+} from '@azure/msal-react';
 import { SignalDataType, TrendDataType } from '../Types';
 import { HORIZONVALUES, MONTHS } from '../Constants';
 import { SignalCard } from '../Components/SignalCard';
@@ -13,7 +16,6 @@ export function TrendDetail() {
     SignalDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     axios
       .get(
@@ -176,7 +178,7 @@ export function TrendDetail() {
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
-          {isAuthenticated ? (
+          <AuthenticatedTemplate>
             <NavLink
               to={`/trends/${id}/edit`}
               style={{ textDecoration: 'none' }}
@@ -188,9 +190,10 @@ export function TrendDetail() {
                 Edit Trend
               </button>
             </NavLink>
-          ) : (
+          </AuthenticatedTemplate>
+          <UnauthenticatedTemplate>
             <SignInButton buttonText='Sign In to Edit Trends' />
-          )}
+          </UnauthenticatedTemplate>
         </>
       ) : (
         <div className='undp-loader-container'>
