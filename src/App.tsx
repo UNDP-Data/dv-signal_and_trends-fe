@@ -12,7 +12,7 @@ import { Footer } from './Components/FooterEl';
 import { Header } from './Components/HeaderEl';
 import { SignUpButton } from './Components/SignUpButton';
 import { msalConfig } from './Config';
-import { UNITS } from './Constants';
+import { API_ACCESS_TOKEN, UNITS } from './Constants';
 import Context from './Context/Context';
 import Reducer from './Context/Reducer';
 import { EditSignal } from './EditSignal';

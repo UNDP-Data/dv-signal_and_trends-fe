@@ -6,7 +6,13 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import { SignalDataType, TrendDataType } from '../Types';
-import { MONTHS, SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../Constants';
+import {
+  API_ACCESS_TOKEN,
+  MONTHS,
+  SDGCOLOR,
+  SSCOLOR,
+  STEEPVCOLOR,
+} from '../Constants';
 import { TrendCard } from '../Components/TrendCard';
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
