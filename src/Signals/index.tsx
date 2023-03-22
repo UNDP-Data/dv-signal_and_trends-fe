@@ -2,12 +2,13 @@
 import styled from 'styled-components';
 import sortBy from 'lodash.sortby';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Input, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { SignalDataType } from '../Types';
 import { CardLayout } from './CardsListingView';
 import { SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
+import Context from '../Context/Context';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -19,6 +20,7 @@ export function SignalsListing() {
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
   );
+  const { role } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [filteredSteep, setFilteredSteep] = useState<string>('All STEEP+V');
   const [filteredSDG, setFilteredSDG] = useState<string>('All SDGs');
@@ -26,10 +28,18 @@ export function SignalsListing() {
   const [filteredSS, setFilteredSS] = useState<string>(
     'All Signature Solutions/Enabler',
   );
+  const [filteredStatus, setFilteredStatus] = useState<string>('All Status');
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
+        role === 'Curator' || role === 'Admin'
+          ? `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved&statuses=New`
+          : `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       .then((response: any) => {
         setSignalList(
@@ -79,7 +89,11 @@ export function SignalsListing() {
       >
         <Select
           className='undp-select'
-          style={{ width: 'calc(25% - 0.75rem)' }}
+          style={{
+            width: 'calc(25% - 0.75rem)',
+            flexGrow: 1,
+            minWidth: '15rem',
+          }}
           placeholder='Please select'
           defaultValue='All STEEP+V'
           value={filteredSteep}
@@ -101,7 +115,11 @@ export function SignalsListing() {
         </Select>
         <Select
           className='undp-select'
-          style={{ width: 'calc(25% - 0.75rem)' }}
+          style={{
+            width: 'calc(25% - 0.75rem)',
+            flexGrow: 1,
+            minWidth: '15rem',
+          }}
           placeholder='Please select'
           defaultValue='All Signature Solutions/Enabler'
           value={filteredSS}
@@ -126,7 +144,11 @@ export function SignalsListing() {
         </Select>
         <Select
           className='undp-select'
-          style={{ width: 'calc(25% - 0.75rem)' }}
+          style={{
+            width: 'calc(25% - 0.75rem)',
+            flexGrow: 1,
+            minWidth: '15rem',
+          }}
           placeholder='Please select'
           defaultValue='All SDGs'
           value={filteredSDG}
@@ -146,10 +168,38 @@ export function SignalsListing() {
             </Select.Option>
           ))}
         </Select>
+        {role === 'Admin' || role === 'Curator' ? (
+          <Select
+            className='undp-select'
+            style={{
+              width: 'calc(25% - 0.75rem)',
+              flexGrow: 1,
+              minWidth: '15rem',
+            }}
+            placeholder='Please select'
+            defaultValue='All Status'
+            value={filteredStatus}
+            showSearch
+            allowClear
+            onChange={values => {
+              setFilteredStatus(values || 'All SDGs');
+            }}
+            clearIcon={<div className='clearIcon' />}
+          >
+            <Select.Option className='undp-select-option' key='All SDGs'>
+              All Status
+            </Select.Option>
+            {['New', 'Approved'].map(d => (
+              <Select.Option className='undp-select-option' key={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        ) : null}
         <Input
           className='undp-input'
           placeholder='Search a signal'
-          style={{ width: 'calc(25% - 0.75rem)' }}
+          style={{ width: 'calc(25% - 0.75rem)', flexGrow: 1 }}
           onChange={e => {
             setSearch(e.target.value);
           }}
@@ -160,6 +210,7 @@ export function SignalsListing() {
           filteredSDG={filteredSDG}
           filteredSS={filteredSS}
           filteredSteep={filteredSteep}
+          filteredStatus={filteredStatus}
           search={search}
           data={signalList}
           view={viewType}

@@ -40,6 +40,11 @@ export function HomePage() {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       .then((response: any) => {
         setSignalList(
@@ -53,6 +58,11 @@ export function HomePage() {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       .then((response: any) => {
         setTrendList(

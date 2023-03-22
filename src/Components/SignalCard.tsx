@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import { useContext } from 'react';
 import { SignalDataType } from '../Types';
 import { SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../Constants';
+import Context from '../Context/Context';
 
 interface Props {
   data: SignalDataType;
+  isDraft?: boolean;
 }
 
 const CardEl = styled.div`
@@ -27,11 +30,12 @@ const DescriptionEl = styled.p`
 `;
 
 export function SignalCard(props: Props) {
-  const { data } = props;
+  const { data, isDraft } = props;
+  const { role } = useContext(Context);
   return (
     <NavLink
       // eslint-disable-next-line no-underscore-dangle
-      to={`/signals/${data._id}`}
+      to={isDraft ? `/signals/${data._id}/edit` : `/signals/${data._id}`}
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
@@ -43,30 +47,23 @@ export function SignalCard(props: Props) {
     >
       <CardEl>
         <h5 className='bold undp-typography'>{data.headline}</h5>
+        {role === 'Admin' || role === 'Curator' ? (
+          <div
+            className={`undp-chip margin-bottom-07 ${
+              data.status === 'Approved'
+                ? 'undp-chip-green'
+                : data.status === 'New'
+                ? 'undp-chip-yellow'
+                : 'undp-chip-red'
+            }`}
+          >
+            {data.status === 'New' ? 'Awaiting Approval' : data.status}
+          </div>
+        ) : null}
         <DescriptionEl className='undp-typography small-font margin-bottom-05'>
           {data.description}
         </DescriptionEl>
         <div className='flex-div flex-wrap'>
-          {data.steep ? (
-            <div
-              className='undp-chip'
-              style={{
-                color:
-                  STEEPVCOLOR.findIndex(
-                    el => el.value === data.steep?.split(' – ')[0],
-                  ) === -1
-                    ? 'var(--black)'
-                    : STEEPVCOLOR[
-                        STEEPVCOLOR.findIndex(
-                          el => el.value === data.steep?.split(' – ')[0],
-                        )
-                      ].textColor,
-                fontWeight: 'bold',
-              }}
-            >
-              {data.steep?.split(' – ')[0]}
-            </div>
-          ) : null}
           {data.keywords?.map((el, j) => (
             <div className='undp-chip' key={`chip-${j}`}>
               {el}
@@ -74,6 +71,30 @@ export function SignalCard(props: Props) {
           ))}
         </div>
         <div>
+          <hr className='undp-style light margin-top-07 margin-bottom-07' />
+          <h6 className='margin-bottom-00 margin-top-00'>STEEP+V Category</h6>
+          <div className='flex-div flex-wrap margin-top-03'>
+            {data.steep ? (
+              <div
+                className='undp-chip'
+                style={{
+                  color:
+                    STEEPVCOLOR.findIndex(
+                      el => el.value === data.steep?.split(' – ')[0],
+                    ) === -1
+                      ? 'var(--black)'
+                      : STEEPVCOLOR[
+                          STEEPVCOLOR.findIndex(
+                            el => el.value === data.steep?.split(' – ')[0],
+                          )
+                        ].textColor,
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.steep?.split(' – ')[0]}
+              </div>
+            ) : null}
+          </div>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='margin-bottom-00 margin-top-00'>
             Signature Solutions

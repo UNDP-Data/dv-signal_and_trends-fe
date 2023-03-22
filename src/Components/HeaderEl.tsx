@@ -5,8 +5,10 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
+import { useContext } from 'react';
 import { SignOutButton } from './SignOutButton';
 import { SignInButtonForHeader } from './SignInButtonForHeader';
+import Context from '../Context/Context';
 
 interface Props {
   signOutClickHandler: () => void;
@@ -14,14 +16,40 @@ interface Props {
 
 export function Header(props: Props) {
   const { signOutClickHandler } = props;
+  const { role } = useContext(Context);
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <NavLink to='/add-new-signal'>Signal</NavLink>,
+      label: (
+        <NavLink
+          to='/add-new-signal'
+          style={{
+            fontFamily: 'var(--fontFamily)',
+            fontSize: '1.25rem',
+            textTransform: 'none',
+            padding: '0.75rem',
+          }}
+        >
+          Signal
+        </NavLink>
+      ),
     },
     {
       key: '2',
-      label: <NavLink to='/add-new-trend'>Trend</NavLink>,
+      disabled: role === 'Visitor',
+      label: (
+        <NavLink
+          to='/add-new-trend'
+          style={{
+            fontFamily: 'var(--fontFamily)',
+            fontSize: '1.25rem',
+            textTransform: 'none',
+            padding: '0.75rem',
+          }}
+        >
+          Trend
+        </NavLink>
+      ),
     },
   ];
 

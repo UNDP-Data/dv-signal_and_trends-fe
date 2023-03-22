@@ -28,7 +28,12 @@ export function TrendsListing() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       .then((response: any) => {
         setTrendsList(

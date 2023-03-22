@@ -1,13 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import { useMsal } from '@azure/msal-react';
 import { Input, Select } from 'antd';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useEffect, useState } from 'react';
-import { redirect } from 'react-router-dom';
-import { HORIZON, LOCATION } from '../Constants';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { HORIZON } from '../Constants';
+import Context from '../Context/Context';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
 
@@ -17,7 +15,8 @@ interface Props {
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { accounts } = useMsal();
+  const { userName } = useContext(Context);
+  const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
@@ -33,16 +32,6 @@ export function TrendEntryFormEl(props: Props) {
     undefined | 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)'
   >(updateTrend ? updateTrend.time_horizon : undefined);
 
-  const creatorEmail = updateTrend
-    ? updateTrend.created_by.email
-    : accounts[0].username;
-  const creator = updateTrend
-    ? updateTrend.created_by.name
-    : accounts[0].name || '';
-  const [creatorOffice, setCreatorOffice] = useState<string | null>(
-    updateTrend ? updateTrend.created_by.unit : null,
-  );
-  const updateBy = accounts[0].username;
   const [impactRating, setImpactRating] = useState<number | null>(
     updateTrend ? updateTrend.impact_rating : null,
   );
@@ -59,9 +48,14 @@ export function TrendEntryFormEl(props: Props) {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
-      .then((response: any) => {
+      .then((response: AxiosResponse) => {
         setSignalList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
         );
@@ -73,9 +67,13 @@ export function TrendEntryFormEl(props: Props) {
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+          {
+            headers: {
+              access_token: import.meta.env.VITE_ACCESS_CODE,
+            },
+          },
         )
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((res: any) => {
+        .then((res: AxiosResponse) => {
           setConnectedSignals(res.data);
         });
     } else {
@@ -241,46 +239,6 @@ export function TrendEntryFormEl(props: Props) {
         </p>
       </div>
       {!updateTrend ? (
-        <div>
-          <hr className='undp-style margin-top-07 margin-bottom-07' />
-          <h4 className='undp-typography'>Scanner Information</h4>
-          <div className='flex-div margin-bottom-07'>
-            <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Full Name*</p>
-              <Input className='undp-input' disabled value={creator} />
-            </div>
-            <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Email id*</p>
-              <Input className='undp-input' disabled value={creatorEmail} />
-            </div>
-          </div>
-          <div className='margin-bottom-07'>
-            <p className='label'>Country Office / Unit*</p>
-            <Select
-              className='undp-select'
-              placeholder='Select Office'
-              onChange={e => {
-                setCreatorOffice(e);
-              }}
-            >
-              {LOCATION.map((d, i) => (
-                <Select.Option className='undp-select-option' key={i} value={d}>
-                  {d}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-        </div>
-      ) : (
-        <div
-          className='margin-top-07 margin-bottom-09'
-          style={{ width: '100%' }}
-        >
-          <h5 className='undp-typography'>Modified by*</h5>
-          <Input className='undp-input' disabled value={updateBy} />
-        </div>
-      )}
-      {!updateTrend ? (
         <div className='flex-div flex-vert-align-center'>
           <button
             className={`${
@@ -291,9 +249,6 @@ export function TrendEntryFormEl(props: Props) {
               impactDescription?.length < 30 ||
               !impactRating ||
               !timeHorizon ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
                 ? 'disabled '
                 : ''
@@ -307,9 +262,6 @@ export function TrendEntryFormEl(props: Props) {
               impactDescription?.length < 30 ||
               !impactRating ||
               !timeHorizon ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
             }
             onClick={() => {
@@ -319,23 +271,23 @@ export function TrendEntryFormEl(props: Props) {
                 method: 'post',
                 url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
                 data: {
-                  created_by: {
-                    name: creator,
-                    email: creatorEmail,
-                    unit: creatorOffice,
-                  },
+                  created_by: userName,
                   description,
                   headline,
+                  statuses: 'Approved',
                   impact_description: impactDescription,
                   time_horizon: timeHorizon,
                   impact_rating: impactRating,
                   connected_signals: trendsSignal,
                 },
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
               })
                 .then(() => {
                   setButtonDisabled(false);
-                  redirect('/trends');
+                  navigate('/trends');
                 })
                 .catch(err => {
                   setButtonDisabled(false);
@@ -366,9 +318,6 @@ export function TrendEntryFormEl(props: Props) {
               impactDescription?.length < 30 ||
               !impactRating ||
               !timeHorizon ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
                 ? 'disabled '
                 : ''
@@ -382,9 +331,6 @@ export function TrendEntryFormEl(props: Props) {
               impactDescription?.length < 30 ||
               !impactRating ||
               !timeHorizon ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
             }
             onClick={() => {
@@ -392,26 +338,26 @@ export function TrendEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/update?modified_by=${updateBy}`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/update?modified_by=${userName}`,
                 data: {
-                  created_by: {
-                    name: creator,
-                    email: creatorEmail,
-                    unit: creatorOffice,
-                  },
+                  created_by: updateTrend.created_by,
                   description,
                   headline,
+                  statuses: 'New',
                   impact_description: impactDescription,
                   time_horizon: timeHorizon,
                   impact_rating: impactRating,
                   connected_signals: trendsSignal,
                   _id: updateTrend._id,
                 },
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
               })
                 .then(() => {
                   setButtonDisabled(false);
-                  redirect(`/trends/${updateTrend._id}`);
+                  navigate(`/trends/${updateTrend._id}`);
                 })
                 .catch(err => {
                   setButtonDisabled(false);

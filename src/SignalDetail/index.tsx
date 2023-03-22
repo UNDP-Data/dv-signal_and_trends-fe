@@ -1,5 +1,5 @@
 import { NavLink, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   AuthenticatedTemplate,
@@ -9,6 +9,7 @@ import { SignalDataType, TrendDataType } from '../Types';
 import { MONTHS, SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../Constants';
 import { TrendCard } from '../Components/TrendCard';
 import { SignInButton } from '../Components/SignInButton';
+import Context from '../Context/Context';
 
 export function SignalDetail() {
   const [data, setData] = useState<SignalDataType | undefined>(undefined);
@@ -16,10 +17,16 @@ export function SignalDetail() {
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
+  const { role } = useContext(Context);
   useEffect(() => {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
@@ -31,6 +38,11 @@ export function SignalDetail() {
           axios
             .get(
               `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
+              {
+                headers: {
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
+              },
             )
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .then((res: any) => {
@@ -53,7 +65,7 @@ export function SignalDetail() {
       }}
     >
       {data ? (
-        <>
+        <div className='margin-bottom-13'>
           <div className='flex-div margin-top-07 margin-bottom-09'>
             <NavLink
               to='/'
@@ -114,6 +126,16 @@ export function SignalDetail() {
           </div>
           <h3 className='undp-typography'>{data.headline}</h3>
           <div className='flex-div flex-wrap margin-bottom-07'>
+            {data.keywords?.map((el, j) => (
+              <div className='undp-chip' key={j}>
+                {el}
+              </div>
+            ))}
+          </div>
+          <p className='undp-typography'>{data.description}</p>
+          <hr className='undp-style light margin-top-07 margin-bottom-07' />
+          <h6 className='undp-typography margin-top-00'>STEEP+V Category</h6>
+          <div className='flex-div flex-wrap margin-top-03'>
             {data.steep ? (
               <div
                 className='undp-chip'
@@ -134,13 +156,7 @@ export function SignalDetail() {
                 {data.steep?.split(' – ')[0]}
               </div>
             ) : null}
-            {data.keywords?.map((el, j) => (
-              <div className='undp-chip' key={j}>
-                {el}
-              </div>
-            ))}
           </div>
-          <p className='undp-typography'>{data.description}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Signature Solutions</h6>
           <div className='flex-div flex-wrap margin-top-03'>
@@ -244,29 +260,36 @@ export function SignalDetail() {
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Created by</h6>
           <p className='undp-typography margin-top-05 margin-bottom-09'>
-            {`${data.created_by.name} on ${new Date(
-              data.created_at,
-            ).getDate()}-${
+            {`${data.created_by} on ${new Date(data.created_at).getDate()}-${
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
           <AuthenticatedTemplate>
-            <NavLink
-              to={`/signals/${id}/edit`}
-              style={{ textDecoration: 'none' }}
-            >
-              <button
-                className='undp-button button-secondary button-arrow'
-                type='button'
+            {role === 'Visitor' ? (
+              <p
+                className='undp-typography'
+                style={{ color: 'var(--dark-red)' }}
               >
-                Edit Signal
-              </button>
-            </NavLink>
+                You don&apos;t have enough right to edit a signal
+              </p>
+            ) : (
+              <NavLink
+                to={`/signals/${id}/edit`}
+                style={{ textDecoration: 'none' }}
+              >
+                <button
+                  className='undp-button button-secondary button-arrow'
+                  type='button'
+                >
+                  Edit Signal
+                </button>
+              </NavLink>
+            )}
           </AuthenticatedTemplate>
           <UnauthenticatedTemplate>
             <SignInButton buttonText='Sign In to Edit Signal' />
           </UnauthenticatedTemplate>
-        </>
+        </div>
       ) : (
         <div className='undp-loader-container'>
           <div className='undp-loader' />

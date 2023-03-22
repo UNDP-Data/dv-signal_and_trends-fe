@@ -41,7 +41,12 @@ export function AddTrendsModal(props: Props) {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {

@@ -3,9 +3,11 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
+import { useContext } from 'react';
 import { SignalEntryFormEl } from '../Components/SignalEntryFormEl';
 import { TrendEntryFormEl } from '../Components/TrendEntryFormEl';
 import { SignInButton } from '../Components/SignInButton';
+import Context from '../Context/Context';
 
 export function AddNewSignalEl() {
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ export function AddNewSignalEl() {
 
 export function AddNewTrendEl() {
   const navigate = useNavigate();
+  const { role } = useContext(Context);
   return (
     <div
       className='undp-container flex-wrap margin-bottom-13'
@@ -60,7 +63,13 @@ export function AddNewTrendEl() {
           ← Back
         </button>
         <h3 className='undp-typography margin-top-05'>Add New Trend</h3>
-        <TrendEntryFormEl />
+        {role === 'Visitor' ? (
+          <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
+            You don&apos;t have enough right to add a trend
+          </p>
+        ) : (
+          <TrendEntryFormEl />
+        )}
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <div

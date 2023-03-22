@@ -6,12 +6,12 @@ import { Input, Select } from 'antd';
 import axios from 'axios';
 import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useMsal } from '@azure/msal-react';
 import { LOCATION, SDG, SIGNATURE_SOLUTION, STEEP_V } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { AddTrendsModal } from './AddTrendsModal';
+import Context from '../Context/Context';
 
 interface Props {
   updateSignal?: SignalDataType;
@@ -58,7 +58,7 @@ const FileAttachmentButton = styled.input`
 
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal } = props;
-  const { accounts } = useMsal();
+  const { userName } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
@@ -66,64 +66,60 @@ export function SignalEntryFormEl(props: Props) {
   );
   const [trendModal, setTrendModal] = useState(false);
   const [selectedTrendsList, setSelectedTrendsList] = useState<string[]>(
-    updateSignal ? updateSignal.connected_trends || [] : [],
+    updateSignal?.connected_trends || [],
   );
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
   );
   const [headline, setHeadline] = useState<undefined | string>(
-    updateSignal ? updateSignal.headline : undefined,
+    updateSignal?.headline || undefined,
   );
   const [sourceLink, setSourceLink] = useState<undefined | string>(
-    updateSignal ? updateSignal.url : undefined,
+    updateSignal?.url || undefined,
   );
   const [description, setDescription] = useState<undefined | string>(
-    updateSignal ? updateSignal.description : undefined,
+    updateSignal?.description || undefined,
   );
   const [steep, setSteep] = useState<undefined | string>(
-    updateSignal ? updateSignal.steep : undefined,
+    updateSignal?.steep || undefined,
   );
-  const [sdg, setSdg] = useState<string[]>(
-    updateSignal ? updateSignal.sdgs : [],
-  );
-  const [location, setLocation] = useState<undefined | string | null>(
-    updateSignal ? updateSignal.location : undefined,
+  const [sdg, setSdg] = useState<string[]>(updateSignal?.sdgs || []);
+  const [location, setLocation] = useState<undefined | string>(
+    updateSignal?.location || undefined,
   );
   const [relevance, setRelevance] = useState<undefined | string>(
-    updateSignal ? updateSignal.relevance : undefined,
+    updateSignal?.relevance || undefined,
   );
-  const [selectedFile, setSelectedFile] = useState<string | null>(
-    updateSignal ? updateSignal.attachments : null,
+  const [selectedFile, setSelectedFile] = useState<string | undefined>(
+    updateSignal?.attachments || undefined,
   );
-  const [keyword1, setKeyword1] = useState<string | null>(
-    updateSignal ? updateSignal.keywords[0] : null,
+  const [keyword1, setKeyword1] = useState<string | undefined>(
+    updateSignal?.keywords[0] || undefined,
   );
-  const [keyword2, setKeyword2] = useState<string | null>(
-    updateSignal ? updateSignal.keywords[1] : null,
+  const [keyword2, setKeyword2] = useState<string | undefined>(
+    updateSignal?.keywords[1] || undefined,
   );
-  const [keyword3, setKeyword3] = useState<string | null>(
-    updateSignal ? updateSignal.keywords[2] : null,
+  const [keyword3, setKeyword3] = useState<string | undefined>(
+    updateSignal?.keywords[2] || undefined,
   );
-  const [primarySS, setPrimarySS] = useState<string | null>(
-    updateSignal ? updateSignal.signature_primary : null,
+  const [primarySS, setPrimarySS] = useState<string | undefined>(
+    updateSignal?.signature_primary || undefined,
   );
-  const [secondarySS, setSecondarySS] = useState<string | null>(
-    updateSignal ? updateSignal.signature_secondary : null,
+  const [secondarySS, setSecondarySS] = useState<string | undefined>(
+    updateSignal?.signature_secondary || undefined,
   );
-  const creatorEmail = updateSignal
-    ? updateSignal.created_by.email
-    : accounts[0].username;
-  const creator = updateSignal
-    ? updateSignal.created_by.name
-    : accounts[0].name || '';
-  const [creatorOffice, setCreatorOffice] = useState<string | null>(
-    updateSignal ? updateSignal.created_by.unit : null,
+  const [signalStatus, setSignalStatus] = useState<string>(
+    updateSignal?.status || 'New',
   );
-  const updateBy = accounts[0].username;
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       .then((response: any) => {
         setTrendsList(
@@ -400,7 +396,7 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
       </div>
-      <div className='margin-bottom-09'>
+      <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Add signal to trends</h5>
         {trendsList ? (
           <>
@@ -456,62 +452,26 @@ export function SignalEntryFormEl(props: Props) {
           <p className='undp-typography'>Loading trends...</p>
         )}
       </div>
-      {!updateSignal ? (
-        <div>
-          <hr className='undp-style margin-top-07 margin-bottom-07' />
-          <h4 className='undp-typography'>Scanner Information</h4>
-          <div className='flex-div margin-bottom-07'>
-            <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Full Name*</p>
-              <Input
-                className='undp-input'
-                placeholder='Enter name here'
-                disabled
-                value={creator}
-              />
-            </div>
-            <div style={{ width: 'calc(50% - 1rem)' }}>
-              <p className='label'>Email id*</p>
-              <Input
-                className='undp-input'
-                placeholder='Enter email here'
-                disabled
-                value={creatorEmail}
-              />
-            </div>
-          </div>
-          <div className='margin-bottom-07'>
-            <p className='label'>Country Office / Unit*</p>
-            <Select
-              className='undp-select'
-              placeholder='Select Office'
-              onChange={e => {
-                setCreatorOffice(e);
-              }}
-            >
-              {LOCATION.map((d, i) => (
-                <Select.Option className='undp-select-option' key={i} value={d}>
-                  {d}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
+      {updateSignal ? (
+        <div className='margin-bottom-07'>
+          <h5 className='undp-typography'>Status of Signal</h5>
+          <Select
+            className='undp-select'
+            placeholder='Select Status'
+            onChange={e => {
+              setSignalStatus(e === 'Awaiting Approval' ? 'New' : e);
+            }}
+            value={signalStatus === 'New' ? 'Awaiting Approval' : signalStatus}
+          >
+            {['Approved', 'Archived', 'Awaiting Approval'].map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
         </div>
-      ) : (
-        <div
-          className='margin-top-07 margin-bottom-09'
-          style={{ width: '100%' }}
-        >
-          <h5 className='undp-typography'>Modified by*</h5>
-          <Input
-            className='undp-input'
-            placeholder='Enter email'
-            value={updateBy}
-            disabled
-          />
-        </div>
-      )}
-      <div className='flex-div flex-vert-align-center'>
+      ) : null}
+      <div className='flex-div flex-vert-align-center margin-top-05'>
         {updateSignal ? (
           <button
             className={`${
@@ -525,7 +485,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !updateBy ||
               buttonDisabled
                 ? 'disabled '
                 : ''
@@ -542,7 +501,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !updateBy ||
               buttonDisabled
             }
             onClick={() => {
@@ -550,14 +508,10 @@ export function SignalEntryFormEl(props: Props) {
               setSubmittingError(undefined);
               axios({
                 method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${updateBy}`,
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${userName}`,
                 data: {
-                  attachments: selectedFile,
-                  created_by: {
-                    email: creatorEmail,
-                    name: creator,
-                    unit: creatorOffice,
-                  },
+                  attachments: selectedFile || null,
+                  created_by: updateSignal.created_by,
                   description,
                   headline,
                   keywords: [keyword1, keyword2, keyword3].filter(
@@ -565,6 +519,7 @@ export function SignalEntryFormEl(props: Props) {
                   ),
                   location,
                   relevance,
+                  status: signalStatus,
                   sdgs: sdg || [],
                   signature_primary: primarySS,
                   signature_secondary: secondarySS,
@@ -573,7 +528,10 @@ export function SignalEntryFormEl(props: Props) {
                   connected_trends: selectedTrendsList,
                   _id: updateSignal._id,
                 },
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
               })
                 .then(() => {
                   setButtonDisabled(false);
@@ -600,9 +558,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
                 ? 'disabled '
                 : ''
@@ -619,9 +574,6 @@ export function SignalEntryFormEl(props: Props) {
               !relevance ||
               !keyword1 ||
               !primarySS ||
-              !creatorEmail ||
-              !creator ||
-              !creatorOffice ||
               buttonDisabled
             }
             onClick={() => {
@@ -632,11 +584,8 @@ export function SignalEntryFormEl(props: Props) {
                 url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
                 data: {
                   attachments: selectedFile,
-                  created_by: {
-                    email: creatorEmail,
-                    name: creator,
-                    unit: creatorOffice,
-                  },
+                  created_by: userName,
+                  status: 'New',
                   description,
                   headline,
                   keywords: [keyword1, keyword2, keyword3].filter(
@@ -651,7 +600,10 @@ export function SignalEntryFormEl(props: Props) {
                   url: sourceLink,
                   connected_trends: selectedTrendsList,
                 },
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
               })
                 .then(() => {
                   setButtonDisabled(false);

@@ -4,15 +4,17 @@ import {
   useIsAuthenticated,
 } from '@azure/msal-react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SignInButton } from '../Components/SignInButton';
 import { TrendEntryFormEl } from '../Components/TrendEntryFormEl';
+import Context from '../Context/Context';
 import { TrendDataType } from '../Types';
 
 export function EditTrend() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { role } = useContext(Context);
   const [trend, setTrend] = useState<TrendDataType | undefined>(undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [err, setError] = useState<any>(undefined);
@@ -22,6 +24,11 @@ export function EditTrend() {
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
+          {
+            headers: {
+              access_token: import.meta.env.VITE_ACCESS_CODE,
+            },
+          },
         )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((error: any) => {
@@ -51,26 +58,34 @@ export function EditTrend() {
         <h3 className='undp-typography margin-top-05'>
           Edit Trend{trend ? `: ${trend.headline}` : null}
         </h3>
-        {err ? (
-          <p
-            className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
-            style={{
-              textAlign: 'center',
-              backgroundColor: 'var(--gray-200)',
-              color: 'var(--dark-red)',
-            }}
-          >
-            Error {err.status}: There is an error loading the trend please try
-            again
+        {role === 'Visitor' ? (
+          <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
+            You don&apos;t have enough right to edit a trend
           </p>
-        ) : null}
-        {!err && !trend ? (
-          <div className='undp-loader-container'>
-            <div className='undp-loader' />
-          </div>
-        ) : trend ? (
-          <TrendEntryFormEl updateTrend={trend} />
-        ) : null}
+        ) : (
+          <>
+            {err ? (
+              <p
+                className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
+                style={{
+                  textAlign: 'center',
+                  backgroundColor: 'var(--gray-200)',
+                  color: 'var(--dark-red)',
+                }}
+              >
+                Error {err.status}: There is an error loading the trend please
+                try again
+              </p>
+            ) : null}
+            {!err && !trend ? (
+              <div className='undp-loader-container'>
+                <div className='undp-loader' />
+              </div>
+            ) : trend ? (
+              <TrendEntryFormEl updateTrend={trend} />
+            ) : null}
+          </>
+        )}
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <div

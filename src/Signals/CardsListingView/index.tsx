@@ -11,11 +11,20 @@ interface Props {
   filteredSteep: string;
   filteredSS: string;
   search?: string;
+  filteredStatus: string;
   view: 'cardView' | 'listView';
 }
 
 export function CardLayout(props: Props) {
-  const { data, filteredSDG, filteredSS, filteredSteep, search, view } = props;
+  const {
+    data,
+    filteredSDG,
+    filteredSS,
+    filteredSteep,
+    search,
+    view,
+    filteredStatus,
+  } = props;
   const [paginationValue, setPaginationValue] = useState(1);
   const DataFilterBySDG =
     filteredSDG === 'All SDGs'
@@ -35,9 +44,13 @@ export function CardLayout(props: Props) {
             d.signature_primary === filteredSS ||
             d.signature_secondary === filteredSS,
         );
+  const DataFilteredByStatus =
+    filteredStatus === 'All Status'
+      ? DataFilteredBySS
+      : DataFilteredBySS.filter(d => d.status === filteredStatus);
   const DataFilteredBySearch = !search
-    ? DataFilteredBySS
-    : DataFilteredBySS.filter(d =>
+    ? DataFilteredByStatus
+    : DataFilteredByStatus.filter(d =>
         d.headline.toLowerCase().includes(search.toLowerCase()),
       );
   return (

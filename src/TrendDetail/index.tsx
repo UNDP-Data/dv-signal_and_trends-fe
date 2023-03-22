@@ -1,5 +1,5 @@
 import { NavLink, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   AuthenticatedTemplate,
@@ -9,6 +9,7 @@ import { SignalDataType, TrendDataType } from '../Types';
 import { HORIZONVALUES, MONTHS } from '../Constants';
 import { SignalCard } from '../Components/SignalCard';
 import { SignInButton } from '../Components/SignInButton';
+import Context from '../Context/Context';
 
 export function TrendDetail() {
   const [data, setData] = useState<TrendDataType | undefined>(undefined);
@@ -16,10 +17,16 @@ export function TrendDetail() {
     SignalDataType[] | undefined
   >(undefined);
   const { id } = useParams();
+  const { role } = useContext(Context);
   useEffect(() => {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
+        {
+          headers: {
+            access_token: import.meta.env.VITE_ACCESS_CODE,
+          },
+        },
       )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: any) => {
@@ -31,6 +38,11 @@ export function TrendDetail() {
           axios
             .get(
               `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+              {
+                headers: {
+                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                },
+              },
             )
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .then((res: any) => {
@@ -53,7 +65,7 @@ export function TrendDetail() {
       }}
     >
       {data ? (
-        <>
+        <div className='margin-bottom-13'>
           <div className='flex-div margin-top-07 margin-bottom-09'>
             <NavLink
               to='/'
@@ -149,7 +161,7 @@ export function TrendDetail() {
             ) : null}
           </p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
+          <h6 className='undp-typography margin-top-00'>Connected Signals</h6>
           {connectedSignals ? (
             <div className='flex-div flex-wrap'>
               {connectedSignals.length > 0 ? (
@@ -172,29 +184,36 @@ export function TrendDetail() {
             Created by
           </h6>
           <p className='undp-typography margin-top-05 margin-bottom-09'>
-            {`${data.created_by.email} on ${new Date(
-              data.created_at,
-            ).getDate()}-${
+            {`${data.created_by} on ${new Date(data.created_at).getDate()}-${
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
           <AuthenticatedTemplate>
-            <NavLink
-              to={`/trends/${id}/edit`}
-              style={{ textDecoration: 'none' }}
-            >
-              <button
-                className='undp-button button-secondary button-arrow'
-                type='button'
+            {role === 'Visitor' ? (
+              <p
+                className='undp-typography'
+                style={{ color: 'var(--dark-red)' }}
               >
-                Edit Trend
-              </button>
-            </NavLink>
+                You don&apos;t have enough right to edit a trend
+              </p>
+            ) : (
+              <NavLink
+                to={`/trends/${id}/edit`}
+                style={{ textDecoration: 'none' }}
+              >
+                <button
+                  className='undp-button button-secondary button-arrow'
+                  type='button'
+                >
+                  Edit Trend
+                </button>
+              </NavLink>
+            )}
           </AuthenticatedTemplate>
           <UnauthenticatedTemplate>
             <SignInButton buttonText='Sign In to Edit Trends' />
           </UnauthenticatedTemplate>
-        </>
+        </div>
       ) : (
         <div className='undp-loader-container'>
           <div className='undp-loader' />

@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { HORIZONVALUES } from '../../Constants';
 import { TrendDataType } from '../../Types';
 
@@ -5,8 +7,13 @@ interface Props {
   data: TrendDataType[];
 }
 
+const TableRowEl = styled.div`
+  cursor: pointer;
+`;
+
 export function ListView(props: Props) {
   const { data } = props;
+  const navigate = useNavigate();
   return (
     <div
       style={{ width: '100%', overflow: 'auto', maxHeight: '70vh' }}
@@ -45,7 +52,15 @@ export function ListView(props: Props) {
         </div>
       </div>
       {data.map((d, i) => (
-        <div className='undp-table-row' key={i}>
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <TableRowEl
+          className='undp-table-row'
+          key={i}
+          onClick={() => {
+            // eslint-disable-next-line no-underscore-dangle
+            navigate(`/trends/${d._id}`);
+          }}
+        >
           <div
             style={{
               width: '20%',
@@ -96,7 +111,7 @@ export function ListView(props: Props) {
           >
             {d.impact_description}
           </div>
-        </div>
+        </TableRowEl>
       ))}
     </div>
   );

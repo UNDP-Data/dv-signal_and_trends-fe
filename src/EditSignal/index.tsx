@@ -4,15 +4,17 @@ import {
   useIsAuthenticated,
 } from '@azure/msal-react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SignalEntryFormEl } from '../Components/SignalEntryFormEl';
 import { SignInButton } from '../Components/SignInButton';
+import Context from '../Context/Context';
 import { SignalDataType } from '../Types';
 
 export function EditSignal() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { role } = useContext(Context);
   const [signal, setSignal] = useState<SignalDataType | undefined>(undefined);
   const isAuthenticated = useIsAuthenticated();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,6 +24,11 @@ export function EditSignal() {
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
+          {
+            headers: {
+              access_token: import.meta.env.VITE_ACCESS_CODE,
+            },
+          },
         )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((error: any) => {
@@ -51,26 +58,34 @@ export function EditSignal() {
         <h3 className='undp-typography margin-top-05'>
           Edit Signal{signal ? `: ${signal.headline}` : null}
         </h3>
-        {err ? (
-          <p
-            className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
-            style={{
-              textAlign: 'center',
-              backgroundColor: 'var(--gray-200)',
-              color: 'var(--dark-red)',
-            }}
-          >
-            Error {err.status}: There is an error loading the signal please try
-            again
+        {role === 'Visitor' ? (
+          <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
+            You don&apos;t have enough right to edit a trend
           </p>
-        ) : null}
-        {!err && !signal ? (
-          <div className='undp-loader-container'>
-            <div className='undp-loader' />
-          </div>
-        ) : signal ? (
-          <SignalEntryFormEl updateSignal={signal} />
-        ) : null}
+        ) : (
+          <>
+            {err ? (
+              <p
+                className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
+                style={{
+                  textAlign: 'center',
+                  backgroundColor: 'var(--gray-200)',
+                  color: 'var(--dark-red)',
+                }}
+              >
+                Error {err.status}: There is an error loading the signal please
+                try again
+              </p>
+            ) : null}
+            {!err && !signal ? (
+              <div className='undp-loader-container'>
+                <div className='undp-loader' />
+              </div>
+            ) : signal ? (
+              <SignalEntryFormEl updateSignal={signal} />
+            ) : null}
+          </>
+        )}
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <div
