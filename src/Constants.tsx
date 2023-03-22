@@ -1,5 +1,7 @@
 import UNDPColorModule from 'undp-viz-colors';
 
+export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
+
 export const SDG = [
   'GOAL 1: No Poverty',
   'GOAL 2: Zero Hunger',

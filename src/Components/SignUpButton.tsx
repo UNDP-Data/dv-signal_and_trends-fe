@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useContext } from 'react';
+import { API_ACCESS_TOKEN } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
@@ -28,7 +29,7 @@ export function SignUpButton(props: Props) {
           },
           headers: {
             'Content-Type': 'application/json',
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         }).then(() => {
           setOpenModal(false);

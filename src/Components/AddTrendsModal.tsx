@@ -5,7 +5,7 @@ import axios from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { HORIZON } from '../Constants';
+import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 import { TrendDataType } from '../Types';
 
 interface Props {
@@ -44,7 +44,7 @@ export function AddTrendsModal(props: Props) {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )

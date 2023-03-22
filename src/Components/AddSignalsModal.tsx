@@ -7,7 +7,7 @@ import axios from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
+import { API_ACCESS_TOKEN, SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
 import { SignalDataType } from '../Types';
 
 interface Props {
@@ -48,7 +48,7 @@ export function AddSignalsModal(props: Props) {
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )

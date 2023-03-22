@@ -24,7 +24,7 @@ export function SignalDetail() {
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )
@@ -40,7 +40,7 @@ export function SignalDetail() {
               `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
               {
                 headers: {
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               },
             )

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { API_ACCESS_TOKEN } from '../Constants';
 import { UserDataType } from '../Types';
 
 interface Props {
@@ -104,7 +105,7 @@ export function UserListEl(props: Props) {
                   `https://signals-and-trends-api.azurewebsites.net/v1/users/assign?email=${selectedUser?.email}&role=${role}`,
                   {
                     headers: {
-                      access_token: import.meta.env.VITE_ACCESS_CODE,
+                      access_token: API_ACCESS_TOKEN,
                     },
                   },
                 )

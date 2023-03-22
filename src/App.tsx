@@ -84,7 +84,7 @@ function App() {
           `https://signals-and-trends-api.azurewebsites.net/v1/users/fetch?email=${usernameFromMSAL}`,
           {
             headers: {
-              access_token: import.meta.env.VITE_ACCESS_CODE,
+              access_token: API_ACCESS_TOKEN,
             },
           },
         )

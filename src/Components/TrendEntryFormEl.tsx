@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HORIZON } from '../Constants';
+import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 import Context from '../Context/Context';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
@@ -51,7 +51,7 @@ export function TrendEntryFormEl(props: Props) {
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )
@@ -69,7 +69,7 @@ export function TrendEntryFormEl(props: Props) {
           `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
           {
             headers: {
-              access_token: import.meta.env.VITE_ACCESS_CODE,
+              access_token: API_ACCESS_TOKEN,
             },
           },
         )
@@ -282,7 +282,7 @@ export function TrendEntryFormEl(props: Props) {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               })
                 .then(() => {
@@ -352,7 +352,7 @@ export function TrendEntryFormEl(props: Props) {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               })
                 .then(() => {

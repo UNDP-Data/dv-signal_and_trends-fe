@@ -7,7 +7,7 @@ import { Input, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { TrendDataType } from '../Types';
 import { CardLayout } from './CardsListingView';
-import { HORIZON } from '../Constants';
+import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -31,7 +31,7 @@ export function TrendsListing() {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )

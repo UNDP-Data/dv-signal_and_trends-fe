@@ -4,7 +4,7 @@ import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { UNITS } from '../Constants';
+import { API_ACCESS_TOKEN, UNITS } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
@@ -234,7 +234,7 @@ export function SignOutButton(props: Props) {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               }).then(() => {
                 setOpenModal(false);

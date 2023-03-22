@@ -10,7 +10,7 @@ import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { UserDataType } from '../Types';
 import { UserListEl } from './userList';
-import { UNITS } from '../Constants';
+import { API_ACCESS_TOKEN, UNITS } from '../Constants';
 
 export function AdminPanel() {
   const { role } = useContext(Context);
@@ -29,7 +29,7 @@ export function AdminPanel() {
           'https://signals-and-trends-api.azurewebsites.net/v1/users/list?offset=0&limit=100&roles=Visitor&roles=Curator&roles=Admin',
           {
             headers: {
-              access_token: import.meta.env.VITE_ACCESS_CODE,
+              access_token: API_ACCESS_TOKEN,
             },
           },
         )
@@ -200,7 +200,7 @@ export function AdminPanel() {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               }).then(() => {
                 setOpenModal(false);

@@ -6,7 +6,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import { SignalDataType, TrendDataType } from '../Types';
-import { HORIZONVALUES, MONTHS } from '../Constants';
+import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../Constants';
 import { SignalCard } from '../Components/SignalCard';
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
@@ -24,7 +24,7 @@ export function TrendDetail() {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )
@@ -40,7 +40,7 @@ export function TrendDetail() {
               `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
               {
                 headers: {
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               },
             )

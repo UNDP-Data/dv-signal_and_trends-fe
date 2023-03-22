@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Background from '../assets/UNDP-hero-image.png';
+import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 
 const HeroImageEl = styled.div`
@@ -42,7 +43,7 @@ export function HomePage() {
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )
@@ -60,7 +61,7 @@ export function HomePage() {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )

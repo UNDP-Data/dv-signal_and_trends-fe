@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SignalEntryFormEl } from '../Components/SignalEntryFormEl';
 import { SignInButton } from '../Components/SignInButton';
+import { API_ACCESS_TOKEN } from '../Constants';
 import Context from '../Context/Context';
 import { SignalDataType } from '../Types';
 
@@ -26,7 +27,7 @@ export function EditSignal() {
           `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
           {
             headers: {
-              access_token: import.meta.env.VITE_ACCESS_CODE,
+              access_token: API_ACCESS_TOKEN,
             },
           },
         )

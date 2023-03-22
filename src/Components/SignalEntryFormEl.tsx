@@ -8,7 +8,13 @@ import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { LOCATION, SDG, SIGNATURE_SOLUTION, STEEP_V } from '../Constants';
+import {
+  API_ACCESS_TOKEN,
+  LOCATION,
+  SDG,
+  SIGNATURE_SOLUTION,
+  STEEP_V,
+} from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { AddTrendsModal } from './AddTrendsModal';
 import Context from '../Context/Context';
@@ -117,7 +123,7 @@ export function SignalEntryFormEl(props: Props) {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
         {
           headers: {
-            access_token: import.meta.env.VITE_ACCESS_CODE,
+            access_token: API_ACCESS_TOKEN,
           },
         },
       )
@@ -530,7 +536,7 @@ export function SignalEntryFormEl(props: Props) {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               })
                 .then(() => {
@@ -602,7 +608,7 @@ export function SignalEntryFormEl(props: Props) {
                 },
                 headers: {
                   'Content-Type': 'application/json',
-                  access_token: import.meta.env.VITE_ACCESS_CODE,
+                  access_token: API_ACCESS_TOKEN,
                 },
               })
                 .then(() => {
