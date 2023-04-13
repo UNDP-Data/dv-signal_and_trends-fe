@@ -9,13 +9,14 @@ interface Props {
 }
 
 const CardEl = styled.div`
-  border-radius: 0.4rem;
   flex-grow: 1;
   font-size: 1.4rem;
   padding: 2rem;
-  background-color: var(--gray-100);
   word-wrap: break-word;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const DescriptionEl = styled.p`
@@ -37,34 +38,40 @@ export function TrendCard(props: Props) {
         color: 'var(--black)',
         textDecoration: 'none',
         width: 'calc(33.33% - 0.67rem)',
-        backgroundColor: 'var(--gray-100)',
         flexGrow: 1,
         flexBasis: '26.25rem',
+        backgroundColor: 'var(--gray-200)',
+        border: '1px solid var(--gray-400)',
+        borderRadius: '0.5rem',
+        alignItems: 'stretch',
+        display: 'flex',
       }}
     >
       <CardEl>
-        <h5 className='bold undp-typography'>{data.headline}</h5>
-        <DescriptionEl className='undp-typography small-font margin-bottom-05'>
-          {data.description}
-        </DescriptionEl>
-        <div className='flex-div flex-wrap'>
-          <div
-            className='undp-chip'
-            style={{
-              color:
-                HORIZONVALUES.findIndex(
-                  el => el.value === data.time_horizon,
-                ) === -1
-                  ? 'var(--black)'
-                  : HORIZONVALUES[
-                      HORIZONVALUES.findIndex(
-                        el => el.value === data.time_horizon,
-                      )
-                    ].textColor,
-              fontWeight: 'bold',
-            }}
-          >
-            {data.time_horizon}
+        <div>
+          <h5 className='bold undp-typography'>{data.headline}</h5>
+          <DescriptionEl className='undp-typography small-font margin-bottom-05'>
+            {data.description}
+          </DescriptionEl>
+          <div className='flex-div flex-wrap'>
+            <div
+              className='undp-chip'
+              style={{
+                color:
+                  HORIZONVALUES.findIndex(
+                    el => el.value === data.time_horizon,
+                  ) === -1
+                    ? 'var(--black)'
+                    : HORIZONVALUES[
+                        HORIZONVALUES.findIndex(
+                          el => el.value === data.time_horizon,
+                        )
+                      ].textColor,
+                fontWeight: 'bold',
+              }}
+            >
+              {data.time_horizon}
+            </div>
           </div>
         </div>
         <div>

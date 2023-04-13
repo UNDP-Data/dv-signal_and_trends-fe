@@ -1,83 +1,145 @@
-import { useState } from 'react';
-import { Pagination } from 'antd';
-import { TrendDataType } from '../../Types';
+import { useEffect, useState } from 'react';
+import { Pagination, PaginationProps } from 'antd';
+import sortBy from 'lodash.sortby';
+import axios, { AxiosResponse } from 'axios';
+import { TrendDataType, TrendFiltersDataType } from '../../Types';
 import { CardList } from './CardsList';
 import { ListView } from './ListView';
+import { API_ACCESS_TOKEN } from '../../Constants';
 
 interface Props {
-  data: TrendDataType[];
-  filteredHorizons: string;
-  filteredImpactRating: string;
-  search?: string;
+  filters: TrendFiltersDataType;
   view: 'cardView' | 'listView';
 }
 
 export function CardLayout(props: Props) {
-  const { data, filteredHorizons, filteredImpactRating, search, view } = props;
+  const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
-  const DataFilterByHorizon =
-    filteredHorizons === 'All Horizons'
-      ? data
-      : data.filter(d => d.time_horizon === filteredHorizons);
-  const DataFilterByIR =
-    filteredImpactRating === 'All Impact Ratings'
-      ? DataFilterByHorizon
-      : DataFilterByHorizon.filter(
-          d => `${d.impact_rating}` === filteredImpactRating,
+  const [pageSize, setPageSize] = useState(25);
+  const [totalNo, setTotalNo] = useState(0);
+  const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
+    undefined,
+  );
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    _current,
+    size,
+  ) => {
+    setPageSize(size);
+    setPaginationValue(1);
+  };
+  useEffect(() => {
+    setTrendsList(undefined);
+    const horizonQueryParameter =
+      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+    const ratingQueryParameter =
+      filters.impact === 'All Ratings'
+        ? ''
+        : `&impact_rating=${filters.impact}`;
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
+          pageSize * (paginationValue - 1)
+        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((response: AxiosResponse) => {
+        setTrendsList(
+          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
         );
-  const DataFilteredBySearch = !search
-    ? DataFilterByIR
-    : DataFilterByIR.filter(d =>
-        d.headline.toLowerCase().includes(search.toLowerCase()),
-      );
+      });
+  }, [paginationValue, pageSize]);
+  useEffect(() => {
+    setTrendsList(undefined);
+    const horizonQueryParameter =
+      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+    const ratingQueryParameter =
+      filters.impact === 'All Ratings'
+        ? ''
+        : `&impact_rating=${filters.impact}`;
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((countResponse: AxiosResponse) => {
+        setTotalNo(countResponse.data);
+        if (countResponse.data === 0) {
+          setPaginationValue(1);
+          setTrendsList([]);
+        } else {
+          axios
+            .get(
+              `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+              {
+                headers: {
+                  access_token: API_ACCESS_TOKEN,
+                },
+              },
+            )
+            .then((response: AxiosResponse) => {
+              setPaginationValue(1);
+              setTrendsList(
+                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+              );
+            });
+        }
+      });
+  }, [filters]);
   return (
     <div style={{ padding: '0 1rem' }}>
-      {view === 'cardView' ? (
-        <>
-          <div className='flex-div flex-wrap'>
-            {DataFilteredBySearch.length > 0 ? (
-              <CardList
-                data={
-                  DataFilteredBySearch.length <= 9
-                    ? DataFilteredBySearch
-                    : DataFilteredBySearch.filter(
-                        (_d, i) =>
-                          i >= (paginationValue - 1) * 9 &&
-                          i < paginationValue * 9,
-                      )
-                }
-              />
-            ) : (
-              <h5
-                className='undp-typography bold'
-                style={{
-                  backgroundColor: 'var(--gray-200)',
-                  textAlign: 'center',
-                  padding: 'var(--spacing-07)',
-                  width: 'calc(100% - 4rem)',
-                  border: '1px solid var(--gray-400)',
-                }}
-              >
-                No trends available matching your criteria
-              </h5>
-            )}
-          </div>
-          {DataFilteredBySearch.length <= 9 ? null : (
-            <div className='flex-div flex-hor-align-center margin-top-07'>
-              <Pagination
-                className='undp-pagination'
-                onChange={e => {
-                  setPaginationValue(e);
-                }}
-                defaultCurrent={1}
-                total={data.length}
-                pageSize={9}
-              />
-            </div>
+      {trendsList ? (
+        <div>
+          {view === 'cardView' ? (
+            <>
+              <div className='flex-div flex-wrap'>
+                {trendsList.length > 0 ? (
+                  <CardList data={trendsList} />
+                ) : (
+                  <h5
+                    className='undp-typography bold'
+                    style={{
+                      backgroundColor: 'var(--gray-200)',
+                      textAlign: 'center',
+                      padding: 'var(--spacing-07)',
+                      width: 'calc(100% - 4rem)',
+                      border: '1px solid var(--gray-400)',
+                    }}
+                  >
+                    No trends available matching your criteria
+                  </h5>
+                )}
+              </div>
+              <div className='flex-div flex-hor-align-center margin-top-07'>
+                <Pagination
+                  className='undp-pagination'
+                  onChange={e => {
+                    setPaginationValue(e);
+                  }}
+                  defaultCurrent={1}
+                  current={paginationValue}
+                  total={totalNo}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  onShowSizeChange={onShowSizeChange}
+                />
+              </div>
+            </>
+          ) : (
+            <ListView data={trendsList} />
           )}
-        </>
+        </div>
       ) : (
-        <ListView data={DataFilteredBySearch} />
+        <div className='undp-loader-container'>
+          <div className='undp-loader' />
+        </div>
       )}
     </div>
   );

@@ -11,6 +11,15 @@ const TableRowEl = styled.div`
   cursor: pointer;
 `;
 
+const DescriptionEl = styled.div`
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
+`;
+
 export function ListView(props: Props) {
   const { data } = props;
   const navigate = useNavigate();
@@ -81,7 +90,7 @@ export function ListView(props: Props) {
             style={{ width: '20%', minWidth: '30rem' }}
             className='undp-table-row-cell'
           >
-            {d.description}
+            <DescriptionEl>{d.description}</DescriptionEl>
           </div>
           <div
             style={{ width: '15%', minWidth: '10rem' }}
@@ -145,7 +154,8 @@ export function ListView(props: Props) {
                   {d.signature_primary}
                 </div>
               ) : null}
-              {d.signature_secondary !== '' && d.signature_secondary ? (
+              {d.signature_secondary !== '' &&
+              d.signature_secondary !== d.signature_primary ? (
                 <div
                   className='undp-chip'
                   style={{

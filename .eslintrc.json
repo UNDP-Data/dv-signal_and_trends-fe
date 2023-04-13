@@ -38,6 +38,7 @@
       "jsx-quotes": [2, "prefer-single"],
       "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-      "react/jsx-props-no-spreading": 0
+      "react/jsx-props-no-spreading": 0,
+      "no-underscore-dangle": "off"
     }
 }

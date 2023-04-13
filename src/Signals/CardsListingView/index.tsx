@@ -1,106 +1,164 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
-import { Pagination } from 'antd';
-import { SignalDataType } from '../../Types';
+import { useContext, useEffect, useState } from 'react';
+import { Pagination, PaginationProps } from 'antd';
+import axios, { AxiosResponse } from 'axios';
+import sortBy from 'lodash.sortby';
+import { SignalDataType, SignalFiltersDataType } from '../../Types';
 import { CardList } from './CardsList';
 import { ListView } from './ListView';
+import { API_ACCESS_TOKEN } from '../../Constants';
+import Context from '../../Context/Context';
 
 interface Props {
-  data: SignalDataType[];
-  filteredSDG: string;
-  filteredSteep: string;
-  filteredSS: string;
-  search?: string;
-  filteredStatus: string;
+  filters: SignalFiltersDataType;
   view: 'cardView' | 'listView';
 }
 
 export function CardLayout(props: Props) {
-  const {
-    data,
-    filteredSDG,
-    filteredSS,
-    filteredSteep,
-    search,
-    view,
-    filteredStatus,
-  } = props;
+  const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
-  const DataFilterBySDG =
-    filteredSDG === 'All SDGs'
-      ? data
-      : data.filter(d => d.sdgs && d.sdgs?.indexOf(filteredSDG) !== -1);
-  const DataFilterBySteep =
-    filteredSteep === 'All STEEP+V'
-      ? DataFilterBySDG
-      : DataFilterBySDG.filter(
-          d => d.steep && d.steep?.split(' – ').indexOf(filteredSteep) !== -1,
+  const [pageSize, setPageSize] = useState(25);
+  const [totalNo, setTotalNo] = useState(0);
+  const { role } = useContext(Context);
+  const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
+    undefined,
+  );
+  useEffect(() => {
+    setSignalList(undefined);
+    const steepQueryParameter =
+      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
+    const ssQueryParameter =
+      filters.ss === 'All Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.ss.replaceAll(' ', '%20')}`;
+    const statusQueryParameter =
+      role === 'Curator' || role === 'Admin'
+        ? filters.status === 'All Status'
+          ? '&statuses=Approved&statuses=New'
+          : `&steep=${filters.status}`
+        : '&statuses=Approved';
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
+          pageSize * (paginationValue - 1)
+        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
         );
-  const DataFilteredBySS =
-    filteredSS === 'All Signature Solutions/Enabler'
-      ? DataFilterBySteep
-      : DataFilterBySteep.filter(
-          d =>
-            d.signature_primary === filteredSS ||
-            d.signature_secondary === filteredSS,
-        );
-  const DataFilteredByStatus =
-    filteredStatus === 'All Status'
-      ? DataFilteredBySS
-      : DataFilteredBySS.filter(d => d.status === filteredStatus);
-  const DataFilteredBySearch = !search
-    ? DataFilteredByStatus
-    : DataFilteredByStatus.filter(d =>
-        d.headline.toLowerCase().includes(search.toLowerCase()),
-      );
+      });
+  }, [paginationValue, pageSize]);
+  useEffect(() => {
+    setSignalList(undefined);
+    const steepQueryParameter =
+      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
+    const ssQueryParameter =
+      filters.ss === 'All Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.ss}`;
+    const statusQueryParameter =
+      role === 'Curator' || role === 'Admin'
+        ? filters.status === 'All Status'
+          ? 'statuses=Approved&statuses=New'
+          : `steep=${filters.status}`
+        : 'statuses=Approved';
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((countResponse: AxiosResponse) => {
+        setTotalNo(countResponse.data);
+        if (countResponse.data === 0) {
+          setPaginationValue(1);
+          setSignalList([]);
+        } else {
+          axios
+            .get(
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+              {
+                headers: {
+                  access_token: API_ACCESS_TOKEN,
+                },
+              },
+            )
+            .then((response: AxiosResponse) => {
+              setPaginationValue(1);
+              setSignalList(
+                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+              );
+            });
+        }
+      });
+  }, [role, filters]);
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    _current,
+    size,
+  ) => {
+    setPageSize(size);
+    setPaginationValue(1);
+  };
+
   return (
     <div style={{ padding: '0 1rem' }}>
-      {view === 'cardView' ? (
-        <>
-          <div className='flex-div flex-wrap'>
-            {DataFilteredBySearch.length > 0 ? (
-              <CardList
-                data={
-                  DataFilteredBySearch.length <= 9
-                    ? DataFilteredBySearch
-                    : DataFilteredBySearch.filter(
-                        (_d, i) =>
-                          i >= (paginationValue - 1) * 9 &&
-                          i < paginationValue * 9,
-                      )
-                }
-              />
-            ) : (
-              <h5
-                className='undp-typography bold'
-                style={{
-                  backgroundColor: 'var(--gray-200)',
-                  textAlign: 'center',
-                  padding: 'var(--spacing-07)',
-                  width: 'calc(100% - 4rem)',
-                  border: '1px solid var(--gray-400)',
-                }}
-              >
-                No signals available matching your criteria
-              </h5>
-            )}
-          </div>
-          {DataFilteredBySearch.length <= 9 ? null : (
-            <div className='flex-div flex-hor-align-center margin-top-07'>
-              <Pagination
-                className='undp-pagination'
-                onChange={e => {
-                  setPaginationValue(e);
-                }}
-                defaultCurrent={1}
-                total={data.length}
-                pageSize={9}
-              />
-            </div>
+      {signalList ? (
+        <div>
+          {view === 'cardView' ? (
+            <>
+              <div className='flex-div flex-wrap'>
+                {signalList.length > 0 ? (
+                  <CardList data={signalList} />
+                ) : (
+                  <h5
+                    className='undp-typography bold'
+                    style={{
+                      backgroundColor: 'var(--gray-200)',
+                      textAlign: 'center',
+                      padding: 'var(--spacing-07)',
+                      width: 'calc(100% - 4rem)',
+                      border: '1px solid var(--gray-400)',
+                    }}
+                  >
+                    No signals available matching your criteria
+                  </h5>
+                )}
+              </div>
+              <div className='flex-div flex-hor-align-center margin-top-07'>
+                <Pagination
+                  className='undp-pagination'
+                  onChange={e => {
+                    setPaginationValue(e);
+                  }}
+                  defaultCurrent={1}
+                  current={paginationValue}
+                  total={totalNo}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  onShowSizeChange={onShowSizeChange}
+                />
+              </div>
+            </>
+          ) : (
+            <ListView data={signalList} />
           )}
-        </>
+        </div>
       ) : (
-        <ListView data={DataFilteredBySearch} />
+        <div className='undp-loader-container'>
+          <div className='undp-loader' />
+        </div>
       )}
     </div>
   );

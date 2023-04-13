@@ -1,10 +1,9 @@
-/* eslint-disable no-underscore-dangle */
-import { AuthenticatedTemplate } from '@azure/msal-react';
+import { AuthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { API_ACCESS_TOKEN, UNITS } from '../Constants';
+import { UNITS } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
@@ -178,7 +177,7 @@ export function SignOutButton(props: Props) {
               width: 'calc(50% - 2rem)',
             }}
           >
-            <p className='undp-typography margin-bottom-02'>Username</p>
+            <p className='undp-typography margin-bottom-02'>E-mail ID</p>
             <Input className='undp-input' disabled value={userName} />
           </div>
         </div>
@@ -223,24 +222,34 @@ export function SignOutButton(props: Props) {
             type='button'
             className='undp-button button-primary button-arrow'
             onClick={() => {
-              axios({
-                method: 'put',
-                url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
-                data: {
-                  email: userName,
-                  name: nameOfUser,
-                  unit: selectedUnit,
-                  role,
-                },
-                headers: {
-                  'Content-Type': 'application/json',
-                  access_token: API_ACCESS_TOKEN,
-                },
-              }).then(() => {
-                setOpenModal(false);
-                updateName(nameOfUser);
-                updateUnit(selectedUnit);
-              });
+              const { accounts, instance } = useMsal();
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios({
+                    method: 'put',
+                    url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
+                    data: {
+                      email: userName,
+                      name: nameOfUser,
+                      unit: selectedUnit,
+                      role,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessTokenResponse.accessToken,
+                    },
+                  }).then(() => {
+                    setOpenModal(false);
+                    updateName(nameOfUser);
+                    updateUnit(selectedUnit);
+                  });
+                });
             }}
           >
             Update Profile

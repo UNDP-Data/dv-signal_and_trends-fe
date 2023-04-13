@@ -58,7 +58,7 @@ export const STEEP_V = [
 
 export const HORIZONVALUES = [
   {
-    value: 'Horizon 1 (7+Y)',
+    value: 'Horizon 3 (7+Y)',
     textColor: UNDPColorModule.categoricalColors.colors[6],
   },
   {
@@ -321,3 +321,5 @@ export const UNITS = [
   'UNDP Seoul Policy Centre for Knowledge Exchange through SDG Partnerships (Seoul, Republic of Korea)',
   'UNDP Washington Representation Office (Washington, USA)',
 ];
+
+export const NO_OF_ITEMS_IN_PAGE = 25;

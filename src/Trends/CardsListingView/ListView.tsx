@@ -11,6 +11,15 @@ const TableRowEl = styled.div`
   cursor: pointer;
 `;
 
+const DescriptionEl = styled.div`
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
+`;
+
 export function ListView(props: Props) {
   const { data } = props;
   const navigate = useNavigate();
@@ -75,7 +84,7 @@ export function ListView(props: Props) {
             style={{ width: '17.5%', minWidth: '30rem' }}
             className='undp-table-row-cell'
           >
-            {d.description}
+            <DescriptionEl>{d.description}</DescriptionEl>
           </div>
           <div
             style={{ width: '10%', minWidth: '10rem' }}

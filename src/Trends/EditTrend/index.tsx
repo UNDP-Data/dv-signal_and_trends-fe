@@ -3,41 +3,40 @@ import {
   UnauthenticatedTemplate,
   useIsAuthenticated,
 } from '@azure/msal-react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SignalEntryFormEl } from '../Components/SignalEntryFormEl';
-import { SignInButton } from '../Components/SignInButton';
-import { API_ACCESS_TOKEN } from '../Constants';
-import Context from '../Context/Context';
-import { SignalDataType } from '../Types';
+import { SignInButton } from '../../Components/SignInButton';
+import { TrendEntryFormEl } from '../../Components/TrendEntryFormEl';
+import { API_ACCESS_TOKEN } from '../../Constants';
+import Context from '../../Context/Context';
+import { TrendDataType } from '../../Types';
 
-export function EditSignal() {
+export function EditTrend() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { role } = useContext(Context);
-  const [signal, setSignal] = useState<SignalDataType | undefined>(undefined);
-  const isAuthenticated = useIsAuthenticated();
+  const [trend, setTrend] = useState<TrendDataType | undefined>(undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [err, setError] = useState<any>(undefined);
+  const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     if (isAuthenticated) {
       axios
         .get(
-          `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
+          `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
           {
             headers: {
               access_token: API_ACCESS_TOKEN,
             },
           },
         )
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .catch((error: any) => {
+        .catch((error: AxiosError) => {
           setError(error.toJSON());
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((response: any) => {
-          setSignal(response.data[0]);
+          setTrend(response.data[0]);
         });
     }
   }, [id, isAuthenticated]);
@@ -57,7 +56,7 @@ export function EditSignal() {
           ← Back
         </button>
         <h3 className='undp-typography margin-top-05'>
-          Edit Signal{signal ? `: ${signal.headline}` : null}
+          Edit Trend{trend ? `: ${trend.headline}` : null}
         </h3>
         {role === 'Visitor' ? (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
@@ -74,16 +73,16 @@ export function EditSignal() {
                   color: 'var(--dark-red)',
                 }}
               >
-                Error {err.status}: There is an error loading the signal please
+                Error {err.status}: There is an error loading the trend please
                 try again
               </p>
             ) : null}
-            {!err && !signal ? (
+            {!err && !trend ? (
               <div className='undp-loader-container'>
                 <div className='undp-loader' />
               </div>
-            ) : signal ? (
-              <SignalEntryFormEl updateSignal={signal} />
+            ) : trend ? (
+              <TrendEntryFormEl updateTrend={trend} />
             ) : null}
           </>
         )}
@@ -94,7 +93,7 @@ export function EditSignal() {
           style={{ flexDirection: 'column' }}
         >
           <h6 className='undp-typography margin-bottom-03'>
-            Please login to edit a signal
+            Please login to edit a trend
           </h6>
           <SignInButton />
         </div>

@@ -1,13 +1,11 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Input, Select } from 'antd';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useMsal } from '@azure/msal-react';
 import {
   API_ACCESS_TOKEN,
   LOCATION,
@@ -64,7 +62,8 @@ const FileAttachmentButton = styled.input`
 
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal } = props;
-  const { userName } = useContext(Context);
+  const { accounts, instance } = useMsal();
+  const { userName, role } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
@@ -127,30 +126,23 @@ export function SignalEntryFormEl(props: Props) {
           },
         },
       )
-      .then((response: any) => {
+      .then((response: AxiosResponse) => {
         setTrendsList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
         );
       });
   }, []);
-  function isValidUrl(url?: string) {
-    if (!url) return false;
-    try {
-      // eslint-disable-next-line no-new
-      new URL(url);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileInputRef = useRef<any>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileSelect = (event: any) => {
     if (event.target.files) {
       if (event.target.files[0]) {
         const reader = new FileReader();
         reader.readAsBinaryString(event.target.files[0]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         reader.onloadend = (e: any) => {
           const base64String = btoa(e.target.result);
           setSelectedFile(
@@ -164,7 +156,7 @@ export function SignalEntryFormEl(props: Props) {
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal headline*</h5>
+        <h5 className='undp-typography'>Signal Title*</h5>
         <Input
           className='undp-input'
           placeholder='Enter signal headline (max 50 characters)'
@@ -179,17 +171,16 @@ export function SignalEntryFormEl(props: Props) {
           style={{ color: 'var(--gray-500)' }}
         >
           Useful headlines are clear, concise and can stand alone as a simple
-          description of the Signal. {headline ? 100 - headline.length : 100}{' '}
+          description of the signal. {headline ? 100 - headline.length : 100}{' '}
           characters left
         </p>
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Link to Source Material*</h5>
+          <h5 className='undp-typography'>Source Material*</h5>
           <Input
             className='undp-input'
-            placeholder='Enter source url'
-            status={sourceLink ? (isValidUrl(sourceLink) ? '' : 'error') : ''}
+            placeholder='Enter source material'
             onChange={d => {
               setSourceLink(d.target.value);
             }}
@@ -199,7 +190,8 @@ export function SignalEntryFormEl(props: Props) {
             className='undp-typography margin-top-02 margin-bottom-00'
             style={{ color: 'var(--gray-500)' }}
           >
-            Primary source URL for this signal.
+            If no URL is available, provide description of source - e.g., in a
+            meeting with Minister X; or taxi in country X
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
@@ -226,6 +218,7 @@ export function SignalEntryFormEl(props: Props) {
           <Input.TextArea
             className='undp-input'
             placeholder='Signal description'
+            maxLength={200}
             status={description ? (description.length > 30 ? '' : 'error') : ''}
             onChange={e => {
               setDescription(e.target.value);
@@ -237,7 +230,8 @@ export function SignalEntryFormEl(props: Props) {
             style={{ color: 'var(--gray-500)' }}
           >
             Keep this description concise and think about using commonly used
-            terms and clear language. Min 30 characters required
+            terms and clear language. Min 30 characters required.{' '}
+            {description ? 200 - description.length : 200} characters left
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
@@ -259,7 +253,7 @@ export function SignalEntryFormEl(props: Props) {
         </div>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>STEEP+V Category*</h5>
+        <h5 className='undp-typography'>STEEP+V*</h5>
         <Select
           className='undp-select'
           placeholder='Select STEEP+V'
@@ -308,7 +302,7 @@ export function SignalEntryFormEl(props: Props) {
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Keywords*</h5>
         <p className='label'>
-          Add keywords for this signal. Max 3 keywords allowed.
+          Add relevant keywords for this signal. Max 3 keywords allowed.
         </p>
         <div className='flex-div'>
           <Input
@@ -339,7 +333,9 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div flex-wrap'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Primary Signature Solution*</h5>
+          <h5 className='undp-typography'>
+            Primary Signature Solution/Enabler*
+          </h5>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
@@ -356,7 +352,9 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Secondary Signature Solution</h5>
+          <h5 className='undp-typography'>
+            Secondary Signature Solution/Enabler
+          </h5>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
@@ -375,7 +373,7 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
-          <h5 className='undp-typography'>SDG</h5>
+          <h5 className='undp-typography'>SDGs</h5>
           <Select
             className='undp-select'
             mode='multiple'
@@ -398,69 +396,73 @@ export function SignalEntryFormEl(props: Props) {
             className='undp-typography margin-top-02 margin-bottom-00'
             style={{ color: 'var(--gray-500)' }}
           >
-            Which SDG does this signal most align with
+            Which SDG is it most closely connected to?
           </p>
         </div>
       </div>
-      <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Add signal to trends</h5>
-        {trendsList ? (
-          <>
-            {selectedTrendsList?.map((d, i) => (
-              <div
-                className='flex-div flex-space-between flex-vert-align-center'
-                key={i}
+      {role === 'Curator' || role === 'Admin' ? (
+        <div className='margin-bottom-07'>
+          <h5 className='undp-typography'>Link signal to trend(s)</h5>
+          {trendsList ? (
+            <>
+              {selectedTrendsList?.map((d, i) => (
+                <div
+                  className='flex-div flex-space-between flex-vert-align-center'
+                  key={i}
+                  style={{
+                    width: 'calc(100% - 2rem)',
+                    padding: 'var(--spacing-05)',
+                    backgroundColor: 'var(--gray-200)',
+                    border: '1px solid var(--gray-400)',
+                    marginBottom: 'var(--spacing-05)',
+                  }}
+                >
+                  <p className='undp-typography margin-bottom-00'>
+                    {
+                      // eslint-disable-next-line no-underscore-dangle
+                      trendsList[trendsList.findIndex(el => el._id === d)]
+                        .headline
+                    }
+                  </p>
+                  <button
+                    onClick={() => {
+                      const arr = [
+                        ...selectedTrendsList.filter(el => el !== d),
+                      ];
+                      setSelectedTrendsList(arr);
+                    }}
+                    type='button'
+                    className='undp-button button-tertiary padding-bottom-00 padding-top-00'
+                  >
+                    <img
+                      src='https://design.undp.org/icons/times.svg'
+                      alt='close-icon'
+                    />
+                  </button>
+                </div>
+              ))}
+              <button
+                className='undp-button button-tertiary'
+                type='button'
+                onClick={() => {
+                  setTrendModal(true);
+                }}
                 style={{
-                  width: 'calc(100% - 2rem)',
+                  backgroundColor: 'var(--gray-300)',
                   padding: 'var(--spacing-05)',
-                  backgroundColor: 'var(--gray-200)',
-                  border: '1px solid var(--gray-400)',
-                  marginBottom: 'var(--spacing-05)',
                 }}
               >
-                <p className='undp-typography margin-bottom-00'>
-                  {
-                    // eslint-disable-next-line no-underscore-dangle
-                    trendsList[trendsList.findIndex(el => el._id === d)]
-                      .headline
-                  }
-                </p>
-                <button
-                  onClick={() => {
-                    const arr = [...selectedTrendsList.filter(el => el !== d)];
-                    setSelectedTrendsList(arr);
-                  }}
-                  type='button'
-                  className='undp-button button-tertiary padding-bottom-00 padding-top-00'
-                >
-                  <img
-                    src='https://design.undp.org/icons/times.svg'
-                    alt='close-icon'
-                  />
-                </button>
-              </div>
-            ))}
-            <button
-              className='undp-button button-tertiary'
-              type='button'
-              onClick={() => {
-                setTrendModal(true);
-              }}
-              style={{
-                backgroundColor: 'var(--gray-300)',
-                padding: 'var(--spacing-05)',
-              }}
-            >
-              Add trend
-            </button>
-          </>
-        ) : (
-          <p className='undp-typography'>Loading trends...</p>
-        )}
-      </div>
+                Add trend
+              </button>
+            </>
+          ) : (
+            <p className='undp-typography'>Loading trends...</p>
+          )}
+        </div>
+      ) : null}
       {updateSignal ? (
         <div className='margin-bottom-07'>
-          <h5 className='undp-typography'>Status of Signal</h5>
+          <h5 className='undp-typography'>Status of the signal</h5>
           <Select
             className='undp-select'
             placeholder='Select Status'
@@ -482,7 +484,7 @@ export function SignalEntryFormEl(props: Props) {
           <button
             className={`${
               !headline ||
-              !isValidUrl(sourceLink) ||
+              !sourceLink ||
               !description ||
               description?.length < 30 ||
               !steep ||
@@ -498,7 +500,7 @@ export function SignalEntryFormEl(props: Props) {
             type='button'
             disabled={
               !headline ||
-              !isValidUrl(sourceLink) ||
+              !sourceLink ||
               !description ||
               description?.length < 30 ||
               !steep ||
@@ -512,40 +514,49 @@ export function SignalEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              axios({
-                method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update?modified_by=${userName}`,
-                data: {
-                  attachments: selectedFile || null,
-                  created_by: updateSignal.created_by,
-                  description,
-                  headline,
-                  keywords: [keyword1, keyword2, keyword3].filter(
-                    d => d !== null && d !== undefined,
-                  ),
-                  location,
-                  relevance,
-                  status: signalStatus,
-                  sdgs: sdg || [],
-                  signature_primary: primarySS,
-                  signature_secondary: secondarySS,
-                  steep,
-                  url: sourceLink,
-                  connected_trends: selectedTrendsList,
-                  _id: updateSignal._id,
-                },
-                headers: {
-                  'Content-Type': 'application/json',
-                  access_token: API_ACCESS_TOKEN,
-                },
-              })
-                .then(() => {
-                  setButtonDisabled(false);
-                  navigate(`/signals/${updateSignal._id}`);
-                })
-                .catch(err => {
-                  setButtonDisabled(false);
-                  setSubmittingError(err.message);
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios({
+                    method: 'put',
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
+                    data: {
+                      attachments: selectedFile || null,
+                      created_by: updateSignal.created_by,
+                      description,
+                      headline,
+                      keywords: [keyword1, keyword2, keyword3].filter(
+                        d => d !== null && d !== undefined,
+                      ),
+                      location,
+                      relevance,
+                      status: signalStatus,
+                      sdgs: sdg || [],
+                      signature_primary: primarySS,
+                      signature_secondary: secondarySS,
+                      steep,
+                      url: sourceLink,
+                      connected_trends: selectedTrendsList,
+                      _id: updateSignal._id,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessTokenResponse.accessToken,
+                    },
+                  })
+                    .then(() => {
+                      setButtonDisabled(false);
+                      navigate(`/signals/${updateSignal._id}`);
+                    })
+                    .catch(err => {
+                      setButtonDisabled(false);
+                      setSubmittingError(err.message);
+                    });
                 });
             }}
           >
@@ -555,7 +566,7 @@ export function SignalEntryFormEl(props: Props) {
           <button
             className={`${
               !headline ||
-              !isValidUrl(sourceLink) ||
+              !sourceLink ||
               !description ||
               description?.length < 30 ||
               !steep ||
@@ -571,7 +582,7 @@ export function SignalEntryFormEl(props: Props) {
             type='button'
             disabled={
               !headline ||
-              !isValidUrl(sourceLink) ||
+              !sourceLink ||
               !description ||
               description?.length < 30 ||
               !steep ||
@@ -585,39 +596,48 @@ export function SignalEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              axios({
-                method: 'post',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
-                data: {
-                  attachments: selectedFile,
-                  created_by: userName,
-                  status: 'New',
-                  description,
-                  headline,
-                  keywords: [keyword1, keyword2, keyword3].filter(
-                    d => d !== null && d !== undefined,
-                  ),
-                  location,
-                  relevance,
-                  sdgs: sdg || [],
-                  signature_primary: primarySS,
-                  signature_secondary: secondarySS,
-                  steep,
-                  url: sourceLink,
-                  connected_trends: selectedTrendsList,
-                },
-                headers: {
-                  'Content-Type': 'application/json',
-                  access_token: API_ACCESS_TOKEN,
-                },
-              })
-                .then(() => {
-                  setButtonDisabled(false);
-                  navigate('/signals');
-                })
-                .catch(err => {
-                  setButtonDisabled(false);
-                  setSubmittingError(err.message);
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios({
+                    method: 'post',
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                    data: {
+                      attachments: selectedFile,
+                      created_by: userName,
+                      status: 'New',
+                      description,
+                      headline,
+                      keywords: [keyword1, keyword2, keyword3].filter(
+                        d => d !== null && d !== undefined,
+                      ),
+                      location,
+                      relevance,
+                      sdgs: sdg || [],
+                      signature_primary: primarySS,
+                      signature_secondary: secondarySS,
+                      steep,
+                      url: sourceLink,
+                      connected_trends: selectedTrendsList,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessTokenResponse.accessToken,
+                    },
+                  })
+                    .then(() => {
+                      setButtonDisabled(false);
+                      navigate('/signals');
+                    })
+                    .catch(err => {
+                      setButtonDisabled(false);
+                      setSubmittingError(err.message);
+                    });
                 });
             }}
           >

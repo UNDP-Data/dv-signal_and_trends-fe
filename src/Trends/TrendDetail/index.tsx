@@ -1,15 +1,15 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { SignalDataType, TrendDataType } from '../Types';
-import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../Constants';
-import { SignalCard } from '../Components/SignalCard';
-import { SignInButton } from '../Components/SignInButton';
-import Context from '../Context/Context';
+import { SignalDataType, TrendDataType } from '../../Types';
+import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../../Constants';
+import { SignalCard } from '../../Components/SignalCard';
+import { SignInButton } from '../../Components/SignInButton';
+import Context from '../../Context/Context';
 
 export function TrendDetail() {
   const [data, setData] = useState<TrendDataType | undefined>(undefined);
@@ -28,8 +28,7 @@ export function TrendDetail() {
           },
         },
       )
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .then((response: any) => {
+      .then((response: AxiosResponse) => {
         setData(response.data[0]);
         if (response.data[0].connected_signals?.length) {
           const signalIds = response.data[0].connected_signals
@@ -44,8 +43,7 @@ export function TrendDetail() {
                 },
               },
             )
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .then((res: any) => {
+            .then((res: AxiosResponse) => {
               setConnectedSignal(res.data);
             });
         } else {

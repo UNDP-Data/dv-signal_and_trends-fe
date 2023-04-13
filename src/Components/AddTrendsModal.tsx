@@ -1,12 +1,16 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/no-unstable-nested-components */
-import { Collapse, Input, Modal, Select } from 'antd';
-import axios from 'axios';
+import { Collapse, Modal, Pagination, PaginationProps, Select } from 'antd';
+import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
-import { TrendDataType } from '../Types';
+import {
+  HorizonList,
+  RatingList,
+  TrendDataType,
+  TrendFiltersDataType,
+} from '../Types';
 
 interface Props {
   setTrendModal: (_d: boolean) => void;
@@ -28,53 +32,90 @@ const RadioOutline = styled.div`
 
 export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
-  const [filteredHorizons, setFilteredHorizons] =
-    useState<string>('All Horizons');
-  const [search, setSearch] = useState<string | undefined>(undefined);
-  const [filteredImpactRating, setFilteredImpactRating] =
-    useState<string>('All Impact Ratings');
+  const [paginationValue, setPaginationValue] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [totalNo, setTotalNo] = useState(0);
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
-  const [filteredTrendsList, setFilteredTrendsList] = useState<TrendDataType[]>(
-    [],
-  );
   const [loading, setLoading] = useState(true);
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    _current,
+    size,
+  ) => {
+    setPageSize(size);
+    setPaginationValue(1);
+  };
+  const [filters, setFilters] = useState<TrendFiltersDataType>({
+    impact: 'All Ratings',
+    horizon: 'All Horizons',
+  });
   useEffect(() => {
+    setLoading(true);
+    const horizonQueryParameter =
+      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+    const ratingQueryParameter =
+      filters.impact === 'All Ratings'
+        ? ''
+        : `&impact_rating=${filters.impact}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
+          pageSize * (paginationValue - 1)
+        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
           },
         },
       )
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .then((response: any) => {
+      .then((response: AxiosResponse) => {
         setTrendsList(
           sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
         );
         setLoading(false);
       });
-  }, []);
+  }, [paginationValue, pageSize]);
   useEffect(() => {
-    const DataFilterByHorizon =
-      filteredHorizons === 'All Horizons'
-        ? trendsList
-        : trendsList.filter(d => d.time_horizon === filteredHorizons);
-    const DataFilterByIR =
-      filteredImpactRating === 'All Impact Ratings'
-        ? DataFilterByHorizon
-        : DataFilterByHorizon.filter(
-            d => `${d.impact_rating}` === filteredImpactRating,
-          );
-    const DataFilteredBySearch = !search
-      ? DataFilterByIR
-      : DataFilterByIR.filter(d =>
-          d.headline.toLowerCase().includes(search.toLowerCase()),
-        );
-    setFilteredTrendsList(DataFilteredBySearch);
-    setLoading(false);
-  }, [filteredHorizons, search, filteredImpactRating, trendsList]);
+    setLoading(true);
+    const horizonQueryParameter =
+      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+    const ratingQueryParameter =
+      filters.impact === 'All Ratings'
+        ? ''
+        : `&impact_rating=${filters.impact}`;
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((countResponse: AxiosResponse) => {
+        setTotalNo(countResponse.data);
+        if (countResponse.data === 0) {
+          setPaginationValue(1);
+          setTrendsList([]);
+        } else {
+          axios
+            .get(
+              `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+              {
+                headers: {
+                  access_token: API_ACCESS_TOKEN,
+                },
+              },
+            )
+            .then((response: AxiosResponse) => {
+              setPaginationValue(1);
+              setTrendsList(
+                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+              );
+              setLoading(false);
+            });
+        }
+      });
+  }, [filters]);
   return (
     <Modal
       className='undp-modal'
@@ -94,14 +135,19 @@ export function AddTrendsModal(props: Props) {
       <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
         <Select
           className='undp-select'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
+          style={{ width: 'calc(50% - 0.667rem)' }}
           placeholder='Please select'
           defaultValue='All Horizons'
-          value={filteredHorizons}
+          value={filters.horizon}
           showSearch
           allowClear
+          disabled={loading}
           onChange={values => {
-            setFilteredHorizons(values || 'All Horizons');
+            const val = values ? (`${values}` as HorizonList) : 'All Horizons';
+            setFilters({
+              ...filters,
+              horizon: val,
+            });
           }}
           clearIcon={<div className='clearIcon' />}
         >
@@ -116,44 +162,37 @@ export function AddTrendsModal(props: Props) {
         </Select>
         <Select
           className='undp-select'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
+          style={{ width: 'calc(50% - 0.667rem)' }}
           placeholder='Please select'
-          defaultValue='All Impact Ratings'
-          value={filteredImpactRating}
+          defaultValue='All Ratings'
+          value={filters.impact}
           showSearch
+          disabled={loading}
           allowClear
           onChange={values => {
-            const val = values ? `${values}` : undefined;
-            setFilteredImpactRating(val || 'All Impact Ratings');
+            const val = values ? (`${values}` as RatingList) : 'All Ratings';
+            setFilters({
+              ...filters,
+              impact: val,
+            });
           }}
           clearIcon={<div className='clearIcon' />}
         >
-          <Select.Option
-            className='undp-select-option'
-            key='All Impact Ratings'
-          >
-            All Impact Ratings
+          <Select.Option className='undp-select-option' key='All Ratings'>
+            All Ratings
           </Select.Option>
-          {[1, 2, 3, 4, 5].map(d => (
+          {['1', '2', '3', '4', '5'].map(d => (
             <Select.Option className='undp-select-option' key={d}>
               {d}
             </Select.Option>
           ))}
         </Select>
-        <Input
-          className='undp-input'
-          placeholder='Search a signal'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
-          onChange={e => {
-            setSearch(e.target.value);
-          }}
-        />
       </div>
       {loading ? (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
         </div>
-      ) : (
+      ) : trendsList.length > 0 ? (
         <div className='margin-bottom-09'>
           <Collapse
             expandIconPosition='start'
@@ -166,7 +205,7 @@ export function AddTrendsModal(props: Props) {
               />
             )}
           >
-            {filteredTrendsList?.map((d, i) => (
+            {trendsList.map((d, i) => (
               <Collapse.Panel
                 key={i}
                 header={d.headline}
@@ -212,7 +251,34 @@ export function AddTrendsModal(props: Props) {
             ))}
           </Collapse>
         </div>
+      ) : (
+        <h5
+          className='undp-typography bold'
+          style={{
+            backgroundColor: 'var(--gray-200)',
+            textAlign: 'center',
+            padding: 'var(--spacing-07)',
+            width: 'calc(100% - 4rem)',
+            border: '1px solid var(--gray-400)',
+          }}
+        >
+          No signals available matching your criteria
+        </h5>
       )}
+      <div className='flex-div flex-hor-align-center margin-bottom-07'>
+        <Pagination
+          className='undp-pagination'
+          onChange={e => {
+            setPaginationValue(e);
+          }}
+          defaultCurrent={1}
+          current={paginationValue}
+          total={totalNo}
+          pageSize={pageSize}
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+        />
+      </div>
       <button
         className='undp-button button-secondary button-arrow'
         type='button'

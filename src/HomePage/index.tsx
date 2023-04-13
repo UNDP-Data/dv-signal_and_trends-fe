@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -47,12 +46,20 @@ export function HomePage() {
           },
         },
       )
-      .then((response: any) => {
-        setSignalList(
-          sortBy(response.data, d => Date.parse(d.created_at))
-            .reverse()
-            .filter((_d, i) => i < 5),
-        );
+      .then((response: AxiosResponse) => {
+        if (response) {
+          setSignalList(
+            sortBy(response.data, d => Date.parse(d.created_at))
+              .reverse()
+              .filter((_d, i) => i < 5),
+          );
+        }
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((err: any) => {
+        if (err.response?.data.detail === 'No signal matches the parameters.') {
+          setSignalList([]);
+        }
       });
   }, []);
   useEffect(() => {
@@ -65,27 +72,34 @@ export function HomePage() {
           },
         },
       )
-      .then((response: any) => {
-        setTrendList(
-          sortBy(response.data, d => Date.parse(d.created_at))
-            .reverse()
-            .filter((_d, i) => i < 5),
-        );
+      .then((response: AxiosResponse) => {
+        if (response) {
+          setTrendList(
+            sortBy(response.data, d => Date.parse(d.created_at))
+              .reverse()
+              .filter((_d, i) => i < 5),
+          );
+        }
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((err: any) => {
+        if (err.response?.data.detail === 'No trend matches the parameters.') {
+          setTrendList([]);
+        }
       });
   }, []);
   return (
     <>
       <HeroImageEl className='undp-hero-image'>
         <div className='max-width'>
-          <h1 className='undp-typography'>UNDP Signals Spotlight</h1>
+          <h1 className='undp-typography'>
+            UNDP Future Trends and Signals System
+          </h1>
           <h5 className='undp-typography'>
-            This Signals Spotlight – the first of its kind for UNDP – is part of
-            our effort to become more agile and anticipatory. It draws on our
-            prototype Future Trends and Signals System, a growing network of
-            UNDP staff who are continuously scanning their horizons for signals
-            of change. The Spotlight highlights some of their most interesting
-            observations, sketches connections and patterns, and asks what these
-            might mean for the future of development.
+            The Future Trends and Signals System is a participatory foresight
+            tool that captures signals of change noticed across UNDP, and
+            identifies the trends emerging – helping us all make stronger, more
+            future-aware decisions.
           </h5>
         </div>
       </HeroImageEl>

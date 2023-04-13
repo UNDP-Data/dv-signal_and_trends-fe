@@ -1,26 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { PublicClientApplication } from '@azure/msal-browser';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { Modal, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useEffect, useReducer, useMemo, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { AddNewSignalEl, AddNewTrendEl } from './AddNew';
 import { AdminPanel } from './AdminPanel';
 import { Footer } from './Components/FooterEl';
 import { Header } from './Components/HeaderEl';
 import { SignUpButton } from './Components/SignUpButton';
 import { msalConfig } from './Config';
-import { API_ACCESS_TOKEN, UNITS } from './Constants';
+import { UNITS } from './Constants';
 import Context from './Context/Context';
 import Reducer from './Context/Reducer';
-import { EditSignal } from './EditSignal';
-import { EditTrend } from './EditTrend';
+import { EditSignal } from './Signals/EditSignal';
+import { EditTrend } from './Trends/EditTrend';
 import { HomePage } from './HomePage';
-import { SignalDetail } from './SignalDetail';
+import { SignalDetail } from './Signals/SignalDetail';
 import { SignalsListing } from './Signals';
-import { TrendDetail } from './TrendDetail';
+import { TrendDetail } from './Trends/TrendDetail';
 import { TrendsListing } from './Trends';
 
 function signOutClickHandler() {
@@ -72,36 +70,45 @@ function App() {
       payload: d,
     });
   };
-  const { accounts } = useMsal();
+  const { accounts, instance } = useMsal();
   useEffect(() => {
     if (isAuthenticated) {
       const usernameFromMSAL = accounts[0].username;
       const nameFromMSAL = accounts[0].name;
       setUsername(usernameFromMSAL);
       setName(nameFromMSAL);
-      axios
-        .get(
-          `https://signals-and-trends-api.azurewebsites.net/v1/users/fetch?email=${usernameFromMSAL}`,
-          {
-            headers: {
-              access_token: API_ACCESS_TOKEN,
-            },
-          },
-        )
-        .then((res: AxiosResponse) => {
-          updateUserName(res.data.email);
-          updateName(res.data.name);
-          updateUnit(res.data.unit);
-          updateRole(res.data.role);
-        })
-        .catch((err: AxiosError) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          if ((err.response?.data as any).detail === 'User not found.') {
-            setOpenModal(true);
-          }
+      const accessTokenRequest = {
+        scopes: ['user.read'],
+        account: accounts[0],
+      };
+      instance
+        .acquireTokenSilent(accessTokenRequest)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((accessTokenResponse: any) => {
+          axios
+            .get(
+              'https://signals-and-trends-api.azurewebsites.net/v1/users/me',
+              {
+                headers: {
+                  access_token: accessTokenResponse.accessToken,
+                },
+              },
+            )
+            .then((res: AxiosResponse) => {
+              updateUserName(res.data.email);
+              updateName(res.data.name);
+              updateUnit(res.data.unit);
+              updateRole(res.data.role);
+            })
+            .catch((err: AxiosError) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if ((err.response?.data as any).detail === 'User not found.') {
+                setOpenModal(true);
+              }
+            });
         });
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, instance]);
   const contextValue = useMemo(
     () => ({
       ...state,

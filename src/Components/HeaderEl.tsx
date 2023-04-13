@@ -77,7 +77,7 @@ export function Header(props: Props) {
                 color: 'var(--black)',
               }}
             >
-              Signal and Trends
+              UNDP Future Trends and Signals System
             </NavLink>
           </div>
         </div>

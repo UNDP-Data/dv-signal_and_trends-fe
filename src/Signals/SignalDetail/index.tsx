@@ -1,22 +1,32 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { SignalDataType, TrendDataType } from '../Types';
+import { SignalDataType, TrendDataType } from '../../Types';
 import {
   API_ACCESS_TOKEN,
   MONTHS,
   SDGCOLOR,
   SSCOLOR,
   STEEPVCOLOR,
-} from '../Constants';
-import { TrendCard } from '../Components/TrendCard';
-import { SignInButton } from '../Components/SignInButton';
-import Context from '../Context/Context';
+} from '../../Constants';
+import { TrendCard } from '../../Components/TrendCard';
+import { SignInButton } from '../../Components/SignInButton';
+import Context from '../../Context/Context';
 
+function isValidUrl(url?: string) {
+  if (!url) return false;
+  try {
+    // eslint-disable-next-line no-new
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 export function SignalDetail() {
   const [data, setData] = useState<SignalDataType | undefined>(undefined);
   const [connectedTrends, setConnectedTrends] = useState<
@@ -34,8 +44,7 @@ export function SignalDetail() {
           },
         },
       )
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .then((response: any) => {
+      .then((response: AxiosResponse) => {
         setData(response.data[0]);
         if (response.data[0].connected_trends?.length) {
           const trendsIds = response.data[0].connected_trends
@@ -50,8 +59,7 @@ export function SignalDetail() {
                 },
               },
             )
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .then((res: any) => {
+            .then((res: AxiosResponse) => {
               setConnectedTrends(res.data);
             });
         } else {
@@ -186,7 +194,9 @@ export function SignalDetail() {
                 {data.signature_primary}
               </div>
             ) : null}
-            {data.signature_secondary !== '' && data.signature_secondary ? (
+            {data.signature_secondary !== '' &&
+            data.signature_secondary &&
+            data.signature_secondary !== data.signature_primary ? (
               <div
                 className='undp-chip'
                 style={{
@@ -236,14 +246,18 @@ export function SignalDetail() {
           <p className='undp-typography margin-top-05'>{data.relevance}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Source</h6>
-          <a
-            href={data.url}
-            target='_blank'
-            rel='noreferrer'
-            className='undp-style'
-          >
-            {data.url}
-          </a>
+          {isValidUrl(data.url) ? (
+            <a
+              href={data.url}
+              target='_blank'
+              rel='noreferrer'
+              className='undp-style'
+            >
+              {data.url}
+            </a>
+          ) : (
+            <p className='undp-typography margin-top-05'>{data.url}</p>
+          )}
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
           {connectedTrends ? (

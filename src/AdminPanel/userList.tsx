@@ -1,9 +1,9 @@
+import { useMsal } from '@azure/msal-react';
 import { Modal, Radio } from 'antd';
 import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { API_ACCESS_TOKEN } from '../Constants';
 import { UserDataType } from '../Types';
 
 interface Props {
@@ -95,24 +95,34 @@ export function UserListEl(props: Props) {
           <Radio.Button value='Curator'>Curator</Radio.Button>
           <Radio.Button value='Admin'>Admin</Radio.Button>
         </Radio.Group>
-        <div className='flex-div flex-wrap flex-space-between margin-top-09'>
+        <div className='flex-div flex-wrap flex-space-between margin-top-05'>
           <button
             type='button'
             className='undp-button button-primary button-arrow'
             onClick={() => {
-              axios
-                .get(
-                  `https://signals-and-trends-api.azurewebsites.net/v1/users/assign?email=${selectedUser?.email}&role=${role}`,
-                  {
-                    headers: {
-                      access_token: API_ACCESS_TOKEN,
-                    },
-                  },
-                )
-                .then(() => {
-                  setRole(undefined);
-                  setSelectedUser(undefined);
-                  navigate(0);
+              const { accounts, instance } = useMsal();
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios
+                    .get(
+                      `https://signals-and-trends-api.azurewebsites.net/v1/users/assign?email=${selectedUser?.email}&role=${role}`,
+                      {
+                        headers: {
+                          access_token: accessTokenResponse.accessToken,
+                        },
+                      },
+                    )
+                    .then(() => {
+                      setRole(undefined);
+                      setSelectedUser(undefined);
+                      navigate(0);
+                    });
                 });
             }}
           >

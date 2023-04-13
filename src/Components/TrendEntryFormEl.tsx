@@ -1,11 +1,10 @@
-/* eslint-disable no-underscore-dangle */
+import { useMsal } from '@azure/msal-react';
 import { Input, Select } from 'antd';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
-import Context from '../Context/Context';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
 
@@ -15,7 +14,7 @@ interface Props {
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { userName } = useContext(Context);
+  const { accounts, instance } = useMsal();
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -107,6 +106,7 @@ export function TrendEntryFormEl(props: Props) {
         <Input.TextArea
           className='undp-input'
           placeholder='Trend description'
+          maxLength={200}
           status={description ? (description.length > 30 ? '' : 'error') : ''}
           onChange={e => {
             setDescription(e.target.value);
@@ -118,7 +118,8 @@ export function TrendEntryFormEl(props: Props) {
           style={{ color: 'var(--gray-500)' }}
         >
           Keep this description concise and think about using commonly used
-          terms and clear language. Min 30 characters required
+          terms and clear language. Min 30 characters required.{' '}
+          {description ? 200 - description.length : 200} characters left
         </p>
       </div>
       <div className='margin-bottom-09'>
@@ -267,31 +268,39 @@ export function TrendEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              axios({
-                method: 'post',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
-                data: {
-                  created_by: userName,
-                  description,
-                  headline,
-                  statuses: 'Approved',
-                  impact_description: impactDescription,
-                  time_horizon: timeHorizon,
-                  impact_rating: impactRating,
-                  connected_signals: trendsSignal,
-                },
-                headers: {
-                  'Content-Type': 'application/json',
-                  access_token: API_ACCESS_TOKEN,
-                },
-              })
-                .then(() => {
-                  setButtonDisabled(false);
-                  navigate('/trends');
-                })
-                .catch(err => {
-                  setButtonDisabled(false);
-                  setSubmittingError(err.message);
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios({
+                    method: 'post',
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
+                    data: {
+                      description,
+                      headline,
+                      statuses: 'Approved',
+                      impact_description: impactDescription,
+                      time_horizon: timeHorizon,
+                      impact_rating: impactRating,
+                      connected_signals: trendsSignal,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessTokenResponse.accessToken,
+                    },
+                  })
+                    .then(() => {
+                      setButtonDisabled(false);
+                      navigate('/trends');
+                    })
+                    .catch(err => {
+                      setButtonDisabled(false);
+                      setSubmittingError(err.message);
+                    });
                 });
             }}
           >
@@ -336,32 +345,41 @@ export function TrendEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              axios({
-                method: 'put',
-                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/update?modified_by=${userName}`,
-                data: {
-                  created_by: updateTrend.created_by,
-                  description,
-                  headline,
-                  statuses: 'New',
-                  impact_description: impactDescription,
-                  time_horizon: timeHorizon,
-                  impact_rating: impactRating,
-                  connected_signals: trendsSignal,
-                  _id: updateTrend._id,
-                },
-                headers: {
-                  'Content-Type': 'application/json',
-                  access_token: API_ACCESS_TOKEN,
-                },
-              })
-                .then(() => {
-                  setButtonDisabled(false);
-                  navigate(`/trends/${updateTrend._id}`);
-                })
-                .catch(err => {
-                  setButtonDisabled(false);
-                  setSubmittingError(err.message);
+              const accessTokenRequest = {
+                scopes: ['user.read'],
+                account: accounts[0],
+              };
+              instance
+                .acquireTokenSilent(accessTokenRequest)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((accessTokenResponse: any) => {
+                  axios({
+                    method: 'put',
+                    url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/update',
+                    data: {
+                      created_by: updateTrend.created_by,
+                      description,
+                      headline,
+                      statuses: 'New',
+                      impact_description: impactDescription,
+                      time_horizon: timeHorizon,
+                      impact_rating: impactRating,
+                      connected_signals: trendsSignal,
+                      _id: updateTrend._id,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessTokenResponse.accessToken,
+                    },
+                  })
+                    .then(() => {
+                      setButtonDisabled(false);
+                      navigate(`/trends/${updateTrend._id}`);
+                    })
+                    .catch((err: AxiosError) => {
+                      setButtonDisabled(false);
+                      setSubmittingError(err.message);
+                    });
                 });
             }}
           >
