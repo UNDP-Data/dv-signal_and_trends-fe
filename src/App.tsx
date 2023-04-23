@@ -1,4 +1,7 @@
-import { PublicClientApplication } from '@azure/msal-browser';
+import {
+  AuthenticationResult,
+  PublicClientApplication,
+} from '@azure/msal-browser';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { Modal, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -20,6 +23,7 @@ import { SignalDetail } from './Signals/SignalDetail';
 import { SignalsListing } from './Signals';
 import { TrendDetail } from './Trends/TrendDetail';
 import { TrendsListing } from './Trends';
+import { MyDrafts } from './MyDrafts';
 
 function signOutClickHandler() {
   const msalInstance = new PublicClientApplication(msalConfig);
@@ -37,11 +41,14 @@ function App() {
   );
   const [username, setUsername] = useState<string | undefined>(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
+  const [expiresOn, setExpiresOn] = useState<Date | undefined>(undefined);
   const initialState = {
     userName: undefined,
     name: undefined,
     unit: undefined,
     role: undefined,
+    accessToken: undefined,
+    expiresOn: undefined,
   };
 
   const [state, dispatch] = useReducer(Reducer, initialState);
@@ -70,6 +77,18 @@ function App() {
       payload: d,
     });
   };
+  const updateAccessToken = (d?: string) => {
+    dispatch({
+      type: 'UPDATE_ACCESS_TOKEN',
+      payload: d,
+    });
+  };
+  const updateExpiresOn = (d: Date) => {
+    dispatch({
+      type: 'UPDATE_EXPIRES_ON',
+      payload: d,
+    });
+  };
   const { accounts, instance } = useMsal();
   useEffect(() => {
     if (isAuthenticated) {
@@ -83,8 +102,10 @@ function App() {
       };
       instance
         .acquireTokenSilent(accessTokenRequest)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((accessTokenResponse: any) => {
+        .then((accessTokenResponse: AuthenticationResult) => {
+          updateAccessToken(accessTokenResponse.accessToken);
+          setExpiresOn(accessTokenResponse.expiresOn as Date);
+          updateExpiresOn(accessTokenResponse.expiresOn as Date);
           axios
             .get(
               'https://signals-and-trends-api.azurewebsites.net/v1/users/me',
@@ -107,6 +128,23 @@ function App() {
               }
             });
         });
+
+      setInterval(async () => {
+        const now = new Date().getTime() / 1000;
+        if (expiresOn && expiresOn.getTime() / 1000 < now) {
+          try {
+            const refreshedAccessToken = await instance.acquireTokenSilent({
+              ...accessTokenRequest,
+              forceRefresh: true,
+            });
+            updateAccessToken(refreshedAccessToken.accessToken);
+            setExpiresOn(refreshedAccessToken.expiresOn as Date);
+            updateExpiresOn(refreshedAccessToken.expiresOn as Date);
+          } catch (error) {
+            // eslint-disable-next-line no-console
+          }
+        }
+      }, 60000); // check every minute
     }
   }, [isAuthenticated, instance]);
   const contextValue = useMemo(
@@ -116,8 +154,18 @@ function App() {
       updateName,
       updateRole,
       updateUnit,
+      updateAccessToken,
+      updateExpiresOn,
     }),
-    [state, updateUserName, updateRole, updateUnit, updateName],
+    [
+      state,
+      updateUserName,
+      updateRole,
+      updateUnit,
+      updateName,
+      updateAccessToken,
+      updateExpiresOn,
+    ],
   );
   return (
     <Context.Provider value={contextValue}>
@@ -143,6 +191,7 @@ function App() {
             <Route path='/add-new-signal' element={<AddNewSignalEl />} />
             <Route path='/add-new-trend' element={<AddNewTrendEl />} />
             <Route path='/admin-panel' element={<AdminPanel />} />
+            <Route path='/my-drafts' element={<MyDrafts />} />
           </Routes>
         </div>
         <Footer />

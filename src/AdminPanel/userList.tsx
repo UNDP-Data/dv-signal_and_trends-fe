@@ -1,10 +1,10 @@
-import { useMsal } from '@azure/msal-react';
 import { Modal, Radio } from 'antd';
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserDataType } from '../Types';
+import Context from '../Context/Context';
 
 interface Props {
   userList: UserDataType[];
@@ -20,6 +20,7 @@ const ListRow = styled.div`
 
 export function UserListEl(props: Props) {
   const { userList } = props;
+  const { accessToken } = useContext(Context);
   const [selectedUser, setSelectedUser] = useState<undefined | UserDataType>(
     undefined,
   );
@@ -100,29 +101,19 @@ export function UserListEl(props: Props) {
             type='button'
             className='undp-button button-primary button-arrow'
             onClick={() => {
-              const { accounts, instance } = useMsal();
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
-                  axios
-                    .get(
-                      `https://signals-and-trends-api.azurewebsites.net/v1/users/assign?email=${selectedUser?.email}&role=${role}`,
-                      {
-                        headers: {
-                          access_token: accessTokenResponse.accessToken,
-                        },
-                      },
-                    )
-                    .then(() => {
-                      setRole(undefined);
-                      setSelectedUser(undefined);
-                      navigate(0);
-                    });
+              axios
+                .get(
+                  `https://signals-and-trends-api.azurewebsites.net/v1/users/assign?email=${selectedUser?.email}&role=${role}`,
+                  {
+                    headers: {
+                      access_token: accessToken,
+                    },
+                  },
+                )
+                .then(() => {
+                  setRole(undefined);
+                  setSelectedUser(undefined);
+                  navigate(0);
                 });
             }}
           >

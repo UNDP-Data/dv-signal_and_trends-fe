@@ -10,7 +10,7 @@ export function CardList(props: Props) {
   return (
     <>
       {data.map((d, i) => (
-        <SignalCard data={d} key={i} />
+        <SignalCard data={d} key={i} isDraft={d.status === 'Draft'} />
       ))}
     </>
   );

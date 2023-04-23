@@ -33,14 +33,14 @@ export function SignalDetail() {
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const { role } = useContext(Context);
+  const { role, accessToken } = useContext(Context);
   useEffect(() => {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${id}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -66,7 +66,7 @@ export function SignalDetail() {
           setConnectedTrends([]);
         }
       });
-  }, [id]);
+  }, [id, accessToken]);
   return (
     <div
       className='margin-top-13 padding-top-09'

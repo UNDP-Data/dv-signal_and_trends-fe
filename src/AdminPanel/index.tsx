@@ -4,7 +4,6 @@ import axios, { AxiosResponse } from 'axios';
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
-  useMsal,
 } from '@azure/msal-react';
 import { Pagination } from 'antd';
 import { SignInButton } from '../Components/SignInButton';
@@ -13,63 +12,44 @@ import { UserDataType } from '../Types';
 import { UserListEl } from './userList';
 
 export function AdminPanel() {
-  const { role } = useContext(Context);
+  const { role, accessToken } = useContext(Context);
   const [userList, setUserList] = useState<UserDataType[]>([]);
-  const { accounts, instance } = useMsal();
   const [paginationValue, setPaginationValue] = useState(1);
   const [totalNo, setTotalNo] = useState(0);
   useEffect(() => {
     if (role === 'Admin') {
-      const accessTokenRequest = {
-        scopes: ['user.read'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(accessTokenRequest)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((accessTokenResponse: any) => {
-          axios
-            .get(
-              'https://signals-and-trends-api.azurewebsites.net/v1/users/count?roles=Admin&roles=Curator&roles=Visitor',
-              {
-                headers: {
-                  access_token: accessTokenResponse.accessToken,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setTotalNo(response.data);
-            });
+      axios
+        .get(
+          'https://signals-and-trends-api.azurewebsites.net/v1/users/count?roles=Admin&roles=Curator&roles=Visitor',
+          {
+            headers: {
+              access_token: accessToken,
+            },
+          },
+        )
+        .then((response: AxiosResponse) => {
+          setTotalNo(response.data);
         });
     }
-  }, []);
+  }, [accessToken]);
   useEffect(() => {
     if (role === 'Admin') {
-      const accessTokenRequest = {
-        scopes: ['user.read'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(accessTokenRequest)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((accessTokenResponse: any) => {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
-                50 * (paginationValue - 1)
-              }&limit=50&roles=Visitor&roles=Curator&roles=Admin`,
-              {
-                headers: {
-                  access_token: accessTokenResponse.accessToken,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setUserList(response.data);
-            });
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
+            50 * (paginationValue - 1)
+          }&limit=50&roles=Visitor&roles=Curator&roles=Admin`,
+          {
+            headers: {
+              access_token: accessToken,
+            },
+          },
+        )
+        .then((response: AxiosResponse) => {
+          setUserList(response.data);
         });
     }
-  }, [role, paginationValue]);
+  }, [role, paginationValue, accessToken]);
   const navigate = useNavigate();
   return (
     <div

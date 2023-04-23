@@ -9,6 +9,7 @@ interface Props {
 
 const TableRowEl = styled.div`
   cursor: pointer;
+  width: fit-content;
 `;
 
 const DescriptionEl = styled.div`
@@ -20,50 +21,51 @@ const DescriptionEl = styled.div`
   -webkit-box-orient: vertical;
 `;
 
+const CellDiv = styled.div`
+  padding: 0 2.5rem 0 0.75rem;
+`;
+
 export function ListView(props: Props) {
   const { data } = props;
   const navigate = useNavigate();
   return (
     <div
       style={{ width: '100%', overflow: 'auto', maxHeight: '70vh' }}
-      className='undp-scrollbar undp-table-head-sticky'
+      className='undp-scrollbar'
     >
-      <div className='undp-table-head'>
+      <div
+        className='undp-table-head undp-table-head-sticky'
+        style={{ minWidth: 'fit-content' }}
+      >
         <div
-          style={{ width: '20%', minWidth: '12.5rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ minWidth: '40%', width: '30rem' }}
+          className='undp-table-head-cell'
         >
-          Title
+          <CellDiv>Signal</CellDiv>
         </div>
         <div
-          style={{ width: '20%', minWidth: '30rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ minWidth: '20%', width: '20rem' }}
+          className='undp-table-head-cell'
         >
-          Description
+          <CellDiv>Keywords</CellDiv>
         </div>
         <div
-          style={{ width: '15%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ minWidth: '10%', width: '10rem' }}
+          className='undp-table-head-cell'
         >
-          Keywords
+          <CellDiv>STEEPV</CellDiv>
         </div>
         <div
-          style={{ width: '10%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ minWidth: '20%', width: '20rem' }}
+          className='undp-table-head-cell'
         >
-          STEEPV
+          <CellDiv>Signature solutions</CellDiv>
         </div>
         <div
-          style={{ width: '10%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ minWidth: '20%', width: '20rem' }}
+          className='undp-table-head-cell'
         >
-          Signature solutions
-        </div>
-        <div
-          style={{ width: '15%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
-        >
-          SDG
+          <CellDiv>SDG</CellDiv>
         </div>
       </div>
       {data.map((d, i) => (
@@ -73,134 +75,138 @@ export function ListView(props: Props) {
           key={i}
           onClick={() => {
             // eslint-disable-next-line no-underscore-dangle
-            navigate(`/trends/${d._id}`);
+            navigate(`/signals/${d._id}`);
           }}
+          style={{ width: 'fit-content' }}
         >
           <div
-            style={{
-              width: '20%',
-              minWidth: '12.5rem',
-              fontWeight: 'bold',
-            }}
+            style={{ minWidth: '40%', width: '30rem' }}
             className='undp-table-row-cell'
           >
-            {d.headline}
+            <CellDiv>
+              <h6 className='undp-typography margin-bottom-02'>{d.headline}</h6>
+              <DescriptionEl className='small-font'>
+                {d.description}
+              </DescriptionEl>
+            </CellDiv>
           </div>
           <div
-            style={{ width: '20%', minWidth: '30rem' }}
+            style={{ minWidth: '20%', width: '20rem' }}
             className='undp-table-row-cell'
           >
-            <DescriptionEl>{d.description}</DescriptionEl>
+            <CellDiv>
+              <div className='flex-div flex-wrap'>
+                {d.keywords?.map((el, j) => (
+                  <div className='undp-chip' key={`chip-${j}`}>
+                    {el}
+                  </div>
+                ))}
+              </div>
+            </CellDiv>
           </div>
           <div
-            style={{ width: '15%', minWidth: '10rem' }}
-            className='undp-table-row-cell'
-          >
-            <div className='flex-div flex-wrap'>
-              {d.keywords?.map((el, j) => (
-                <div className='undp-chip' key={`chip-${j}`}>
-                  {el}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div
-            style={{ width: '10%', minWidth: '10rem' }}
+            style={{ minWidth: '10%', width: '10rem' }}
             className='undp-table-row-cell'
           >
             {d.steep ? (
-              <div
-                className='undp-chip'
-                style={{
-                  color:
-                    STEEPVCOLOR.findIndex(
-                      el => el.value === d.steep?.split(' – ')[0],
-                    ) === -1
-                      ? 'var(--black)'
-                      : STEEPVCOLOR[
-                          STEEPVCOLOR.findIndex(
-                            el => el.value === d.steep?.split(' – ')[0],
-                          )
-                        ].textColor,
-                  fontWeight: 'bold',
-                }}
-              >
-                {d.steep?.split(' – ')[0]}
-              </div>
+              <CellDiv>
+                <div
+                  className='undp-chip'
+                  style={{
+                    color:
+                      STEEPVCOLOR.findIndex(
+                        el => el.value === d.steep?.split(' – ')[0],
+                      ) === -1
+                        ? 'var(--black)'
+                        : STEEPVCOLOR[
+                            STEEPVCOLOR.findIndex(
+                              el => el.value === d.steep?.split(' – ')[0],
+                            )
+                          ].textColor,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {d.steep?.split(' – ')[0]}
+                </div>
+              </CellDiv>
             ) : null}
           </div>
           <div
-            style={{ width: '10%', minWidth: '10rem' }}
+            style={{ minWidth: '20%', width: '20rem' }}
             className='undp-table-row-cell'
           >
-            <div className='flex-div flex-wrap'>
-              {d.signature_primary !== '' && d.signature_primary ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color:
-                      SSCOLOR.findIndex(
-                        el => el.value === d.signature_primary,
-                      ) !== -1
-                        ? SSCOLOR[
-                            SSCOLOR.findIndex(
-                              el => el.value === d.signature_primary,
-                            )
-                          ].textColor
-                        : 'var(--black)',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {d.signature_primary}
-                </div>
-              ) : null}
-              {d.signature_secondary !== '' &&
-              d.signature_secondary !== d.signature_primary ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color:
-                      SSCOLOR.findIndex(
-                        el => el.value === d.signature_secondary,
-                      ) !== -1
-                        ? SSCOLOR[
-                            SSCOLOR.findIndex(
-                              el => el.value === d.signature_secondary,
-                            )
-                          ].textColor
-                        : 'var(--black)',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {d.signature_secondary}
-                </div>
-              ) : null}
-            </div>
+            <CellDiv>
+              <div className='flex-div flex-wrap'>
+                {d.signature_primary !== '' && d.signature_primary ? (
+                  <div
+                    className='undp-chip'
+                    style={{
+                      color:
+                        SSCOLOR.findIndex(
+                          el => el.value === d.signature_primary,
+                        ) !== -1
+                          ? SSCOLOR[
+                              SSCOLOR.findIndex(
+                                el => el.value === d.signature_primary,
+                              )
+                            ].textColor
+                          : 'var(--black)',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {d.signature_primary}
+                  </div>
+                ) : null}
+                {d.signature_secondary !== '' &&
+                d.signature_secondary !== d.signature_primary ? (
+                  <div
+                    className='undp-chip'
+                    style={{
+                      color:
+                        SSCOLOR.findIndex(
+                          el => el.value === d.signature_secondary,
+                        ) !== -1
+                          ? SSCOLOR[
+                              SSCOLOR.findIndex(
+                                el => el.value === d.signature_secondary,
+                              )
+                            ].textColor
+                          : 'var(--black)',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {d.signature_secondary}
+                  </div>
+                ) : null}
+              </div>
+            </CellDiv>
           </div>
           <div
-            style={{ width: '15%', minWidth: '10rem' }}
+            style={{ minWidth: '20%', width: '20rem' }}
             className='undp-table-row-cell'
           >
-            <div className='flex-div flex-wrap'>
-              {d.sdgs ? (
-                <>
-                  {d.sdgs.map((sdg, j) => (
-                    <div
-                      key={j}
-                      className='undp-chip'
-                      style={{
-                        color:
-                          SDGCOLOR[SDGCOLOR.findIndex(el => el.value === sdg)]
-                            .textColor,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {sdg}
-                    </div>
-                  ))}
-                </>
-              ) : null}
-            </div>
+            <CellDiv>
+              <div className='flex-div flex-wrap'>
+                {d.sdgs ? (
+                  <>
+                    {d.sdgs.map((sdg, j) => (
+                      <div
+                        key={j}
+                        className='undp-chip'
+                        style={{
+                          color:
+                            SDGCOLOR[SDGCOLOR.findIndex(el => el.value === sdg)]
+                              .textColor,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {sdg}
+                      </div>
+                    ))}
+                  </>
+                ) : null}
+              </div>
+            </CellDiv>
           </div>
         </TableRowEl>
       ))}

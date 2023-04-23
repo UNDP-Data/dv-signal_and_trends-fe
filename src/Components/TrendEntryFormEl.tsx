@@ -1,12 +1,12 @@
-import { useMsal } from '@azure/msal-react';
 import { Input, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
+import Context from '../Context/Context';
 
 interface Props {
   updateTrend?: TrendDataType;
@@ -14,7 +14,7 @@ interface Props {
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { accounts, instance } = useMsal();
+  const { accessToken } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -268,39 +268,30 @@ export function TrendEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
-                  axios({
-                    method: 'post',
-                    url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
-                    data: {
-                      description,
-                      headline,
-                      statuses: 'Approved',
-                      impact_description: impactDescription,
-                      time_horizon: timeHorizon,
-                      impact_rating: impactRating,
-                      connected_signals: trendsSignal,
-                    },
-                    headers: {
-                      'Content-Type': 'application/json',
-                      access_token: accessTokenResponse.accessToken,
-                    },
-                  })
-                    .then(() => {
-                      setButtonDisabled(false);
-                      navigate('/trends');
-                    })
-                    .catch(err => {
-                      setButtonDisabled(false);
-                      setSubmittingError(err.message);
-                    });
+              axios({
+                method: 'post',
+                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
+                data: {
+                  description,
+                  headline,
+                  statuses: 'Approved',
+                  impact_description: impactDescription,
+                  time_horizon: timeHorizon,
+                  impact_rating: impactRating,
+                  connected_signals: trendsSignal,
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: accessToken,
+                },
+              })
+                .then(() => {
+                  setButtonDisabled(false);
+                  navigate('/trends');
+                })
+                .catch(err => {
+                  setButtonDisabled(false);
+                  setSubmittingError(err.message);
                 });
             }}
           >
@@ -345,41 +336,32 @@ export function TrendEntryFormEl(props: Props) {
             onClick={() => {
               setButtonDisabled(true);
               setSubmittingError(undefined);
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
-                  axios({
-                    method: 'put',
-                    url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/update',
-                    data: {
-                      created_by: updateTrend.created_by,
-                      description,
-                      headline,
-                      statuses: 'New',
-                      impact_description: impactDescription,
-                      time_horizon: timeHorizon,
-                      impact_rating: impactRating,
-                      connected_signals: trendsSignal,
-                      _id: updateTrend._id,
-                    },
-                    headers: {
-                      'Content-Type': 'application/json',
-                      access_token: accessTokenResponse.accessToken,
-                    },
-                  })
-                    .then(() => {
-                      setButtonDisabled(false);
-                      navigate(`/trends/${updateTrend._id}`);
-                    })
-                    .catch((err: AxiosError) => {
-                      setButtonDisabled(false);
-                      setSubmittingError(err.message);
-                    });
+              axios({
+                method: 'put',
+                url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/update',
+                data: {
+                  created_by: updateTrend.created_by,
+                  description,
+                  headline,
+                  statuses: 'New',
+                  impact_description: impactDescription,
+                  time_horizon: timeHorizon,
+                  impact_rating: impactRating,
+                  connected_signals: trendsSignal,
+                  _id: updateTrend._id,
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: accessToken,
+                },
+              })
+                .then(() => {
+                  setButtonDisabled(false);
+                  navigate(`/trends/${updateTrend._id}`);
+                })
+                .catch((err: AxiosError) => {
+                  setButtonDisabled(false);
+                  setSubmittingError(err.message);
                 });
             }}
           >

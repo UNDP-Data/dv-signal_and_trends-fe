@@ -1,4 +1,4 @@
-import { AuthenticatedTemplate, useMsal } from '@azure/msal-react';
+import { AuthenticatedTemplate } from '@azure/msal-react';
 import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ interface Props {
 
 export function SignOutButton(props: Props) {
   const { signOutClickHandler } = props;
-  const { name, userName, role, unit, updateName, updateUnit } =
+  const { name, userName, role, unit, updateName, updateUnit, accessToken } =
     useContext(Context);
   const [selectedUnit, setSelectedUnit] = useState(unit);
   const [nameOfUser, setNameOfUser] = useState(name);
@@ -24,6 +24,22 @@ export function SignOutButton(props: Props) {
   const items: MenuProps['items'] =
     role === 'Admin'
       ? [
+          {
+            key: '1',
+            label: (
+              <NavLink
+                to='/my-drafts'
+                style={{
+                  fontFamily: 'var(--fontFamily)',
+                  fontSize: '1.25rem',
+                  textTransform: 'none',
+                  padding: '0.75rem',
+                }}
+              >
+                My Drafts
+              </NavLink>
+            ),
+          },
           {
             key: '2',
             label: (
@@ -87,6 +103,22 @@ export function SignOutButton(props: Props) {
         ]
       : [
           {
+            key: '1',
+            label: (
+              <NavLink
+                to='/my-drafts'
+                style={{
+                  fontFamily: 'var(--fontFamily)',
+                  fontSize: '1.25rem',
+                  textTransform: 'none',
+                  padding: '0.75rem',
+                }}
+              >
+                My Drafts
+              </NavLink>
+            ),
+          },
+          {
             key: '2',
             label: (
               <button
@@ -109,7 +141,7 @@ export function SignOutButton(props: Props) {
             ),
           },
           {
-            key: '2',
+            key: '3',
             label: (
               <button
                 style={{
@@ -222,34 +254,24 @@ export function SignOutButton(props: Props) {
             type='button'
             className='undp-button button-primary button-arrow'
             onClick={() => {
-              const { accounts, instance } = useMsal();
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
-                  axios({
-                    method: 'put',
-                    url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
-                    data: {
-                      email: userName,
-                      name: nameOfUser,
-                      unit: selectedUnit,
-                      role,
-                    },
-                    headers: {
-                      'Content-Type': 'application/json',
-                      access_token: accessTokenResponse.accessToken,
-                    },
-                  }).then(() => {
-                    setOpenModal(false);
-                    updateName(nameOfUser);
-                    updateUnit(selectedUnit);
-                  });
-                });
+              axios({
+                method: 'put',
+                url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
+                data: {
+                  email: userName,
+                  name: nameOfUser,
+                  unit: selectedUnit,
+                  role,
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                  access_token: accessToken,
+                },
+              }).then(() => {
+                setOpenModal(false);
+                updateName(nameOfUser);
+                updateUnit(selectedUnit);
+              });
             }}
           >
             Update Profile

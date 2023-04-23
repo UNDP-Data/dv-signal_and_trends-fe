@@ -86,10 +86,14 @@ export interface CtxDataType {
   name?: string;
   unit?: string;
   role?: 'Admin' | 'Curator' | 'Visitor';
+  accessToken?: string;
+  expiresOn?: Date;
   updateUserName: (_d: string) => void;
   updateName: (_d?: string) => void;
+  updateAccessToken: (_d?: string) => void;
   updateUnit: (_d?: string) => void;
   updateRole: (_d?: 'Admin' | 'Curator' | 'Visitor') => void;
+  updateExpiresOn: (_d: Date) => void;
 }
 
 export interface UserDataType {

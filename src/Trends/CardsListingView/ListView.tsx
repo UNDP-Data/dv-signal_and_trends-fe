@@ -9,6 +9,7 @@ interface Props {
 
 const TableRowEl = styled.div`
   cursor: pointer;
+  width: fit-content;
 `;
 
 const DescriptionEl = styled.div`
@@ -20,44 +21,45 @@ const DescriptionEl = styled.div`
   -webkit-box-orient: vertical;
 `;
 
+const CellDiv = styled.div`
+  padding: 0 2.5rem 0 0.75rem;
+`;
+
 export function ListView(props: Props) {
   const { data } = props;
   const navigate = useNavigate();
   return (
     <div
-      style={{ width: '100%', overflow: 'auto', maxHeight: '70vh' }}
-      className='undp-scrollbar undp-table-head-sticky'
+      style={{ overflow: 'auto', maxHeight: '70vh' }}
+      className='undp-scrollbar'
     >
-      <div className='undp-table-head'>
+      <div
+        className='undp-table-head undp-table-head-sticky'
+        style={{ minWidth: 'fit-content' }}
+      >
         <div
-          style={{ width: '20%', minWidth: '12.5rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ width: '37.5%', minWidth: '30rem' }}
+          className='undp-table-head-cell'
         >
-          Title
+          <CellDiv>Trends</CellDiv>
         </div>
         <div
-          style={{ width: '17.5%', minWidth: '30rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ width: '15%', minWidth: '10rem' }}
+          className='undp-table-head-cell'
         >
-          Description
+          <CellDiv>Time Horizon</CellDiv>
         </div>
         <div
-          style={{ width: '10%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ width: '15%', minWidth: '10rem' }}
+          className='undp-table-head-cell'
         >
-          Time Horizon
+          <CellDiv>Impact Rating</CellDiv>
         </div>
         <div
-          style={{ width: '10%', minWidth: '10rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
+          style={{ width: '32.5%', minWidth: '20rem' }}
+          className='undp-table-head-cell'
         >
-          Impact Rating
-        </div>
-        <div
-          style={{ width: '17.5%', minWidth: '30rem' }}
-          className='undp-table-head-cell undp-sticky-head-column'
-        >
-          Impact Description
+          <CellDiv>Impact Description</CellDiv>
         </div>
       </div>
       {data.map((d, i) => (
@@ -71,54 +73,52 @@ export function ListView(props: Props) {
           }}
         >
           <div
-            style={{
-              width: '20%',
-              minWidth: '12.5rem',
-              fontWeight: 'bold',
-            }}
+            style={{ width: '37.5%', minWidth: '30rem' }}
             className='undp-table-row-cell'
           >
-            {d.headline}
+            <CellDiv>
+              <h6 className='undp-typography margin-bottom-02'>{d.headline}</h6>
+              <DescriptionEl className='small-font'>
+                {d.description}
+              </DescriptionEl>
+            </CellDiv>
           </div>
           <div
-            style={{ width: '17.5%', minWidth: '30rem' }}
+            style={{ width: '15%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
-            <DescriptionEl>{d.description}</DescriptionEl>
+            <CellDiv>
+              <div
+                className='undp-chip'
+                style={{
+                  color:
+                    HORIZONVALUES.findIndex(
+                      el => el.value === d.time_horizon,
+                    ) === -1
+                      ? 'var(--black)'
+                      : HORIZONVALUES[
+                          HORIZONVALUES.findIndex(
+                            el => el.value === d.time_horizon,
+                          )
+                        ].textColor,
+                  fontWeight: 'bold',
+                }}
+              >
+                {d.time_horizon}
+              </div>
+            </CellDiv>
           </div>
           <div
-            style={{ width: '10%', minWidth: '10rem' }}
+            style={{ width: '15%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
-            <div
-              className='undp-chip'
-              style={{
-                color:
-                  HORIZONVALUES.findIndex(el => el.value === d.time_horizon) ===
-                  -1
-                    ? 'var(--black)'
-                    : HORIZONVALUES[
-                        HORIZONVALUES.findIndex(
-                          el => el.value === d.time_horizon,
-                        )
-                      ].textColor,
-                fontWeight: 'bold',
-              }}
-            >
-              {d.time_horizon}
-            </div>
+            <CellDiv>{d.impact_rating}</CellDiv>
           </div>
           <div
-            style={{ width: '10%', minWidth: '10rem' }}
-            className='undp-table-row-cell'
+            style={{ width: '32.5%', minWidth: '20rem' }}
+            className='undp-table-row-cell small-font'
           >
-            {d.impact_rating}
-          </div>
-          <div
-            style={{ width: '17.5%', minWidth: '30rem' }}
-            className='undp-table-row-cell'
-          >
-            {d.impact_description}
+            <CellDiv>{d.impact_description}</CellDiv>
           </div>
         </TableRowEl>
       ))}

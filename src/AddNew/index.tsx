@@ -27,7 +27,7 @@ export function AddNewSignalEl() {
           ← Back
         </button>
         <h3 className='undp-typography margin-top-05'>Add New Signal</h3>
-        <SignalEntryFormEl />
+        <SignalEntryFormEl draft={false} />
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <div

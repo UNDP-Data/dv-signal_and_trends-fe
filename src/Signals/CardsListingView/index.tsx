@@ -15,6 +15,7 @@ interface Props {
 
 export function CardLayout(props: Props) {
   const { filters, view } = props;
+  const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalNo, setTotalNo] = useState(0);
@@ -34,7 +35,7 @@ export function CardLayout(props: Props) {
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
           ? '&statuses=Approved&statuses=New'
-          : `&steep=${filters.status}`
+          : `&statuses=${filters.status}`
         : '&statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
@@ -67,7 +68,7 @@ export function CardLayout(props: Props) {
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
           ? 'statuses=Approved&statuses=New'
-          : `steep=${filters.status}`
+          : `statuses=${filters.status}`
         : 'statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
@@ -85,6 +86,22 @@ export function CardLayout(props: Props) {
         if (countResponse.data === 0) {
           setPaginationValue(1);
           setSignalList([]);
+        } else if (role === 'Admin') {
+          axios
+            .get(
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+              {
+                headers: {
+                  access_token: accessToken,
+                },
+              },
+            )
+            .then((response: AxiosResponse) => {
+              setPaginationValue(1);
+              setSignalList(
+                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+              );
+            });
         } else {
           axios
             .get(
@@ -103,7 +120,7 @@ export function CardLayout(props: Props) {
             });
         }
       });
-  }, [role, filters]);
+  }, [role, filters, accessToken]);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     size,

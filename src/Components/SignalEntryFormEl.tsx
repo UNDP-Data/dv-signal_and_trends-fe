@@ -5,7 +5,6 @@ import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useMsal } from '@azure/msal-react';
 import {
   API_ACCESS_TOKEN,
   LOCATION,
@@ -19,6 +18,7 @@ import Context from '../Context/Context';
 
 interface Props {
   updateSignal?: SignalDataType;
+  draft: boolean;
 }
 
 const UploadEl = styled.div`
@@ -61,9 +61,8 @@ const FileAttachmentButton = styled.input`
 `;
 
 export function SignalEntryFormEl(props: Props) {
-  const { updateSignal } = props;
-  const { accounts, instance } = useMsal();
-  const { userName, role } = useContext(Context);
+  const { updateSignal, draft } = props;
+  const { userName, role, accessToken } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
@@ -99,13 +98,13 @@ export function SignalEntryFormEl(props: Props) {
     updateSignal?.attachments || undefined,
   );
   const [keyword1, setKeyword1] = useState<string | undefined>(
-    updateSignal?.keywords[0] || undefined,
+    updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
   );
   const [keyword2, setKeyword2] = useState<string | undefined>(
-    updateSignal?.keywords[1] || undefined,
+    updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
   );
   const [keyword3, setKeyword3] = useState<string | undefined>(
-    updateSignal?.keywords[2] || undefined,
+    updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
   );
   const [primarySS, setPrimarySS] = useState<string | undefined>(
     updateSignal?.signature_primary || undefined,
@@ -460,7 +459,7 @@ export function SignalEntryFormEl(props: Props) {
           )}
         </div>
       ) : null}
-      {updateSignal ? (
+      {updateSignal && !draft ? (
         <div className='margin-bottom-07'>
           <h5 className='undp-typography'>Status of the signal</h5>
           <Select
@@ -481,129 +480,41 @@ export function SignalEntryFormEl(props: Props) {
       ) : null}
       <div className='flex-div flex-vert-align-center margin-top-05'>
         {updateSignal ? (
-          <button
-            className={`${
-              !headline ||
-              !sourceLink ||
-              !description ||
-              description?.length < 30 ||
-              !steep ||
-              !sdg ||
-              !location ||
-              !relevance ||
-              !keyword1 ||
-              !primarySS ||
-              buttonDisabled
-                ? 'disabled '
-                : ''
-            }undp-button button-secondary button-arrow`}
-            type='button'
-            disabled={
-              !headline ||
-              !sourceLink ||
-              !description ||
-              description?.length < 30 ||
-              !steep ||
-              !sdg ||
-              !location ||
-              !relevance ||
-              !keyword1 ||
-              !primarySS ||
-              buttonDisabled
-            }
-            onClick={() => {
-              setButtonDisabled(true);
-              setSubmittingError(undefined);
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
-                  axios({
-                    method: 'put',
-                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
-                    data: {
-                      attachments: selectedFile || null,
-                      created_by: updateSignal.created_by,
-                      description,
-                      headline,
-                      keywords: [keyword1, keyword2, keyword3].filter(
-                        d => d !== null && d !== undefined,
-                      ),
-                      location,
-                      relevance,
-                      status: signalStatus,
-                      sdgs: sdg || [],
-                      signature_primary: primarySS,
-                      signature_secondary: secondarySS,
-                      steep,
-                      url: sourceLink,
-                      connected_trends: selectedTrendsList,
-                      _id: updateSignal._id,
-                    },
-                    headers: {
-                      'Content-Type': 'application/json',
-                      access_token: accessTokenResponse.accessToken,
-                    },
-                  })
-                    .then(() => {
-                      setButtonDisabled(false);
-                      navigate(`/signals/${updateSignal._id}`);
-                    })
-                    .catch(err => {
-                      setButtonDisabled(false);
-                      setSubmittingError(err.message);
-                    });
-                });
-            }}
-          >
-            Update Signal
-          </button>
-        ) : (
-          <button
-            className={`${
-              !headline ||
-              !sourceLink ||
-              !description ||
-              description?.length < 30 ||
-              !steep ||
-              !sdg ||
-              !location ||
-              !relevance ||
-              !keyword1 ||
-              !primarySS ||
-              buttonDisabled
-                ? 'disabled '
-                : ''
-            }undp-button button-secondary button-arrow`}
-            type='button'
-            disabled={
-              !headline ||
-              !sourceLink ||
-              !description ||
-              description?.length < 30 ||
-              !steep ||
-              !sdg ||
-              !location ||
-              !relevance ||
-              !keyword1 ||
-              !primarySS ||
-              buttonDisabled
-            }
-            onClick={() => {
-              setButtonDisabled(true);
-              setSubmittingError(undefined);
-              const accessTokenRequest = {
-                scopes: ['user.read'],
-                account: accounts[0],
-              };
-              instance
-                .acquireTokenSilent(accessTokenRequest)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((accessTokenResponse: any) => {
+          updateSignal.status === 'Draft' ? (
+            <div className='flex-div'>
+              <button
+                className={`${
+                  !headline ||
+                  !sourceLink ||
+                  !description ||
+                  description?.length < 30 ||
+                  !steep ||
+                  !sdg ||
+                  !location ||
+                  !relevance ||
+                  !keyword1 ||
+                  !primarySS ||
+                  buttonDisabled
+                    ? 'disabled '
+                    : ''
+                }undp-button button-secondary button-arrow`}
+                type='button'
+                disabled={
+                  !headline ||
+                  !sourceLink ||
+                  !description ||
+                  description?.length < 30 ||
+                  !steep ||
+                  !sdg ||
+                  !location ||
+                  !relevance ||
+                  !keyword1 ||
+                  !primarySS ||
+                  buttonDisabled
+                }
+                onClick={() => {
+                  setButtonDisabled(true);
+                  setSubmittingError(undefined);
                   axios({
                     method: 'post',
                     url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
@@ -623,11 +534,12 @@ export function SignalEntryFormEl(props: Props) {
                       signature_secondary: secondarySS,
                       steep,
                       url: sourceLink,
+                      _id: updateSignal._id,
                       connected_trends: selectedTrendsList,
                     },
                     headers: {
                       'Content-Type': 'application/json',
-                      access_token: accessTokenResponse.accessToken,
+                      access_token: accessToken,
                     },
                   })
                     .then(() => {
@@ -638,11 +550,274 @@ export function SignalEntryFormEl(props: Props) {
                       setButtonDisabled(false);
                       setSubmittingError(err.message);
                     });
-                });
-            }}
-          >
-            Submit Signal
-          </button>
+                }}
+              >
+                Submit Signal
+              </button>
+              <button
+                className={`${
+                  !description ||
+                  description?.length < 30 ||
+                  !headline ||
+                  buttonDisabled
+                    ? 'disabled '
+                    : ''
+                }undp-button button-secondary button-arrow`}
+                type='button'
+                disabled={
+                  !description ||
+                  description?.length < 30 ||
+                  !headline ||
+                  buttonDisabled
+                }
+                onClick={() => {
+                  setButtonDisabled(true);
+                  setSubmittingError(undefined);
+                  axios({
+                    method: 'post',
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                    data: {
+                      attachments: selectedFile,
+                      created_by: userName,
+                      status: 'Draft',
+                      description,
+                      headline,
+                      keywords: [keyword1, keyword2, keyword3].filter(
+                        d => d !== null && d !== undefined,
+                      ),
+                      location,
+                      relevance,
+                      sdgs: sdg || [],
+                      signature_primary: primarySS,
+                      signature_secondary: secondarySS,
+                      steep,
+                      url: sourceLink,
+                      connected_trends: selectedTrendsList,
+                      _id: updateSignal._id,
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      access_token: accessToken,
+                    },
+                  })
+                    .then(() => {
+                      setButtonDisabled(false);
+                      navigate('/my-drafts');
+                    })
+                    .catch(err => {
+                      setButtonDisabled(false);
+                      setSubmittingError(err.message);
+                    });
+                }}
+              >
+                Save Signal as Draft
+              </button>
+            </div>
+          ) : (
+            <button
+              className={`${
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+                  ? 'disabled '
+                  : ''
+              }undp-button button-secondary button-arrow`}
+              type='button'
+              disabled={
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+              }
+              onClick={() => {
+                setButtonDisabled(true);
+                setSubmittingError(undefined);
+                axios({
+                  method: 'put',
+                  url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
+                  data: {
+                    attachments: selectedFile || null,
+                    created_by: updateSignal.created_by,
+                    description,
+                    headline,
+                    keywords: [keyword1, keyword2, keyword3].filter(
+                      d => d !== null && d !== undefined,
+                    ),
+                    location,
+                    relevance,
+                    status: signalStatus,
+                    sdgs: sdg || [],
+                    signature_primary: primarySS,
+                    signature_secondary: secondarySS,
+                    steep,
+                    url: sourceLink,
+                    connected_trends: selectedTrendsList,
+                    _id: updateSignal._id,
+                  },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    access_token: accessToken,
+                  },
+                })
+                  .then(() => {
+                    setButtonDisabled(false);
+                    navigate(`/signals/${updateSignal._id}`);
+                  })
+                  .catch(err => {
+                    setButtonDisabled(false);
+                    setSubmittingError(err.message);
+                  });
+              }}
+            >
+              Update Signal
+            </button>
+          )
+        ) : (
+          <div className='flex-div'>
+            <button
+              className={`${
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+                  ? 'disabled '
+                  : ''
+              }undp-button button-secondary button-arrow`}
+              type='button'
+              disabled={
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+              }
+              onClick={() => {
+                setButtonDisabled(true);
+                setSubmittingError(undefined);
+                axios({
+                  method: 'post',
+                  url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                  data: {
+                    attachments: selectedFile,
+                    created_by: userName,
+                    status: 'New',
+                    description,
+                    headline,
+                    keywords: [keyword1, keyword2, keyword3].filter(
+                      d => d !== null && d !== undefined,
+                    ),
+                    location,
+                    relevance,
+                    sdgs: sdg || [],
+                    signature_primary: primarySS,
+                    signature_secondary: secondarySS,
+                    steep,
+                    url: sourceLink,
+                    connected_trends: selectedTrendsList,
+                  },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    access_token: accessToken,
+                  },
+                })
+                  .then(() => {
+                    setButtonDisabled(false);
+                    navigate('/signals');
+                  })
+                  .catch(err => {
+                    setButtonDisabled(false);
+                    setSubmittingError(err.message);
+                  });
+              }}
+            >
+              Submit Signal
+            </button>
+            <button
+              className={`${
+                !description ||
+                description?.length < 30 ||
+                !headline ||
+                buttonDisabled
+                  ? 'disabled '
+                  : ''
+              }undp-button button-secondary button-arrow`}
+              type='button'
+              disabled={
+                !description ||
+                description?.length < 30 ||
+                !headline ||
+                buttonDisabled
+              }
+              onClick={() => {
+                setButtonDisabled(true);
+                setSubmittingError(undefined);
+                axios({
+                  method: 'post',
+                  url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                  data: {
+                    attachments: selectedFile,
+                    created_by: userName,
+                    status: 'Draft',
+                    description,
+                    headline,
+                    keywords: [keyword1, keyword2, keyword3].filter(
+                      d => d !== null && d !== undefined,
+                    ),
+                    location,
+                    relevance,
+                    sdgs: sdg || [],
+                    signature_primary: primarySS,
+                    signature_secondary: secondarySS,
+                    steep,
+                    url: sourceLink,
+                    connected_trends: selectedTrendsList,
+                  },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    access_token: accessToken,
+                  },
+                })
+                  .then(() => {
+                    setButtonDisabled(false);
+                    navigate('/my-drafts');
+                  })
+                  .catch(err => {
+                    setButtonDisabled(false);
+                    setSubmittingError(err.message);
+                  });
+              }}
+            >
+              Save Signal as Draft
+            </button>
+          </div>
         )}
         {buttonDisabled ? <div className='undp-loader' /> : null}
         {submittingError ? (
