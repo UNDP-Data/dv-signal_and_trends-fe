@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SignalEntryFormEl } from '../../Components/SignalEntryFormEl';
 import { SignInButton } from '../../Components/SignInButton';
 import Context from '../../Context/Context';
-import { SignalDataType } from '../../Types';
+import { SignalDataType, StatusList } from '../../Types';
 
 export function EditSignal() {
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ export function EditSignal() {
               ) : signal ? (
                 <SignalEntryFormEl
                   updateSignal={signal}
-                  draft={signal.status === 'Draft'}
+                  draft={(signal.status as StatusList | undefined) === 'Draft'}
                 />
               ) : null}
             </>
