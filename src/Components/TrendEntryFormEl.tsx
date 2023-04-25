@@ -44,6 +44,9 @@ export function TrendEntryFormEl(props: Props) {
   const [connectedSignal, setConnectedSignals] = useState<
     SignalDataType[] | null
   >(null);
+  const [trendStatus, setTrendStatus] = useState<string>(
+    updateTrend?.status || 'New',
+  );
   useEffect(() => {
     axios
       .get(
@@ -239,6 +242,25 @@ export function TrendEntryFormEl(props: Props) {
           terms and clear language. Min 30 characters required
         </p>
       </div>
+      {updateTrend ? (
+        <div className='margin-bottom-07'>
+          <h5 className='undp-typography'>Status of the trend</h5>
+          <Select
+            className='undp-select'
+            placeholder='Select Status'
+            onChange={e => {
+              setTrendStatus(e === 'Awaiting Approval' ? 'New' : e);
+            }}
+            value={trendStatus === 'New' ? 'Awaiting Approval' : trendStatus}
+          >
+            {['Approved', 'Awaiting Approval'].map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      ) : null}
       {!updateTrend ? (
         <div className='flex-div flex-vert-align-center'>
           <button
@@ -274,7 +296,7 @@ export function TrendEntryFormEl(props: Props) {
                 data: {
                   description,
                   headline,
-                  statuses: 'Approved',
+                  status: 'New',
                   impact_description: impactDescription,
                   time_horizon: timeHorizon,
                   impact_rating: impactRating,
@@ -343,7 +365,7 @@ export function TrendEntryFormEl(props: Props) {
                   created_by: updateTrend.created_by,
                   description,
                   headline,
-                  statuses: 'New',
+                  status: trendStatus,
                   impact_description: impactDescription,
                   time_horizon: timeHorizon,
                   impact_rating: impactRating,

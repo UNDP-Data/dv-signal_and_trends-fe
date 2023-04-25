@@ -1,27 +1,14 @@
-import {
-  AuthenticationResult,
-  PublicClientApplication,
-} from '@azure/msal-browser';
+import { AuthenticationResult } from '@azure/msal-browser';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { Modal, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useEffect, useReducer, useMemo, useState } from 'react';
 import { Footer } from './Components/FooterEl';
-import { Header } from './Components/HeaderEl';
 import { SignUpButton } from './Components/SignUpButton';
-import { msalConfig } from './Config';
 import { UNITS } from './Constants';
 import Context from './Context/Context';
 import Reducer from './Context/Reducer';
 import MainBody from './MainBody';
-
-function signOutClickHandler() {
-  const msalInstance = new PublicClientApplication(msalConfig);
-  const logoutRequest = {
-    postLogoutRedirectUri: '/',
-  };
-  msalInstance.logoutRedirect(logoutRequest);
-}
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
@@ -159,7 +146,6 @@ function App() {
   );
   return (
     <Context.Provider value={contextValue}>
-      <Header signOutClickHandler={signOutClickHandler} />
       <div
         className='undp-container'
         style={{

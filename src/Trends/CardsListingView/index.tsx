@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Pagination, PaginationProps } from 'antd';
 import sortBy from 'lodash.sortby';
 import axios, { AxiosResponse } from 'axios';
@@ -6,6 +6,7 @@ import { TrendDataType, TrendFiltersDataType } from '../../Types';
 import { CardList } from './CardsList';
 import { ListView } from './ListView';
 import { API_ACCESS_TOKEN } from '../../Constants';
+import Context from '../../Context/Context';
 
 interface Props {
   filters: TrendFiltersDataType;
@@ -14,6 +15,7 @@ interface Props {
 
 export function CardLayout(props: Props) {
   const { filters, view } = props;
+  const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalNo, setTotalNo] = useState(0);
@@ -35,14 +37,20 @@ export function CardLayout(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const statusQueryParameter =
+      filters.status === 'All Status'
+        ? role === 'Admin' || role === 'Curator'
+          ? 'statuses=Approved&statuses=New'
+          : 'statuses=Approved'
+        : `statuses=${filters.status}`;
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
           pageSize * (paginationValue - 1)
-        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        }&limit=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -60,12 +68,18 @@ export function CardLayout(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const statusQueryParameter =
+      filters.status === 'All Status'
+        ? role === 'Admin' || role === 'Curator'
+          ? 'statuses=Approved&statuses=New'
+          : 'statuses=Approved'
+        : `statuses=${filters.status}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -77,10 +91,10 @@ export function CardLayout(props: Props) {
         } else {
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}`,
               {
                 headers: {
-                  access_token: API_ACCESS_TOKEN,
+                  access_token: accessToken || API_ACCESS_TOKEN,
                 },
               },
             )

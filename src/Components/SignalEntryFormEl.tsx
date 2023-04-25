@@ -118,7 +118,7 @@ export function SignalEntryFormEl(props: Props) {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=New&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,

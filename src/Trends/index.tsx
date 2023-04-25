@@ -19,10 +19,12 @@ export function TrendsListing() {
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
+    status: 'All Status',
   });
   const [tempFilters, setTempFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
+    status: 'All Status',
   });
   return (
     <>
@@ -58,6 +60,7 @@ export function TrendsListing() {
                 setFilters({
                   impact: 'All Ratings',
                   horizon: 'All Horizons',
+                  status: 'All Status',
                 });
               }}
             >

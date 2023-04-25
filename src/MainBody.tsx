@@ -4,6 +4,7 @@ import {
 } from '@azure/msal-react';
 import { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { PublicClientApplication } from '@azure/msal-browser';
 import { AddNewSignalEl, AddNewTrendEl } from './AddNew';
 import { AdminPanel } from './AdminPanel';
 import Context from './Context/Context';
@@ -11,10 +12,20 @@ import { EditSignal } from './Signals/EditSignal';
 import { EditTrend } from './Trends/EditTrend';
 import { HomePage } from './HomePage';
 import { SignalDetail } from './Signals/SignalDetail';
-import { SignalsListing } from './Signals';
+import { ArchivedSignalsListing, SignalsListing } from './Signals';
 import { TrendDetail } from './Trends/TrendDetail';
 import { TrendsListing } from './Trends';
 import { MyDrafts } from './MyDrafts';
+import { msalConfig } from './Config';
+import { Header } from './Components/HeaderEl';
+
+function signOutClickHandler() {
+  const msalInstance = new PublicClientApplication(msalConfig);
+  const logoutRequest = {
+    postLogoutRedirectUri: '/',
+  };
+  msalInstance.logoutRedirect(logoutRequest);
+}
 
 function MainBody() {
   const { name } = useContext(Context);
@@ -22,11 +33,16 @@ function MainBody() {
     <>
       <AuthenticatedTemplate>
         {name ? (
-          <div>
+          <>
+            <Header signOutClickHandler={signOutClickHandler} />
             <Routes>
               <Route path='/' element={<HomePage />} />
               <Route path='/signals' element={<SignalsListing />} />
               <Route path='/signals/:id' element={<SignalDetail />} />
+              <Route
+                path='/archived-signals'
+                element={<ArchivedSignalsListing />}
+              />
               <Route path='/signals/:id/edit' element={<EditSignal />} />
               <Route path='/trends' element={<TrendsListing />} />
               <Route path='/trends/:id' element={<TrendDetail />} />
@@ -36,7 +52,7 @@ function MainBody() {
               <Route path='/admin-panel' element={<AdminPanel />} />
               <Route path='/my-drafts' element={<MyDrafts />} />
             </Routes>
-          </div>
+          </>
         ) : (
           <div className='undp-loader-container'>
             <div className='undp-loader' />
@@ -44,7 +60,8 @@ function MainBody() {
         )}
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
-        <div>
+        <>
+          <Header signOutClickHandler={signOutClickHandler} />
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/signals' element={<SignalsListing />} />
@@ -58,7 +75,7 @@ function MainBody() {
             <Route path='/admin-panel' element={<AdminPanel />} />
             <Route path='/my-drafts' element={<MyDrafts />} />
           </Routes>
-        </div>
+        </>
       </UnauthenticatedTemplate>
     </>
   );

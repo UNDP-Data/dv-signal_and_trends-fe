@@ -47,6 +47,7 @@ export function AddTrendsModal(props: Props) {
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
+    status: 'All Status',
   });
   useEffect(() => {
     setLoading(true);

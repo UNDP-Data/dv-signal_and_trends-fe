@@ -15,7 +15,7 @@ import { TrendDataType } from '../../Types';
 export function EditTrend() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { role } = useContext(Context);
+  const { role, accessToken } = useContext(Context);
   const [trend, setTrend] = useState<TrendDataType | undefined>(undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [err, setError] = useState<any>(undefined);
@@ -27,7 +27,7 @@ export function EditTrend() {
           `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
           {
             headers: {
-              access_token: API_ACCESS_TOKEN,
+              access_token: accessToken || API_ACCESS_TOKEN,
             },
           },
         )

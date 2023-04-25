@@ -39,7 +39,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -65,7 +65,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,

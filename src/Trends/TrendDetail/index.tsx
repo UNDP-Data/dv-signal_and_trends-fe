@@ -17,14 +17,14 @@ export function TrendDetail() {
     SignalDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const { role } = useContext(Context);
+  const { role, accessToken } = useContext(Context);
   useEffect(() => {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -39,7 +39,7 @@ export function TrendDetail() {
               `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
               {
                 headers: {
-                  access_token: API_ACCESS_TOKEN,
+                  access_token: accessToken || API_ACCESS_TOKEN,
                 },
               },
             )
@@ -123,6 +123,24 @@ export function TrendDetail() {
             </div>
           </div>
           <h3 className='undp-typography'>{data.headline}</h3>
+          {role === 'Admin' || role === 'Curator' ? (
+            <div
+              className={`undp-chip margin-bottom-07 ${
+                data.status === 'Approved'
+                  ? 'undp-chip-green'
+                  : data.status === 'New'
+                  ? 'undp-chip-yellow'
+                  : 'undp-chip-red'
+              }`}
+            >
+              {data.status === 'New' ? 'Awaiting Approval' : data.status}
+            </div>
+          ) : null}
+          <p className='undp-typography'>{data.description}</p>
+          <hr className='undp-style light margin-top-07 margin-bottom-07' />
+          <h6 className='undp-typography margin-bottom-00 margin-top-00'>
+            Time Horizon
+          </h6>
           <div className='flex-div flex-wrap margin-bottom-07'>
             <div
               className='undp-chip'
@@ -143,7 +161,6 @@ export function TrendDetail() {
               {data.time_horizon}
             </div>
           </div>
-          <p className='undp-typography'>{data.description}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-bottom-00 margin-top-00'>
             Impact

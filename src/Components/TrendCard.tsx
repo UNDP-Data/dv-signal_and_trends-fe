@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import UNDPColorModule from 'undp-viz-colors';
+import { useContext } from 'react';
 import { TrendDataType } from '../Types';
 import { HORIZONVALUES } from '../Constants';
+import Context from '../Context/Context';
 
 interface Props {
   data: TrendDataType;
@@ -30,6 +32,7 @@ const DescriptionEl = styled.p`
 
 export function TrendCard(props: Props) {
   const { data } = props;
+  const { role } = useContext(Context);
   return (
     <NavLink
       // eslint-disable-next-line no-underscore-dangle
@@ -50,6 +53,19 @@ export function TrendCard(props: Props) {
       <CardEl>
         <div>
           <h5 className='bold undp-typography'>{data.headline}</h5>
+          {role === 'Admin' || role === 'Curator' ? (
+            <div
+              className={`undp-chip margin-bottom-07 ${
+                data.status === 'Approved'
+                  ? 'undp-chip-green'
+                  : data.status === 'New'
+                  ? 'undp-chip-yellow'
+                  : 'undp-chip-red'
+              }`}
+            >
+              {data.status === 'New' ? 'Awaiting Approval' : data.status}
+            </div>
+          ) : null}
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
           </DescriptionEl>

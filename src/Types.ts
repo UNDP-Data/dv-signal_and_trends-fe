@@ -114,4 +114,5 @@ export interface SignalFiltersDataType {
 export interface TrendFiltersDataType {
   horizon: 'All Horizons' | HorizonList;
   impact: 'All Ratings' | RatingList;
+  status: 'All Status' | 'New' | 'Approved';
 }

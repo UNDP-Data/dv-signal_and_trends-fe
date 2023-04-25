@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import { Modal, Radio, Select } from 'antd';
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+} from '@azure/msal-react';
 import Background from '../assets/UNDP-hero-image.png';
 import { CardLayout } from './CardsListingView';
 import { SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
@@ -12,6 +16,7 @@ import {
   StatusList,
   STEEPVList,
 } from '../Types';
+import { SignInButton } from '../Components/SignInButton';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -270,6 +275,72 @@ export function SignalsListing() {
           Apply Filters
         </button>
       </Modal>
+    </>
+  );
+}
+
+export function ArchivedSignalsListing() {
+  const { role } = useContext(Context);
+  const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
+  return (
+    <>
+      <HeroImageEl className='undp-hero-image'>
+        <div className='max-width'>
+          <h1 className='undp-typography'>
+            UNDP Future Trends and Signals System
+          </h1>
+          <h5 className='undp-typography'>
+            The Future Trends and Signals System is a participatory foresight
+            tool that captures signals of change noticed across UNDP, and
+            identifies the trends emerging – helping us all make stronger, more
+            future-aware decisions.
+          </h5>
+        </div>
+      </HeroImageEl>
+      <div
+        className='flex-div margin-top-07 margin-bottom-05 flex-wrap flex-vert-align-center'
+        style={{
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h4 className='undp-typography margin-bottom-00'>
+          All Archived Signals
+        </h4>
+        <div className='flex-div flex-vert-align-center'>
+          <Radio.Group
+            defaultValue='cardView'
+            onChange={e => {
+              setViewType(e.target.value as 'cardView' | 'listView');
+            }}
+            className='undp-button-radio'
+          >
+            <Radio.Button value='cardView'>Card View</Radio.Button>
+            <Radio.Button value='listView'>List View</Radio.Button>
+          </Radio.Group>
+        </div>
+      </div>
+      <AuthenticatedTemplate>
+        {role === 'Admin' || role === 'Curator' ? (
+          <CardLayout
+            filters={{
+              steep: 'All STEEP+V',
+              sdg: 'All SDGs',
+              ss: 'All Signature Solutions/Enabler',
+              status: 'Archived',
+            }}
+            view={viewType}
+          />
+        ) : (
+          <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
+            You don&apos;t have enough right to edit a trend
+          </p>
+        )}
+      </AuthenticatedTemplate>
+      <UnauthenticatedTemplate>
+        <SignInButton buttonText='Sign In to View This Page' />
+      </UnauthenticatedTemplate>
     </>
   );
 }
