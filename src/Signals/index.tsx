@@ -238,7 +238,7 @@ export function SignalsListing() {
                 </Select.Option>
                 {['New', 'Approved'].map(d => (
                   <Select.Option className='undp-select-option' key={d}>
-                    {d}
+                    {d === 'New' ? 'Awaiting Approval' : d}
                   </Select.Option>
                 ))}
               </Select>

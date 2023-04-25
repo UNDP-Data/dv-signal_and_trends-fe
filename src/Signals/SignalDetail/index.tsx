@@ -139,6 +139,22 @@ export function SignalDetail() {
             </div>
           </div>
           <h3 className='undp-typography'>{data.headline}</h3>
+          {role === 'Admin' || role === 'Curator' ? (
+            <div
+              className={`undp-chip margin-bottom-07 ${
+                data.status === 'Approved'
+                  ? 'undp-chip-green'
+                  : data.status === 'New'
+                  ? 'undp-chip-yellow'
+                  : 'undp-chip-red'
+              }`}
+            >
+              {data.status === 'New' ? 'Awaiting Approval' : data.status}
+            </div>
+          ) : null}
+          <p className='undp-typography'>{data.description}</p>
+          <hr className='undp-style light margin-top-07 margin-bottom-07' />
+          <h6 className='undp-typography margin-top-00'>Keywords</h6>
           <div className='flex-div flex-wrap margin-bottom-07'>
             {data.keywords?.map((el, j) => (
               <div className='undp-chip' key={j}>
@@ -146,7 +162,6 @@ export function SignalDetail() {
               </div>
             ))}
           </div>
-          <p className='undp-typography'>{data.description}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>STEEP+V Category</h6>
           <div className='flex-div flex-wrap margin-top-03'>
