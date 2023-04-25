@@ -161,15 +161,53 @@ export function TrendsListing() {
             ))}
           </Select>
         </div>
+        <div className='margin-top-07 margin-bottom-07'>
+          <p className='undp-typography label'>Filter by Status</p>
+          <Select
+            className='undp-select'
+            style={{
+              flexGrow: 1,
+              minWidth: '15rem',
+            }}
+            placeholder='Please select'
+            defaultValue='All Status'
+            value={
+              tempFilters.status === 'New'
+                ? 'Awaiting Approval'
+                : tempFilters.status
+            }
+            showSearch
+            allowClear
+            onChange={values => {
+              setTempFilters({
+                ...tempFilters,
+                status:
+                  values === 'Awaiting Approval'
+                    ? 'New'
+                    : (values as 'Approved' | 'All Status'),
+              });
+            }}
+            clearIcon={<div className='clearIcon' />}
+          >
+            {['All Status', 'Approved', 'Awaiting Approval'].map(d => (
+              <Select.Option className='undp-select-option' key={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
         <button
           type='button'
-          className='undp-button button-secondary margin-top-07'
+          className='undp-button button-secondary'
           onClick={() => {
             let i = 0;
             if (tempFilters.horizon !== 'All Horizons') {
               i += 1;
             }
             if (tempFilters.impact !== 'All Ratings') {
+              i += 1;
+            }
+            if (tempFilters.status !== 'All Status') {
               i += 1;
             }
             setFilters(tempFilters);
