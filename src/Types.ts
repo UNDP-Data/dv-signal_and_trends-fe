@@ -41,7 +41,7 @@ export type HorizonList =
 
 export type RatingList = '1' | '2' | '3' | '4' | '5';
 
-export type StatusList = 'Draft' | 'New' | 'Approved' | 'Archived';
+export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
 export interface SignalDataType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

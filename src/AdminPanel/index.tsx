@@ -5,7 +5,7 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { Pagination } from 'antd';
+import { Pagination, Select } from 'antd';
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { UserDataType } from '../Types';
@@ -13,32 +13,66 @@ import { UserListEl } from './userList';
 
 export function AdminPanel() {
   const { role, accessToken } = useContext(Context);
-  const [userList, setUserList] = useState<UserDataType[]>([]);
+  const [userList, setUserList] = useState<UserDataType[] | undefined>(
+    undefined,
+  );
   const [paginationValue, setPaginationValue] = useState(1);
+  const [filterRole, setFilterRole] = useState('All Roles');
   const [totalNo, setTotalNo] = useState(0);
   useEffect(() => {
     if (role === 'Admin') {
+      setUserList(undefined);
+      const roleQueryParameter =
+        filterRole === 'All Roles'
+          ? 'roles=Visitor&roles=Curator&roles=Admin'
+          : `roles=${filterRole}`;
       axios
         .get(
-          'https://signals-and-trends-api.azurewebsites.net/v1/users/count?roles=Admin&roles=Curator&roles=Visitor',
+          `https://signals-and-trends-api.azurewebsites.net/v1/users/count?${roleQueryParameter}`,
           {
             headers: {
               access_token: accessToken,
             },
           },
         )
-        .then((response: AxiosResponse) => {
-          setTotalNo(response.data);
+        .then((countResponse: AxiosResponse) => {
+          setTotalNo(countResponse.data);
+          if (countResponse.data === 0) {
+            setTotalNo(countResponse.data);
+            setPaginationValue(1);
+            setUserList([]);
+          } else {
+            axios
+              .get(
+                `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
+                  50 * (paginationValue - 1)
+                }&limit=50&${roleQueryParameter}`,
+                {
+                  headers: {
+                    access_token: accessToken,
+                  },
+                },
+              )
+              .then((response: AxiosResponse) => {
+                setPaginationValue(1);
+                setUserList(response.data);
+              });
+          }
         });
     }
-  }, [accessToken]);
+  }, [role, accessToken, filterRole]);
   useEffect(() => {
     if (role === 'Admin') {
+      setUserList(undefined);
+      const roleQueryParameter =
+        filterRole === 'All Roles'
+          ? 'roles=Visitor&roles=Curator&roles=Admin'
+          : `roles=${filterRole}`;
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
             50 * (paginationValue - 1)
-          }&limit=50&roles=Visitor&roles=Curator&roles=Admin`,
+          }&limit=50&${roleQueryParameter}`,
           {
             headers: {
               access_token: accessToken,
@@ -49,7 +83,7 @@ export function AdminPanel() {
           setUserList(response.data);
         });
     }
-  }, [role, paginationValue, accessToken]);
+  }, [paginationValue]);
   const navigate = useNavigate();
   return (
     <div
@@ -71,8 +105,30 @@ export function AdminPanel() {
       >
         ← Back
       </button>
-      <div className='flex-div flex-vert-align-center flex-space-between margin-top-05 margin-bottom-05'>
+      <div
+        className='flex-div flex-space-between margin-top-05 margin-bottom-09'
+        style={{ alignItems: 'flex-end' }}
+      >
         <h3 className='undp-typography margin-bottom-00'>All Users</h3>
+        <div>
+          <p className='undp-typography label'>Filter by roles</p>
+          <Select
+            className='undp-select'
+            placeholder='Filter by role'
+            onChange={e => {
+              setFilterRole(e);
+            }}
+            value={filterRole}
+            showSearch
+            style={{ width: '15rem' }}
+          >
+            {['All Roles', 'Admin', 'Curator', 'Visitor'].map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
       </div>
       <AuthenticatedTemplate>
         {role !== 'Admin' ? (
@@ -82,22 +138,37 @@ export function AdminPanel() {
         ) : (
           <div>
             {userList ? (
-              <>
-                <UserListEl userList={userList} />
-                <div className='flex-div flex-hor-align-center margin-top-07'>
-                  <Pagination
-                    className='undp-pagination'
-                    onChange={e => {
-                      setPaginationValue(e);
-                    }}
-                    defaultCurrent={1}
-                    current={paginationValue}
-                    total={totalNo}
-                    pageSize={50}
-                    showSizeChanger={false}
-                  />
-                </div>
-              </>
+              userList.length > 0 ? (
+                <>
+                  <UserListEl userList={userList} />
+                  <div className='flex-div flex-hor-align-center margin-top-07'>
+                    <Pagination
+                      className='undp-pagination'
+                      onChange={e => {
+                        setPaginationValue(e);
+                      }}
+                      defaultCurrent={1}
+                      current={paginationValue}
+                      total={totalNo}
+                      pageSize={50}
+                      showSizeChanger={false}
+                    />
+                  </div>
+                </>
+              ) : (
+                <h5
+                  className='undp-typography bold'
+                  style={{
+                    backgroundColor: 'var(--gray-200)',
+                    textAlign: 'center',
+                    padding: 'var(--spacing-07)',
+                    width: 'calc(100% - 4rem)',
+                    border: '1px solid var(--gray-400)',
+                  }}
+                >
+                  No users available matching your criteria
+                </h5>
+              )
             ) : (
               <div className='undp-loader-container'>
                 <div className='undp-loader' />
