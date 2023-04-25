@@ -15,11 +15,10 @@ interface Props {
 
 export function CardLayout(props: Props) {
   const { filters, view } = props;
-  const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalNo, setTotalNo] = useState(0);
-  const { role } = useContext(Context);
+  const { role, accessToken } = useContext(Context);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
   );
@@ -39,6 +38,7 @@ export function CardLayout(props: Props) {
         : '&statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+    const accessTokenTemp = role === 'Admin' ? accessToken : API_ACCESS_TOKEN;
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
@@ -46,7 +46,7 @@ export function CardLayout(props: Props) {
         }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessTokenTemp,
           },
         },
       )
