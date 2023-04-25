@@ -55,6 +55,8 @@ export function SignOutButton(props: Props) {
                 }}
                 type='button'
                 onClick={() => {
+                  setNameOfUser(name);
+                  setSelectedUnit(unit);
                   setOpenModal(true);
                 }}
               >
