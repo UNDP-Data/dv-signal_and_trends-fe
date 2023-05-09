@@ -61,7 +61,7 @@ export interface SignalDataType {
   signature_secondary: SSList | '';
   steep: STEEPVList;
   url: string;
-  _id: string;
+  id: string;
   connected_trends: string[];
 }
 
@@ -77,7 +77,7 @@ export interface TrendDataType {
   modifications: any;
   time_horizon: 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)';
   signals: string[];
-  _id: string;
+  id: string;
   connected_signals: string[];
 }
 
@@ -85,14 +85,16 @@ export interface CtxDataType {
   userName?: string;
   name?: string;
   unit?: string;
-  role?: 'Admin' | 'Curator' | 'Visitor';
+  role?: 'Admin' | 'Curator' | 'User';
   accessToken?: string;
+  userID?: number;
   expiresOn?: Date;
   updateUserName: (_d: string) => void;
   updateName: (_d?: string) => void;
   updateAccessToken: (_d?: string) => void;
   updateUnit: (_d?: string) => void;
-  updateRole: (_d?: 'Admin' | 'Curator' | 'Visitor') => void;
+  updateUserID: (_d?: number) => void;
+  updateRole: (_d?: 'Admin' | 'Curator' | 'User') => void;
   updateExpiresOn: (_d: Date) => void;
 }
 
@@ -100,8 +102,9 @@ export interface UserDataType {
   created_at: string;
   email: string;
   name: string;
-  role: 'Admin' | 'Curator' | 'Visitor';
+  role: 'Admin' | 'Curator' | 'User';
   unit: string;
+  id: number;
 }
 
 export interface SignalFiltersDataType {
@@ -109,10 +112,12 @@ export interface SignalFiltersDataType {
   sdg: 'All SDGs' | SDGList;
   ss: 'All Signature Solutions/Enabler' | SSList;
   status: 'All Status' | StatusList;
+  search?: string;
 }
 
 export interface TrendFiltersDataType {
   horizon: 'All Horizons' | HorizonList;
   impact: 'All Ratings' | RatingList;
   status: 'All Status' | 'New' | 'Approved';
+  search?: string;
 }

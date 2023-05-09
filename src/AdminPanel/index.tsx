@@ -5,7 +5,7 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { Pagination, Select } from 'antd';
+import { Input, Pagination, Select } from 'antd';
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { UserDataType } from '../Types';
@@ -18,17 +18,20 @@ export function AdminPanel() {
   );
   const [paginationValue, setPaginationValue] = useState(1);
   const [filterRole, setFilterRole] = useState('All Roles');
+  const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
+  const [filter, setFilter] = useState<undefined | string>(undefined);
   const [totalNo, setTotalNo] = useState(0);
   useEffect(() => {
     if (role === 'Admin') {
       setUserList(undefined);
       const roleQueryParameter =
         filterRole === 'All Roles'
-          ? 'roles=Visitor&roles=Curator&roles=Admin'
+          ? 'roles=User&roles=Curator&roles=Admin'
           : `roles=${filterRole}`;
+      const searchQueryParameter = filter ? `&query=${filter}` : '';
       axios
         .get(
-          `https://signals-and-trends-api.azurewebsites.net/v1/users/count?${roleQueryParameter}`,
+          `https://signals-and-trends-api.azurewebsites.net/v1/users/count?${roleQueryParameter}${searchQueryParameter}`,
           {
             headers: {
               access_token: accessToken,
@@ -46,7 +49,7 @@ export function AdminPanel() {
               .get(
                 `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
                   50 * (paginationValue - 1)
-                }&limit=50&${roleQueryParameter}`,
+                }&limit=50&${roleQueryParameter}${searchQueryParameter}`,
                 {
                   headers: {
                     access_token: accessToken,
@@ -66,13 +69,14 @@ export function AdminPanel() {
       setUserList(undefined);
       const roleQueryParameter =
         filterRole === 'All Roles'
-          ? 'roles=Visitor&roles=Curator&roles=Admin'
+          ? 'roles=User&roles=Curator&roles=Admin'
           : `roles=${filterRole}`;
+      const searchQueryParameter = filter ? `&query=${filter}` : '';
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
             50 * (paginationValue - 1)
-          }&limit=50&${roleQueryParameter}`,
+          }&limit=50&${roleQueryParameter}${searchQueryParameter}`,
           {
             headers: {
               access_token: accessToken,
@@ -89,6 +93,7 @@ export function AdminPanel() {
     <div
       className='margin-top-13 padding-top-09'
       style={{
+        width: '100%',
         maxWidth: '60rem',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -122,13 +127,37 @@ export function AdminPanel() {
             showSearch
             style={{ width: '15rem' }}
           >
-            {['All Roles', 'Admin', 'Curator', 'Visitor'].map((d, i) => (
+            {['All Roles', 'Admin', 'Curator', 'User'].map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
             ))}
           </Select>
         </div>
+      </div>
+
+      <div
+        style={{ width: '100%' }}
+        className='flex-div gap-00 margin-bottom-09'
+      >
+        <Input
+          placeholder='Search users'
+          className='undp-input'
+          size='large'
+          value={searchQuery}
+          onChange={d => {
+            setSearchQuery(d.target.value);
+          }}
+        />
+        <button
+          type='button'
+          className='undp-button button-secondary'
+          onClick={() => {
+            setFilter(searchQuery);
+          }}
+        >
+          Search
+        </button>
       </div>
       <AuthenticatedTemplate>
         {role !== 'Admin' ? (

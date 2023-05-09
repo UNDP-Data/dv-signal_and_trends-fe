@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { Modal, Radio, Select } from 'antd';
+import { Input, Modal, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
 import { CardLayout } from './CardsListingView';
@@ -16,15 +16,18 @@ export function TrendsListing() {
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
     status: 'All Status',
+    search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
     status: 'All Status',
+    search: undefined,
   });
   return (
     <>
@@ -47,20 +50,26 @@ export function TrendsListing() {
           paddingLeft: '1rem',
           paddingRight: '1rem',
           justifyContent: 'space-between',
+          gap: '10rem',
         }}
       >
         <h4 className='undp-typography margin-bottom-00'>All Trends</h4>
-        <div className='flex-div flex-vert-align-center'>
+        <div
+          className='flex-div flex-vert-align-center'
+          style={{ flexGrow: 1, justifyContent: 'flex-end' }}
+        >
           {noOfFilter > 0 ? (
             <button
               type='button'
               className='undp-chip'
               onClick={() => {
                 setNoOfFilter(0);
+                setSearchQuery(undefined);
                 setFilters({
                   impact: 'All Ratings',
                   horizon: 'All Horizons',
                   status: 'All Status',
+                  search: undefined,
                 });
               }}
             >
@@ -87,6 +96,29 @@ export function TrendsListing() {
             <Radio.Button value='cardView'>Card View</Radio.Button>
             <Radio.Button value='listView'>List View</Radio.Button>
           </Radio.Group>
+          <div
+            style={{ maxWidth: '25rem', width: '100%' }}
+            className='flex-div gap-00'
+          >
+            <Input
+              placeholder='Search a signal'
+              className='undp-input'
+              size='large'
+              value={searchQuery}
+              onChange={d => {
+                setSearchQuery(d.target.value);
+              }}
+            />
+            <button
+              type='button'
+              className='undp-button button-secondary'
+              onClick={() => {
+                setFilters({ ...filters, search: searchQuery });
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
       </div>
       <CardLayout filters={filters} view={viewType} />

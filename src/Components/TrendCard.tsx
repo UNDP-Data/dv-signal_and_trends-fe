@@ -36,7 +36,7 @@ export function TrendCard(props: Props) {
   return (
     <NavLink
       // eslint-disable-next-line no-underscore-dangle
-      to={`/trends/${data._id}`}
+      to={`/trends/${data.id}`}
       style={{
         color: 'var(--black)',
         textDecoration: 'none',

@@ -1,5 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Collapse, Modal, Pagination, PaginationProps, Select } from 'antd';
+import {
+  Collapse,
+  Input,
+  Modal,
+  Pagination,
+  PaginationProps,
+  Select,
+} from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
@@ -37,6 +44,7 @@ export function AddTrendsModal(props: Props) {
   const [totalNo, setTotalNo] = useState(0);
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     size,
@@ -48,6 +56,7 @@ export function AddTrendsModal(props: Props) {
     impact: 'All Ratings',
     horizon: 'All Horizons',
     status: 'All Status',
+    search: undefined,
   });
   useEffect(() => {
     setLoading(true);
@@ -57,11 +66,14 @@ export function AddTrendsModal(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
           pageSize * (paginationValue - 1)
-        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -83,9 +95,12 @@ export function AddTrendsModal(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -189,6 +204,29 @@ export function AddTrendsModal(props: Props) {
           ))}
         </Select>
       </div>
+      <div
+        style={{ width: '100%' }}
+        className='flex-div gap-00 margin-bottom-05'
+      >
+        <Input
+          placeholder='Search a signal'
+          className='undp-input'
+          size='large'
+          value={searchQuery}
+          onChange={d => {
+            setSearchQuery(d.target.value);
+          }}
+        />
+        <button
+          type='button'
+          className='undp-button button-secondary'
+          onClick={() => {
+            setFilters({ ...filters, search: searchQuery });
+          }}
+        >
+          Search
+        </button>
+      </div>
       {loading ? (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
@@ -216,21 +254,21 @@ export function AddTrendsModal(props: Props) {
                     onClick={e => {
                       e.stopPropagation();
                       if (
-                        selectedTrendsList.findIndex(el => el === d._id) === -1
+                        selectedTrendsList.findIndex(el => el === d.id) === -1
                       ) {
                         const arr = [...selectedTrendsList];
-                        arr.push(d._id);
+                        arr.push(d.id);
                         setSelectedTrendsList(arr);
                       } else {
                         setSelectedTrendsList([
-                          ...selectedTrendsList.filter(el => el !== d._id),
+                          ...selectedTrendsList.filter(el => el !== d.id),
                         ]);
                       }
                     }}
                   >
                     {selectedTrendsList ? (
                       selectedTrendsList.findIndex(
-                        selTrend => selTrend === d._id,
+                        selTrend => selTrend === d.id,
                       ) === -1 ? (
                         <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
                       ) : (

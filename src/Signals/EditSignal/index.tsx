@@ -58,7 +58,7 @@ export function EditSignal() {
           Edit Signal{signal ? `: ${signal.headline}` : null}
         </h3>
         {signal?.status !== 'Draft' ? (
-          role === 'Visitor' ? (
+          role === 'User' ? (
             <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
               You don&apos;t have enough right to edit a trend
             </p>

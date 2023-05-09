@@ -36,7 +36,7 @@ export function Header(props: Props) {
     },
     {
       key: '2',
-      disabled: role === 'Visitor',
+      disabled: role === 'User',
       label: (
         <NavLink
           to='/add-new-trend'

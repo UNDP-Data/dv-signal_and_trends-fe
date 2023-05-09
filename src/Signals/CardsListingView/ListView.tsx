@@ -75,7 +75,7 @@ export function ListView(props: Props) {
           key={i}
           onClick={() => {
             // eslint-disable-next-line no-underscore-dangle
-            navigate(`/signals/${d._id}`);
+            navigate(`/signals/${d.id}`);
           }}
           style={{ width: 'fit-content' }}
         >

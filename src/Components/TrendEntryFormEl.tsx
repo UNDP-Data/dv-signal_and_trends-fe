@@ -39,7 +39,7 @@ export function TrendEntryFormEl(props: Props) {
   );
   const [signalList, setSignalList] = useState<SignalDataType[] | null>(null);
   const [trendsSignal, setTrendsSignal] = useState<string[]>(
-    updateTrend ? updateTrend.connected_signals : [],
+    updateTrend ? updateTrend.connected_signals || [] : [],
   );
   const [connectedSignal, setConnectedSignals] = useState<
     SignalDataType[] | null
@@ -144,13 +144,13 @@ export function TrendEntryFormEl(props: Props) {
                 <p className='undp-typography margin-bottom-00'>
                   {
                     // eslint-disable-next-line no-underscore-dangle
-                    signalList[signalList.findIndex(el => el._id === d._id)]
+                    signalList[signalList.findIndex(el => el.id === d.id)]
                       .headline
                   }
                 </p>
                 <button
                   onClick={() => {
-                    const arr = [...trendsSignal.filter(el => el !== d._id)];
+                    const arr = [...trendsSignal.filter(el => el !== d.id)];
                     setTrendsSignal(arr);
                   }}
                   type='button'
@@ -370,7 +370,7 @@ export function TrendEntryFormEl(props: Props) {
                   time_horizon: timeHorizon,
                   impact_rating: impactRating,
                   connected_signals: trendsSignal,
-                  _id: updateTrend._id,
+                  id: updateTrend.id,
                 },
                 headers: {
                   'Content-Type': 'application/json',
@@ -379,7 +379,7 @@ export function TrendEntryFormEl(props: Props) {
               })
                 .then(() => {
                   setButtonDisabled(false);
-                  navigate(`/trends/${updateTrend._id}`);
+                  navigate(`/trends/${updateTrend.id}`);
                 })
                 .catch((err: AxiosError) => {
                   setButtonDisabled(false);

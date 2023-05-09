@@ -34,7 +34,7 @@ export function SignUpButton(props: Props) {
         }).then(() => {
           setOpenModal(false);
           updateName(name);
-          updateRole('Visitor');
+          updateRole('User');
           updateUnit(unit);
           updateUserName(username);
         });

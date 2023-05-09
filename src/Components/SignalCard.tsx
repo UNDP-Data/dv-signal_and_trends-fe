@@ -111,7 +111,7 @@ export function SignalCard(props: Props) {
   return (
     <NavLink
       // eslint-disable-next-line no-underscore-dangle
-      to={isDraft ? `/signals/${data._id}/edit` : `/signals/${data._id}`}
+      to={isDraft ? `/signals/${data.id}/edit` : `/signals/${data.id}`}
       style={{
         color: 'var(--black)',
         textDecoration: 'none',

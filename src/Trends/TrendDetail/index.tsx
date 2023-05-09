@@ -204,7 +204,7 @@ export function TrendDetail() {
             }-${new Date(data.created_at).getFullYear()}`}
           </p>
           <AuthenticatedTemplate>
-            {role === 'Visitor' ? (
+            {role === 'User' ? (
               <p
                 className='undp-typography'
                 style={{ color: 'var(--dark-red)' }}

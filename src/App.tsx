@@ -48,7 +48,7 @@ function App() {
       payload: d,
     });
   };
-  const updateRole = (d?: 'Admin' | 'Curator' | 'Visitor') => {
+  const updateRole = (d?: 'Admin' | 'Curator' | 'User') => {
     dispatch({
       type: 'UPDATE_ROLE',
       payload: d,
@@ -63,6 +63,12 @@ function App() {
   const updateExpiresOn = (d: Date) => {
     dispatch({
       type: 'UPDATE_EXPIRES_ON',
+      payload: d,
+    });
+  };
+  const updateUserID = (d?: number) => {
+    dispatch({
+      type: 'UPDATE_USER_ID',
       payload: d,
     });
   };
@@ -97,6 +103,7 @@ function App() {
               updateName(res.data.name);
               updateUnit(res.data.unit);
               updateRole(res.data.role);
+              updateUserID(res.data.id);
             })
             .catch((err: AxiosError) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,6 +140,7 @@ function App() {
       updateUnit,
       updateAccessToken,
       updateExpiresOn,
+      updateUserID,
     }),
     [
       state,
@@ -142,6 +150,7 @@ function App() {
       updateName,
       updateAccessToken,
       updateExpiresOn,
+      updateUserID,
     ],
   );
   return (

@@ -130,7 +130,7 @@ export function HomePage() {
             {trendListing.map((d, i) => (
               <NavLink
                 key={i}
-                to={`/trends/${d._id}`}
+                to={`/trends/${d.id}`}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',
                   alignItems: 'stretch',
@@ -175,7 +175,7 @@ export function HomePage() {
             </div>
             {signalListing.map((d, i) => (
               <NavLink
-                to={`/signals/${d._id}`}
+                to={`/signals/${d.id}`}
                 key={i}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',

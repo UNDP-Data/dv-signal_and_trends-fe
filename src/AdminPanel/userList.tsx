@@ -92,7 +92,7 @@ export function UserListEl(props: Props) {
           }}
           className='undp-button-radio margin-bottom-07'
         >
-          <Radio.Button value='Visitor'>Visitor</Radio.Button>
+          <Radio.Button value='User'>User</Radio.Button>
           <Radio.Button value='Curator'>Curator</Radio.Button>
           <Radio.Button value='Admin'>Admin</Radio.Button>
         </Radio.Group>

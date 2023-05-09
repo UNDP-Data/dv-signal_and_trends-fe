@@ -37,13 +37,16 @@ export function CardLayout(props: Props) {
           : `&statuses=${filters.status}`
         : '&statuses=Approved';
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     const accessTokenTemp = role === 'Admin' ? accessToken : API_ACCESS_TOKEN;
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
           pageSize * (paginationValue - 1)
-        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessTokenTemp,
@@ -71,10 +74,13 @@ export function CardLayout(props: Props) {
           : `statuses=${filters.status}`
         : 'statuses=Approved';
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -89,7 +95,7 @@ export function CardLayout(props: Props) {
         } else if (role === 'Admin') {
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
               {
                 headers: {
                   access_token: accessToken,
@@ -105,7 +111,7 @@ export function CardLayout(props: Props) {
         } else {
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
               {
                 headers: {
                   access_token: API_ACCESS_TOKEN,

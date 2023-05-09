@@ -58,7 +58,7 @@ export function EditTrend() {
         <h3 className='undp-typography margin-top-05'>
           Edit Trend{trend ? `: ${trend.headline}` : null}
         </h3>
-        {role === 'Visitor' ? (
+        {role === 'User' ? (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
             You don&apos;t have enough right to edit a trend
           </p>

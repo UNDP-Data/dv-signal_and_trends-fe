@@ -69,7 +69,7 @@ export function ListView(props: Props) {
           key={i}
           onClick={() => {
             // eslint-disable-next-line no-underscore-dangle
-            navigate(`/trends/${d._id}`);
+            navigate(`/trends/${d.id}`);
           }}
         >
           <div

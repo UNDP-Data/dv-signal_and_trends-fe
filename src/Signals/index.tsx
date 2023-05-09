@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useContext, useState } from 'react';
-import { Modal, Radio, Select } from 'antd';
+import { Modal, Radio, Select, Input } from 'antd';
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
@@ -28,18 +28,21 @@ export function SignalsListing() {
   const { role } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
+  const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
 
   const [filters, setFilters] = useState<SignalFiltersDataType>({
     steep: 'All STEEP+V',
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<SignalFiltersDataType>({
     steep: 'All STEEP+V',
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    search: undefined,
   });
   const [showFilterModal, setShowFilterModal] = useState(false);
   return (
@@ -63,21 +66,27 @@ export function SignalsListing() {
           paddingLeft: '1rem',
           paddingRight: '1rem',
           justifyContent: 'space-between',
+          gap: '10rem',
         }}
       >
         <h4 className='undp-typography margin-bottom-00'>All Signals</h4>
-        <div className='flex-div flex-vert-align-center'>
+        <div
+          className='flex-div flex-vert-align-center'
+          style={{ flexGrow: 1, justifyContent: 'flex-end' }}
+        >
           {noOfFilter > 0 ? (
             <button
               type='button'
               className='undp-chip'
               onClick={() => {
                 setNoOfFilter(0);
+                setSearchQuery(undefined);
                 setFilters({
                   steep: 'All STEEP+V',
                   sdg: 'All SDGs',
                   ss: 'All Signature Solutions/Enabler',
                   status: 'All Status',
+                  search: undefined,
                 });
               }}
             >
@@ -100,10 +109,38 @@ export function SignalsListing() {
               setViewType(e.target.value as 'cardView' | 'listView');
             }}
             className='undp-button-radio'
+            style={{
+              width: '195px',
+              display: 'flex',
+              flexWrap: 'nowrap',
+            }}
           >
             <Radio.Button value='cardView'>Card View</Radio.Button>
             <Radio.Button value='listView'>List View</Radio.Button>
           </Radio.Group>
+          <div
+            style={{ maxWidth: '25rem', width: '100%' }}
+            className='flex-div gap-00'
+          >
+            <Input
+              placeholder='Search a signal'
+              className='undp-input'
+              size='large'
+              value={searchQuery}
+              onChange={d => {
+                setSearchQuery(d.target.value);
+              }}
+            />
+            <button
+              type='button'
+              className='undp-button button-secondary'
+              onClick={() => {
+                setFilters({ ...filters, search: searchQuery });
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
       </div>
       <CardLayout filters={filters} view={viewType} />

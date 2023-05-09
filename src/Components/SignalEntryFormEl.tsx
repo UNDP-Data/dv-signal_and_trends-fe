@@ -419,7 +419,7 @@ export function SignalEntryFormEl(props: Props) {
                   <p className='undp-typography margin-bottom-00'>
                     {
                       // eslint-disable-next-line no-underscore-dangle
-                      trendsList[trendsList.findIndex(el => el._id === d)]
+                      trendsList[trendsList.findIndex(el => el.id === d)]
                         .headline
                     }
                   </p>
@@ -534,7 +534,7 @@ export function SignalEntryFormEl(props: Props) {
                       signature_secondary: secondarySS,
                       steep,
                       url: sourceLink,
-                      _id: updateSignal._id,
+                      id: updateSignal.id,
                       connected_trends: selectedTrendsList,
                     },
                     headers: {
@@ -593,7 +593,7 @@ export function SignalEntryFormEl(props: Props) {
                       steep,
                       url: sourceLink,
                       connected_trends: selectedTrendsList,
-                      _id: updateSignal._id,
+                      id: updateSignal.id,
                     },
                     headers: {
                       'Content-Type': 'application/json',
@@ -667,7 +667,7 @@ export function SignalEntryFormEl(props: Props) {
                     steep,
                     url: sourceLink,
                     connected_trends: selectedTrendsList,
-                    _id: updateSignal._id,
+                    id: updateSignal.id,
                   },
                   headers: {
                     'Content-Type': 'application/json',
@@ -676,7 +676,7 @@ export function SignalEntryFormEl(props: Props) {
                 })
                   .then(() => {
                     setButtonDisabled(false);
-                    navigate(`/signals/${updateSignal._id}`);
+                    navigate(`/signals/${updateSignal.id}`);
                   })
                   .catch(err => {
                     setButtonDisabled(false);

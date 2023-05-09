@@ -63,7 +63,7 @@ export function AddNewTrendEl() {
           ← Back
         </button>
         <h3 className='undp-typography margin-top-05'>Add New Trend</h3>
-        {role === 'Visitor' ? (
+        {role === 'User' ? (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
             You don&apos;t have enough right to add a trend
           </p>

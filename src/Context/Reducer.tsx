@@ -9,6 +9,8 @@ export default (state: any, action: any) => {
       return { ...state, unit: action.payload };
     case 'UPDATE_ROLE':
       return { ...state, role: action.payload };
+    case 'UPDATE_USER_ID':
+      return { ...state, userID: action.payload };
     case 'UPDATE_ACCESS_TOKEN':
       return { ...state, accessToken: action.payload };
     case 'UPDATE_EXPIRES_ON':

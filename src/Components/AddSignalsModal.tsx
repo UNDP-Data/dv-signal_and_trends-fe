@@ -1,5 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Collapse, Modal, Pagination, PaginationProps, Select } from 'antd';
+import {
+  Collapse,
+  Input,
+  Modal,
+  Pagination,
+  PaginationProps,
+  Select,
+} from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useEffect, useState } from 'react';
@@ -37,6 +44,7 @@ export function AddSignalsModal(props: Props) {
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalNo, setTotalNo] = useState(0);
+  const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<SignalDataType[]>([]);
 
   const [filters, setFilters] = useState<SignalFiltersDataType>({
@@ -44,6 +52,7 @@ export function AddSignalsModal(props: Props) {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    search: undefined,
   });
   const [loading, setLoading] = useState(true);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
@@ -64,12 +73,15 @@ export function AddSignalsModal(props: Props) {
         : `&signature_primary=${filters.ss.replaceAll(' ', '%20')}`;
     const statusQueryParameter = '&statuses=Approved';
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
           pageSize * (paginationValue - 1)
-        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -94,7 +106,10 @@ export function AddSignalsModal(props: Props) {
         : `&signature_primary=${filters.ss}`;
     const statusQueryParameter = 'statuses=Approved';
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdgs=${filters.sdg}`;
+      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
@@ -112,7 +127,7 @@ export function AddSignalsModal(props: Props) {
         } else {
           axios
             .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
               {
                 headers: {
                   access_token: API_ACCESS_TOKEN,
@@ -233,6 +248,29 @@ export function AddSignalsModal(props: Props) {
           ))}
         </Select>
       </div>
+      <div
+        style={{ width: '100%' }}
+        className='flex-div gap-00 margin-bottom-05'
+      >
+        <Input
+          placeholder='Search a signal'
+          className='undp-input'
+          size='large'
+          value={searchQuery}
+          onChange={d => {
+            setSearchQuery(d.target.value);
+          }}
+        />
+        <button
+          type='button'
+          className='undp-button button-secondary'
+          onClick={() => {
+            setFilters({ ...filters, search: searchQuery });
+          }}
+        >
+          Search
+        </button>
+      </div>
 
       {loading ? (
         <div className='undp-loader-container'>
@@ -260,19 +298,19 @@ export function AddSignalsModal(props: Props) {
                   <RadioOutline
                     onClick={e => {
                       e.stopPropagation();
-                      if (trendsSignal.findIndex(el => el === d._id) === -1) {
+                      if (trendsSignal.findIndex(el => el === d.id) === -1) {
                         const arr = [...trendsSignal];
-                        arr.push(d._id);
+                        arr.push(d.id);
                         setTrendsSignal(arr);
                       } else {
                         setTrendsSignal([
-                          ...trendsSignal.filter(el => el !== d._id),
+                          ...trendsSignal.filter(el => el !== d.id),
                         ]);
                       }
                     }}
                   >
                     {trendsSignal ? (
-                      trendsSignal.findIndex(selTrend => selTrend === d._id) ===
+                      trendsSignal.findIndex(selTrend => selTrend === d.id) ===
                       -1 ? (
                         <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
                       ) : (

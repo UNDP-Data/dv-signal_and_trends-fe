@@ -12,8 +12,16 @@ interface Props {
 
 export function SignOutButton(props: Props) {
   const { signOutClickHandler } = props;
-  const { name, userName, role, unit, updateName, updateUnit, accessToken } =
-    useContext(Context);
+  const {
+    name,
+    userName,
+    role,
+    unit,
+    updateName,
+    updateUnit,
+    accessToken,
+    userID,
+  } = useContext(Context);
   const [selectedUnit, setSelectedUnit] = useState(unit);
   const [nameOfUser, setNameOfUser] = useState(name);
   useEffect(() => {
@@ -264,6 +272,7 @@ export function SignOutButton(props: Props) {
                   name: nameOfUser,
                   unit: selectedUnit,
                   role,
+                  id: userID,
                 },
                 headers: {
                   'Content-Type': 'application/json',

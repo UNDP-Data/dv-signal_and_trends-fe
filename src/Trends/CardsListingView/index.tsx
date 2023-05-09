@@ -43,11 +43,14 @@ export function CardLayout(props: Props) {
           ? 'statuses=Approved&statuses=New'
           : 'statuses=Approved'
         : `statuses=${filters.status}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
           pageSize * (paginationValue - 1)
-        }&limit=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}`,
+        }&limit=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -74,9 +77,12 @@ export function CardLayout(props: Props) {
           ? 'statuses=Approved&statuses=New'
           : 'statuses=Approved'
         : `statuses=${filters.status}`;
+    const searchQueryParameter = filters.search
+      ? `&query=${filters.search}`
+      : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
