@@ -33,7 +33,7 @@ export function CardLayout(props: Props) {
     const statusQueryParameter =
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
-          ? '&statuses=Approved&statuses=New'
+          ? '&statuses=New&statuses=Approved'
           : `&statuses=${filters.status}`
         : '&statuses=Approved';
     const sdgQueryParameter =
@@ -41,7 +41,6 @@ export function CardLayout(props: Props) {
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
-    const accessTokenTemp = role === 'Admin' ? accessToken : API_ACCESS_TOKEN;
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
@@ -49,7 +48,7 @@ export function CardLayout(props: Props) {
         }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: accessTokenTemp,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -70,7 +69,7 @@ export function CardLayout(props: Props) {
     const statusQueryParameter =
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
-          ? 'statuses=Approved&statuses=New'
+          ? 'statuses=New&statuses=Approved'
           : `statuses=${filters.status}`
         : 'statuses=Approved';
     const sdgQueryParameter =
@@ -83,7 +82,7 @@ export function CardLayout(props: Props) {
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -92,29 +91,13 @@ export function CardLayout(props: Props) {
         if (countResponse.data === 0) {
           setPaginationValue(1);
           setSignalList([]);
-        } else if (role === 'Admin') {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
-              {
-                headers: {
-                  access_token: accessToken,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setPaginationValue(1);
-              setSignalList(
-                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-              );
-            });
         } else {
           axios
             .get(
               `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
               {
                 headers: {
-                  access_token: API_ACCESS_TOKEN,
+                  access_token: accessToken || API_ACCESS_TOKEN,
                 },
               },
             )
