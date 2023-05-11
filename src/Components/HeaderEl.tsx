@@ -64,17 +64,22 @@ export function Header(props: Props) {
             height='122'
           />
           <div className='undp-site-title'>
-            <span style={{ marginBottom: 'var(--spacing-04)' }}>
-              <a href='https://data.undp.org/' target='_blank' rel='noreferrer'>
+            <span>
+              <a
+                href='https://data.undp.org/'
+                className='logo-sub-head'
+                target='_blank'
+                rel='noreferrer'
+              >
                 Data Futures Platform
               </a>
             </span>
-            <br />
             <NavLink
               to='./'
               style={{
                 textDecoration: 'none',
                 color: 'var(--black)',
+                lineHeight: 1.25,
               }}
             >
               UNDP Future Trends and Signals System
