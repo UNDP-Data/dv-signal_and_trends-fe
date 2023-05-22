@@ -89,7 +89,6 @@ export function MyDrafts() {
     size,
   ) => {
     setPageSize(size);
-    setPaginationValue(1);
   };
 
   return (

@@ -97,7 +97,6 @@ export function CardLayout(props: Props) {
     size,
   ) => {
     setPageSize(size);
-    setPaginationValue(1);
   };
 
   return (

@@ -63,7 +63,6 @@ export function AddSignalsModal(props: Props) {
     size,
   ) => {
     setPageSize(size);
-    setPaginationValue(1);
   };
   useEffect(() => {
     setLoading(true);

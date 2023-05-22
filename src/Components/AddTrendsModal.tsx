@@ -53,7 +53,6 @@ export function AddTrendsModal(props: Props) {
     size,
   ) => {
     setPageSize(size);
-    setPaginationValue(1);
   };
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
