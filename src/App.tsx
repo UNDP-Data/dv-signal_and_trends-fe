@@ -26,9 +26,17 @@ function App() {
     role: undefined,
     accessToken: undefined,
     expiresOn: undefined,
+    notificationText: undefined,
   };
 
   const [state, dispatch] = useReducer(Reducer, initialState);
+
+  const updateNotificationText = (d?: string) => {
+    dispatch({
+      type: 'UPDATE_NOTIFICATION_TEXT',
+      payload: d,
+    });
+  };
 
   const updateUserName = (d?: string) => {
     dispatch({
@@ -141,6 +149,7 @@ function App() {
       updateAccessToken,
       updateExpiresOn,
       updateUserID,
+      updateNotificationText,
     }),
     [
       state,
@@ -151,6 +160,7 @@ function App() {
       updateAccessToken,
       updateExpiresOn,
       updateUserID,
+      updateNotificationText,
     ],
   );
   return (

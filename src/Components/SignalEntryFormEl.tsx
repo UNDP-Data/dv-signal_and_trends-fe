@@ -62,7 +62,8 @@ const FileAttachmentButton = styled.input`
 
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal, draft } = props;
-  const { userName, role, accessToken } = useContext(Context);
+  const { userName, role, accessToken, updateNotificationText } =
+    useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
@@ -116,22 +117,26 @@ export function SignalEntryFormEl(props: Props) {
     updateSignal?.status || 'New',
   );
   useEffect(() => {
-    axios
-      .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${selectedTrendsList.join(
-          '&ids=',
-        )}`,
-        {
-          headers: {
-            access_token: API_ACCESS_TOKEN,
+    if (selectedTrendsList.length > 0) {
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${selectedTrendsList.join(
+            '&ids=',
+          )}`,
+          {
+            headers: {
+              access_token: API_ACCESS_TOKEN,
+            },
           },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        setTrendsList(
-          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
-        );
-      });
+        )
+        .then((response: AxiosResponse) => {
+          setTrendsList(
+            sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+          );
+        });
+    } else {
+      setTrendsList([]);
+    }
   }, [selectedTrendsList]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -511,7 +516,7 @@ export function SignalEntryFormEl(props: Props) {
                   setSubmittingError(undefined);
                   axios({
                     method: 'post',
-                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
                       attachments: selectedFile,
                       created_by: userName,
@@ -539,6 +544,9 @@ export function SignalEntryFormEl(props: Props) {
                     .then(() => {
                       setButtonDisabled(false);
                       navigate('/signals');
+                      updateNotificationText(
+                        'Successfully submitted the signal for review',
+                      );
                     })
                     .catch(err => {
                       setButtonDisabled(false);
@@ -577,7 +585,7 @@ export function SignalEntryFormEl(props: Props) {
                   setSubmittingError(undefined);
                   axios({
                     method: 'post',
-                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
+                    url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
                       attachments: selectedFile,
                       created_by: userName,
@@ -605,6 +613,9 @@ export function SignalEntryFormEl(props: Props) {
                     .then(() => {
                       setButtonDisabled(false);
                       navigate('/my-drafts');
+                      updateNotificationText(
+                        'Successfully saved the signal to draft',
+                      );
                     })
                     .catch(err => {
                       setButtonDisabled(false);
@@ -702,6 +713,7 @@ export function SignalEntryFormEl(props: Props) {
                   .then(() => {
                     setButtonDisabled(false);
                     navigate(`/signals/${updateSignal.id}`);
+                    updateNotificationText('Successfully updated the signal');
                   })
                   .catch(err => {
                     setButtonDisabled(false);
@@ -799,6 +811,9 @@ export function SignalEntryFormEl(props: Props) {
                   .then(() => {
                     setButtonDisabled(false);
                     navigate('/signals');
+                    updateNotificationText(
+                      'Successfully submitted the signal for review',
+                    );
                   })
                   .catch(err => {
                     setButtonDisabled(false);
@@ -872,6 +887,9 @@ export function SignalEntryFormEl(props: Props) {
                   .then(() => {
                     setButtonDisabled(false);
                     navigate('/my-drafts');
+                    updateNotificationText(
+                      'Successfully saved the signal to draft',
+                    );
                   })
                   .catch(err => {
                     setButtonDisabled(false);

@@ -9,6 +9,7 @@ const Context = createContext<CtxDataType>({
   accessToken: undefined,
   expiresOn: undefined,
   userID: undefined,
+  notificationText: undefined,
   updateUserName: (_d?: string) => {},
   updateName: (_d?: string) => {},
   updateUnit: (_d?: string) => {},
@@ -16,6 +17,7 @@ const Context = createContext<CtxDataType>({
   updateUserID: (_d?: number) => {},
   updateRole: (_d?: 'Admin' | 'Curator' | 'User') => {},
   updateExpiresOn: (_d: Date) => {},
+  updateNotificationText: (_d?: string) => {},
 });
 
 export default Context;

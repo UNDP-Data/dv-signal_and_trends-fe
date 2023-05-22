@@ -2,9 +2,10 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { PublicClientApplication } from '@azure/msal-browser';
+import { notification } from 'antd';
 import { AddNewSignalEl, AddNewTrendEl } from './AddNew';
 import { AdminPanel } from './AdminPanel';
 import Context from './Context/Context';
@@ -28,7 +29,26 @@ function signOutClickHandler() {
 }
 
 function MainBody() {
-  const { name } = useContext(Context);
+  const { name, notificationText, updateNotificationText } =
+    useContext(Context);
+  const showNotification = (text: string) => {
+    const handleNotificationClose = () => {
+      updateNotificationText(undefined);
+    };
+    notification.success({
+      message: 'Success',
+      description: text,
+      placement: 'top',
+      className: 'undp-notification',
+      onClose: handleNotificationClose,
+      duration: 5,
+    });
+  };
+  useEffect(() => {
+    if (notificationText) {
+      showNotification(notificationText);
+    }
+  }, [notificationText]);
   return (
     <>
       <AuthenticatedTemplate>

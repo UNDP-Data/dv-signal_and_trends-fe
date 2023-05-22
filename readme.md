@@ -24,9 +24,9 @@ _All the main library/frameworks used in the project_
 ## Installation
 This project uses `npm`. For installation you will need to install `node` and `npm`, if you don't already have it. `node` and `npm` can be installed from [here](https://nodejs.org/en/download/).
 
-To install the project, sinply clone the the repo and them run `npm install` in the project folder. You can use terminal on Mac and Command Prompt on Windows.
+To install the project, simply clone the the repo and them run `npm install` in the project folder. You can use terminal on Mac and Command Prompt on Windows.
 
-This projest is bootstrapped with [`Vite`](https://vitejs.dev/) and was created using `npm create vite@latest` command.
+This project is bootstrapped with [`Vite`](https://vitejs.dev/) and was created using `npm create vite@latest` command.
 
 Run the terminal or command prompt and then run the following
 
@@ -37,7 +37,7 @@ npm install
 ```
 
 ## Local Development
-_Tutorial to deploy the app localy_
+_Tutorial to deploy the app locally_
 
 ## Available Scripts
 * `npm run dev`: Executes `vite` and start the local server for local deployment.

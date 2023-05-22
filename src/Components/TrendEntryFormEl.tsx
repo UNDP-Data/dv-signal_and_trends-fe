@@ -13,7 +13,7 @@ interface Props {
 
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { accessToken } = useContext(Context);
+  const { accessToken, updateNotificationText } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -286,6 +286,9 @@ export function TrendEntryFormEl(props: Props) {
                 .then(() => {
                   setButtonDisabled(false);
                   navigate('/trends');
+                  updateNotificationText(
+                    'Successfully submitted the trend for review',
+                  );
                 })
                 .catch(err => {
                   setButtonDisabled(false);
@@ -364,6 +367,7 @@ export function TrendEntryFormEl(props: Props) {
                 .then(() => {
                   setButtonDisabled(false);
                   navigate(`/trends/${updateTrend.id}`);
+                  updateNotificationText('Successfully updated the trend');
                 })
                 .catch((err: AxiosError) => {
                   setButtonDisabled(false);

@@ -15,6 +15,8 @@ export default (state: any, action: any) => {
       return { ...state, accessToken: action.payload };
     case 'UPDATE_EXPIRES_ON':
       return { ...state, expiresOn: action.payload };
+    case 'UPDATE_NOTIFICATION_TEXT':
+      return { ...state, notificationText: action.payload };
     default:
       return { ...state };
   }

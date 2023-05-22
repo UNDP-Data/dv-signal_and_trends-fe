@@ -89,6 +89,7 @@ export interface CtxDataType {
   accessToken?: string;
   userID?: number;
   expiresOn?: Date;
+  notificationText?: string;
   updateUserName: (_d: string) => void;
   updateName: (_d?: string) => void;
   updateAccessToken: (_d?: string) => void;
@@ -96,6 +97,7 @@ export interface CtxDataType {
   updateUserID: (_d?: number) => void;
   updateRole: (_d?: 'Admin' | 'Curator' | 'User') => void;
   updateExpiresOn: (_d: Date) => void;
+  updateNotificationText: (_d?: string) => void;
 }
 
 export interface UserDataType {
