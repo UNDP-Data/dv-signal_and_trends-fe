@@ -6,7 +6,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import Background from '../assets/UNDP-hero-image.png';
-import { CardLayout } from './CardsListingView';
+import { CardLayout } from './ListingView';
 import { SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
 import Context from '../Context/Context';
 import {
@@ -53,10 +53,9 @@ export function SignalsListing() {
             UNDP Future Trends and Signals System
           </h1>
           <h5 className='undp-typography'>
-            The Future Trends and Signals System is a participatory foresight
-            tool that captures signals of change noticed across UNDP, and
-            identifies the trends emerging – helping us all make stronger, more
-            future-aware decisions.
+            The Future Trends and Signals System captures signals of change
+            noticed across UNDP, and identifies the trends emerging – helping us
+            all make stronger, more future-aware decisions.
           </h5>
         </div>
       </HeroImageEl>
@@ -123,12 +122,15 @@ export function SignalsListing() {
             className='flex-div gap-00'
           >
             <Input
-              placeholder='Search a signal'
+              placeholder='Search for a signal'
               className='undp-input'
               size='large'
               value={searchQuery}
               onChange={d => {
                 setSearchQuery(d.target.value);
+              }}
+              onPressEnter={() => {
+                setFilters({ ...filters, search: searchQuery });
               }}
             />
             <button
@@ -327,10 +329,9 @@ export function ArchivedSignalsListing() {
             UNDP Future Trends and Signals System
           </h1>
           <h5 className='undp-typography'>
-            The Future Trends and Signals System is a participatory foresight
-            tool that captures signals of change noticed across UNDP, and
-            identifies the trends emerging – helping us all make stronger, more
-            future-aware decisions.
+            The Future Trends and Signals System captures signals of change
+            noticed across UNDP, and identifies the trends emerging – helping us
+            all make stronger, more future-aware decisions.
           </h5>
         </div>
       </HeroImageEl>
@@ -371,7 +372,7 @@ export function ArchivedSignalsListing() {
           />
         ) : (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
-            You don&apos;t have enough right to edit a trend
+            Admin rights required to view this page
           </p>
         )}
       </AuthenticatedTemplate>

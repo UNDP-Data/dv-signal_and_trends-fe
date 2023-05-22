@@ -39,7 +39,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=5&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=5&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -49,7 +49,7 @@ export function HomePage() {
       .then((response: AxiosResponse) => {
         if (response) {
           setSignalList(
-            sortBy(response.data, d => Date.parse(d.created_at))
+            sortBy(response.data.data, d => Date.parse(d.created_at))
               .reverse()
               .filter((_d, i) => i < 5),
           );
@@ -65,7 +65,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=5&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=5&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -75,7 +75,7 @@ export function HomePage() {
       .then((response: AxiosResponse) => {
         if (response) {
           setTrendList(
-            sortBy(response.data, d => Date.parse(d.created_at))
+            sortBy(response.data.data, d => Date.parse(d.created_at))
               .reverse()
               .filter((_d, i) => i < 5),
           );
@@ -96,10 +96,9 @@ export function HomePage() {
             UNDP Future Trends and Signals System
           </h1>
           <h5 className='undp-typography'>
-            The Future Trends and Signals System is a participatory foresight
-            tool that captures signals of change noticed across UNDP, and
-            identifies the trends emerging – helping us all make stronger, more
-            future-aware decisions.
+            The Future Trends and Signals System captures signals of change
+            noticed across UNDP, and identifies the trends emerging – helping us
+            all make stronger, more future-aware decisions.
           </h5>
         </div>
       </HeroImageEl>
@@ -112,7 +111,13 @@ export function HomePage() {
             className='flex-div flex-wrap margin-bottom-09'
             style={{ alignItems: 'stretch' }}
           >
-            <div style={{ width: 'calc(33.33% - 1.33rem)' }}>
+            <div
+              style={{
+                width: 'calc(33.33% - 1.33rem)',
+                flexGrow: 1,
+                minWidth: '20rem',
+              }}
+            >
               <h2 className='undp-typography margin-top-05 gap-07'>
                 Most Recent Trends
               </h2>
@@ -133,6 +138,8 @@ export function HomePage() {
                 to={`/trends/${d.id}`}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',
+                  flexGrow: 1,
+                  minWidth: '20rem',
                   alignItems: 'stretch',
                   backgroundColor: 'var(--gray-200)',
                   textDecoration: 'none',
@@ -158,7 +165,13 @@ export function HomePage() {
             className='flex-div flex-wrap margin-bottom-11'
             style={{ alignItems: 'stretch' }}
           >
-            <div style={{ width: 'calc(33.33% - 1.33rem)' }}>
+            <div
+              style={{
+                width: 'calc(33.33% - 1.33rem)',
+                flexGrow: 1,
+                minWidth: '20rem',
+              }}
+            >
               <h2 className='undp-typography margin-top-05 gap-07'>
                 Most Recent Signals
               </h2>
@@ -179,6 +192,8 @@ export function HomePage() {
                 key={i}
                 style={{
                   width: 'calc(33.33% - 1.33rem)',
+                  flexGrow: 1,
+                  minWidth: '20rem',
                   alignItems: 'stretch',
                   backgroundColor: 'var(--gray-200)',
                   textDecoration: 'none',

@@ -61,8 +61,8 @@ export interface SignalDataType {
   signature_secondary: SSList | '';
   steep: STEEPVList;
   url: string;
-  id: string;
-  connected_trends: string[];
+  id: number;
+  connected_trends: number[];
 }
 
 export interface TrendDataType {
@@ -76,9 +76,9 @@ export interface TrendDataType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modifications: any;
   time_horizon: 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)';
-  signals: string[];
-  id: string;
-  connected_signals: string[];
+  signals: number[];
+  id: number;
+  connected_signals: number[];
 }
 
 export interface CtxDataType {

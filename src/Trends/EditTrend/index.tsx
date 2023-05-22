@@ -18,10 +18,11 @@ export function EditTrend() {
   const { role, accessToken } = useContext(Context);
   const [trend, setTrend] = useState<TrendDataType | undefined>(undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [err, setError] = useState<any>(undefined);
+  const [error, setError] = useState<any>(undefined);
   const isAuthenticated = useIsAuthenticated();
   useEffect(() => {
     if (isAuthenticated) {
+      setError(undefined);
       axios
         .get(
           `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${id}`,
@@ -31,12 +32,22 @@ export function EditTrend() {
             },
           },
         )
-        .catch((error: AxiosError) => {
-          setError(error.toJSON());
-        })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((response: any) => {
           setTrend(response.data[0]);
+        })
+        .catch((err: AxiosError) => {
+          setError(
+            `Error code ${err.response?.status}: ${
+              err.response?.status === 404
+                ? 'No trend available with the selected ID'
+                : err.response?.data
+            }. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
         });
     }
   }, [id, isAuthenticated]);
@@ -60,11 +71,11 @@ export function EditTrend() {
         </h3>
         {role === 'User' ? (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
-            You don&apos;t have enough right to edit a trend
+            Admin or curator rights required to edit a trend
           </p>
         ) : (
           <>
-            {err ? (
+            {error ? (
               <p
                 className='undp-typography margin-top-07 padding-top-07 padding-bottom-07'
                 style={{
@@ -73,11 +84,10 @@ export function EditTrend() {
                   color: 'var(--dark-red)',
                 }}
               >
-                Error {err.status}: There is an error loading the trend please
-                try again
+                {error}
               </p>
             ) : null}
-            {!err && !trend ? (
+            {!error && !trend ? (
               <div className='undp-loader-container'>
                 <div className='undp-loader' />
               </div>

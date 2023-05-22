@@ -53,7 +53,7 @@ export function ListView(props: Props) {
           style={{ minWidth: '10%', width: '10rem' }}
           className='undp-table-head-cell'
         >
-          <CellDiv>STEEPV</CellDiv>
+          <CellDiv>STEEP+V</CellDiv>
         </div>
         <div
           style={{ minWidth: '20%', width: '20rem' }}

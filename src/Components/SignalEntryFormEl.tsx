@@ -69,7 +69,7 @@ export function SignalEntryFormEl(props: Props) {
     undefined,
   );
   const [trendModal, setTrendModal] = useState(false);
-  const [selectedTrendsList, setSelectedTrendsList] = useState<string[]>(
+  const [selectedTrendsList, setSelectedTrendsList] = useState<number[]>(
     updateSignal?.connected_trends || [],
   );
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -118,7 +118,9 @@ export function SignalEntryFormEl(props: Props) {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=100&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${selectedTrendsList.join(
+          '&ids=',
+        )}`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -127,10 +129,10 @@ export function SignalEntryFormEl(props: Props) {
       )
       .then((response: AxiosResponse) => {
         setTrendsList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
       });
-  }, []);
+  }, [selectedTrendsList]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileInputRef = useRef<any>(null);
@@ -174,6 +176,27 @@ export function SignalEntryFormEl(props: Props) {
           characters left
         </p>
       </div>
+      <div className='margin-bottom-07'>
+        <h5 className='undp-typography'>Signal Description*</h5>
+        <Input.TextArea
+          className='undp-input'
+          placeholder='Signal description'
+          maxLength={200}
+          status={description ? (description.length > 30 ? '' : 'error') : ''}
+          onChange={e => {
+            setDescription(e.target.value);
+          }}
+          value={description}
+        />
+        <p
+          className='undp-typography margin-top-02 margin-bottom-00'
+          style={{ color: 'var(--gray-500)' }}
+        >
+          Keep this description concise and think about using commonly used
+          terms and clear language. Min 30 characters required.{' '}
+          {description ? 200 - description.length : 200} characters left
+        </p>
+      </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
           <h5 className='undp-typography'>Source Material*</h5>
@@ -211,45 +234,22 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
       </div>
-      <div className='flex-div'>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Signal Description*</h5>
-          <Input.TextArea
-            className='undp-input'
-            placeholder='Signal description'
-            maxLength={200}
-            status={description ? (description.length > 30 ? '' : 'error') : ''}
-            onChange={e => {
-              setDescription(e.target.value);
-            }}
-            value={description}
-          />
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Keep this description concise and think about using commonly used
-            terms and clear language. Min 30 characters required.{' '}
-            {description ? 200 - description.length : 200} characters left
-          </p>
-        </div>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Signal Relevance*</h5>
-          <Input.TextArea
-            className='undp-input'
-            placeholder='Signal relevance'
-            onChange={e => {
-              setRelevance(e.target.value);
-            }}
-            value={relevance}
-          />
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Consider both the near term and longer term futures of development.
-          </p>
-        </div>
+      <div className='margin-bottom-07'>
+        <h5 className='undp-typography'>Signal Relevance*</h5>
+        <Input.TextArea
+          className='undp-input'
+          placeholder='Signal relevance'
+          onChange={e => {
+            setRelevance(e.target.value);
+          }}
+          value={relevance}
+        />
+        <p
+          className='undp-typography margin-top-02 margin-bottom-00'
+          style={{ color: 'var(--gray-500)' }}
+        >
+          Consider both the near term and longer term futures of development.
+        </p>
       </div>
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>STEEP+V*</h5>
@@ -404,7 +404,7 @@ export function SignalEntryFormEl(props: Props) {
           <h5 className='undp-typography'>Link signal to trend(s)</h5>
           {trendsList ? (
             <>
-              {selectedTrendsList?.map((d, i) => (
+              {trendsList?.map((d, i) => (
                 <div
                   className='flex-div flex-space-between flex-vert-align-center'
                   key={i}
@@ -417,18 +417,12 @@ export function SignalEntryFormEl(props: Props) {
                   }}
                 >
                   <p className='undp-typography margin-bottom-00'>
-                    {
-                      // eslint-disable-next-line no-underscore-dangle
-                      trendsList[trendsList.findIndex(el => el.id === d)]
-                        .headline
-                    }
+                    {d.headline}
                   </p>
                   <button
                     onClick={() => {
-                      const arr = [
-                        ...selectedTrendsList.filter(el => el !== d),
-                      ];
-                      setSelectedTrendsList(arr);
+                      const arr = [...trendsList.filter(el => el.id !== d.id)];
+                      setTrendsList(arr);
                     }}
                     type='button'
                     className='undp-button button-tertiary padding-bottom-00 padding-top-00'
@@ -548,7 +542,15 @@ export function SignalEntryFormEl(props: Props) {
                     })
                     .catch(err => {
                       setButtonDisabled(false);
-                      setSubmittingError(err.message);
+                      setSubmittingError(
+                        `Error code ${err.response?.status}: ${
+                          err.response?.data
+                        }. ${
+                          err.response?.status === 500
+                            ? 'Please try again in some time'
+                            : ''
+                        }`,
+                      );
                     });
                 }}
               >
@@ -606,7 +608,15 @@ export function SignalEntryFormEl(props: Props) {
                     })
                     .catch(err => {
                       setButtonDisabled(false);
-                      setSubmittingError(err.message);
+                      setSubmittingError(
+                        `Error code ${err.response?.status}: ${
+                          err.response?.data
+                        }. ${
+                          err.response?.status === 500
+                            ? 'Please try again in some time'
+                            : ''
+                        }`,
+                      );
                     });
                 }}
               >
@@ -644,6 +654,21 @@ export function SignalEntryFormEl(props: Props) {
                 !primarySS ||
                 buttonDisabled
               }
+              title={
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+                  ? 'All fields are required to update a signal. Descriptions should be > 30 letters'
+                  : 'Click to update a signal'
+              }
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
@@ -680,7 +705,15 @@ export function SignalEntryFormEl(props: Props) {
                   })
                   .catch(err => {
                     setButtonDisabled(false);
-                    setSubmittingError(err.message);
+                    setSubmittingError(
+                      `Error code ${err.response?.status}: ${
+                        err.response?.data
+                      }. ${
+                        err.response?.status === 500
+                          ? 'Please try again in some time'
+                          : ''
+                      }`,
+                    );
                   });
               }}
             >
@@ -719,6 +752,21 @@ export function SignalEntryFormEl(props: Props) {
                 !primarySS ||
                 buttonDisabled
               }
+              title={
+                !headline ||
+                !sourceLink ||
+                !description ||
+                description?.length < 30 ||
+                !steep ||
+                !sdg ||
+                !location ||
+                !relevance ||
+                !keyword1 ||
+                !primarySS ||
+                buttonDisabled
+                  ? 'All fields are required to submit a signal. Descriptions should be > 30 letters'
+                  : 'Click to submit a signal'
+              }
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
@@ -754,7 +802,15 @@ export function SignalEntryFormEl(props: Props) {
                   })
                   .catch(err => {
                     setButtonDisabled(false);
-                    setSubmittingError(err.message);
+                    setSubmittingError(
+                      `Error code ${err.response?.status}: ${
+                        err.response?.data
+                      }. ${
+                        err.response?.status === 500
+                          ? 'Please try again in some time'
+                          : ''
+                      }`,
+                    );
                   });
               }}
             >
@@ -775,6 +831,14 @@ export function SignalEntryFormEl(props: Props) {
                 description?.length < 30 ||
                 !headline ||
                 buttonDisabled
+              }
+              title={
+                !description ||
+                description?.length < 30 ||
+                !headline ||
+                buttonDisabled
+                  ? 'Signal headline and description required. Description should be > 30 letters'
+                  : 'Click to save as a draft'
               }
               onClick={() => {
                 setButtonDisabled(true);
@@ -811,7 +875,15 @@ export function SignalEntryFormEl(props: Props) {
                   })
                   .catch(err => {
                     setButtonDisabled(false);
-                    setSubmittingError(err.message);
+                    setSubmittingError(
+                      `Error code ${err.response?.status}: ${
+                        err.response?.data
+                      }. ${
+                        err.response?.status === 500
+                          ? 'Please try again in some time'
+                          : ''
+                      }`,
+                    );
                   });
               }}
             >
@@ -825,7 +897,7 @@ export function SignalEntryFormEl(props: Props) {
             className='margin-top-00 margin-bottom-00'
             style={{ color: 'var(--dark-red)' }}
           >
-            Error submitting signal please try again
+            {submittingError}
           </p>
         ) : null}
       </div>

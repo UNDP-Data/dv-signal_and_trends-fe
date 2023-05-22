@@ -16,6 +16,7 @@ export function TrendDetail() {
   const [connectedSignals, setConnectedSignal] = useState<
     SignalDataType[] | undefined
   >(undefined);
+  const [error, setError] = useState<undefined | string>(undefined);
   const { id } = useParams();
   const { role, accessToken } = useContext(Context);
   useEffect(() => {
@@ -45,6 +46,19 @@ export function TrendDetail() {
             )
             .then((res: AxiosResponse) => {
               setConnectedSignal(res.data);
+            })
+            .catch(err => {
+              setError(
+                `Error code ${err.response?.status}: ${
+                  err.response?.status === 404
+                    ? 'No trend available with the selected IDs'
+                    : err.response?.data
+                }. ${
+                  err.response?.status === 500
+                    ? 'Please try again in some time'
+                    : ''
+                }`,
+              );
             });
         } else {
           setConnectedSignal([]);
@@ -138,9 +152,7 @@ export function TrendDetail() {
           ) : null}
           <p className='undp-typography'>{data.description}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-bottom-00 margin-top-00'>
-            Time Horizon
-          </h6>
+          <h6 className='undp-typography margin-top-00'>Time Horizon</h6>
           <div className='flex-div flex-wrap margin-bottom-07'>
             <div
               className='undp-chip'
@@ -162,10 +174,8 @@ export function TrendDetail() {
             </div>
           </div>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-bottom-00 margin-top-00'>
-            Impact
-          </h6>
-          <p>
+          <h6 className='undp-typography margin-top-00'>Impact</h6>
+          <p className='undp-typography'>
             <span className='bold'>Impact Rating: {data.impact_rating}</span>
             {data.impact_description ? (
               <>
@@ -189,6 +199,13 @@ export function TrendDetail() {
                 <p className='undp-typography'>No connected signals</p>
               )}
             </div>
+          ) : error ? (
+            <p
+              className='margin-top-00 margin-bottom-00 undp-typography'
+              style={{ color: 'var(--dark-red)' }}
+            >
+              {error}
+            </p>
           ) : (
             <div className='undp-loader-container'>
               <div className='undp-loader' />
@@ -209,7 +226,7 @@ export function TrendDetail() {
                 className='undp-typography'
                 style={{ color: 'var(--dark-red)' }}
               >
-                You don&apos;t have enough right to edit a trend
+                Admin or curator rights required to edit a trend
               </p>
             ) : (
               <NavLink

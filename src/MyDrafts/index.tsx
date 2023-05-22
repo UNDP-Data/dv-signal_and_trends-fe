@@ -9,52 +9,81 @@ import {
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { SignalDataType } from '../Types';
-import { CardList } from '../Signals/CardsListingView/CardsList';
+import { CardList } from '../Signals/ListingView/CardsList';
 
 export function MyDrafts() {
   const { accessToken, userName } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
+  const [error, setError] = useState<undefined | string>(undefined);
   const [pageSize, setPageSize] = useState(25);
   const [signalList, setSignalList] = useState<SignalDataType[] | undefined>(
     undefined,
   );
-  const [totalNo, setTotalNo] = useState(0);
+  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   useEffect(() => {
+    setError(undefined);
+    setSignalList(undefined);
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?statuses=Draft&created_by=${userName}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?&page=${paginationValue}&per_page=${pageSize}&statuses=Draft&created_by=${userName}`,
         {
           headers: {
             access_token: accessToken,
           },
         },
       )
-      .then((countResponse: AxiosResponse) => {
-        setTotalNo(countResponse.data);
-        if (countResponse.data === 0) {
-          setPaginationValue(1);
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+        );
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
           setSignalList([]);
         } else {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
-                pageSize * (paginationValue - 1)
-              }&limit=${pageSize}&statuses=Draft&created_by=${userName}`,
-              {
-                headers: {
-                  access_token: accessToken,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setPaginationValue(1);
-              setSignalList(
-                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-              );
-            });
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
         }
       });
-  }, [accessToken, userName, pageSize, paginationValue]);
+  }, [paginationValue]);
+  useEffect(() => {
+    setError(undefined);
+    setSignalList(undefined);
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?&page=1&per_page=${pageSize}&statuses=Draft&created_by=${userName}`,
+        {
+          headers: {
+            access_token: accessToken,
+          },
+        },
+      )
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+        );
+        setPaginationValue(1);
+        setTotalNoOfPages(response.data.total_pages);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
+          setSignalList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+        }
+      });
+  }, [accessToken, userName, pageSize]);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     size,
@@ -98,13 +127,20 @@ export function MyDrafts() {
                 }}
                 defaultCurrent={1}
                 current={paginationValue}
-                total={totalNo}
+                total={totalNoOfPages * pageSize}
                 pageSize={pageSize}
                 showSizeChanger
                 onShowSizeChange={onShowSizeChange}
               />
             </div>
           </div>
+        ) : error ? (
+          <p
+            className='margin-top-00 margin-bottom-00'
+            style={{ color: 'var(--dark-red)' }}
+          >
+            {error}
+          </p>
         ) : (
           <div className='undp-loader-container'>
             <div className='undp-loader' />

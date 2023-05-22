@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 import {
@@ -18,11 +18,12 @@ import {
   TrendDataType,
   TrendFiltersDataType,
 } from '../Types';
+import Context from '../Context/Context';
 
 interface Props {
   setTrendModal: (_d: boolean) => void;
-  selectedTrendsList: string[];
-  setSelectedTrendsList: (_d: string[]) => void;
+  selectedTrendsList: number[];
+  setSelectedTrendsList: (_d: number[]) => void;
 }
 
 const RadioOutline = styled.div`
@@ -39,9 +40,11 @@ const RadioOutline = styled.div`
 
 export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
+  const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [totalNo, setTotalNo] = useState(0);
+  const [error, setError] = useState<undefined | string>(undefined);
+  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
@@ -60,6 +63,7 @@ export function AddTrendsModal(props: Props) {
   });
   useEffect(() => {
     setLoading(true);
+    setError(undefined);
     const horizonQueryParameter =
       filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
     const ratingQueryParameter =
@@ -71,24 +75,37 @@ export function AddTrendsModal(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=${
-          pageSize * (paginationValue - 1)
-        }&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
       .then((response: AxiosResponse) => {
         setTrendsList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
         setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
+          setTrendsList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+          setLoading(false);
+        }
       });
-  }, [paginationValue, pageSize]);
+  }, [paginationValue]);
   useEffect(() => {
     setLoading(true);
+    setError(undefined);
     const horizonQueryParameter =
       filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
     const ratingQueryParameter =
@@ -100,38 +117,36 @@ export function AddTrendsModal(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/count?statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
-      .then((countResponse: AxiosResponse) => {
-        setTotalNo(countResponse.data);
-        if (countResponse.data === 0) {
-          setPaginationValue(1);
+      .then((response: AxiosResponse) => {
+        setTrendsList(
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+        );
+        setTotalNoOfPages(response.data.total_pages);
+        setPaginationValue(1);
+        setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
           setTrendsList([]);
         } else {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?offset=0&limit=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}`,
-              {
-                headers: {
-                  access_token: API_ACCESS_TOKEN,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setPaginationValue(1);
-              setTrendsList(
-                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-              );
-              setLoading(false);
-            });
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+          setLoading(false);
         }
       });
-  }, [filters]);
+  }, [filters, pageSize]);
   return (
     <Modal
       className='undp-modal'
@@ -209,12 +224,15 @@ export function AddTrendsModal(props: Props) {
         className='flex-div gap-00 margin-bottom-05'
       >
         <Input
-          placeholder='Search a signal'
+          placeholder='Search for a signal'
           className='undp-input'
           size='large'
           value={searchQuery}
           onChange={d => {
             setSearchQuery(d.target.value);
+          }}
+          onPressEnter={() => {
+            setFilters({ ...filters, search: searchQuery });
           }}
         />
         <button
@@ -231,6 +249,13 @@ export function AddTrendsModal(props: Props) {
         <div className='undp-loader-container'>
           <div className='undp-loader' />
         </div>
+      ) : error ? (
+        <p
+          className='margin-top-00 margin-bottom-00'
+          style={{ color: 'var(--dark-red)' }}
+        >
+          {error}
+        </p>
       ) : trendsList.length > 0 ? (
         <div className='margin-bottom-09'>
           <Collapse
@@ -254,7 +279,7 @@ export function AddTrendsModal(props: Props) {
                     onClick={e => {
                       e.stopPropagation();
                       if (
-                        selectedTrendsList.findIndex(el => el === d.id) === -1
+                        selectedTrendsList?.findIndex(el => el === d.id) === -1
                       ) {
                         const arr = [...selectedTrendsList];
                         arr.push(d.id);
@@ -312,7 +337,7 @@ export function AddTrendsModal(props: Props) {
           }}
           defaultCurrent={1}
           current={paginationValue}
-          total={totalNo}
+          total={pageSize * totalNoOfPages}
           pageSize={pageSize}
           showSizeChanger
           onShowSizeChange={onShowSizeChange}

@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN, SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
 import {
@@ -19,11 +19,12 @@ import {
   SSList,
   STEEPVList,
 } from '../Types';
+import Context from '../Context/Context';
 
 interface Props {
   setSignalModal: (_d: boolean) => void;
-  trendsSignal: string[];
-  setTrendsSignal: (_d: string[]) => void;
+  trendsSignal: number[];
+  setTrendsSignal: (_d: number[]) => void;
 }
 
 const RadioOutline = styled.div`
@@ -41,9 +42,11 @@ const RadioOutline = styled.div`
 
 export function AddSignalsModal(props: Props) {
   const { setSignalModal, trendsSignal, setTrendsSignal } = props;
+  const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [totalNo, setTotalNo] = useState(0);
+  const [error, setError] = useState<undefined | string>(undefined);
+  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<SignalDataType[]>([]);
 
@@ -64,6 +67,7 @@ export function AddSignalsModal(props: Props) {
   };
   useEffect(() => {
     setLoading(true);
+    setError(undefined);
     setSignalList([]);
     const steepQueryParameter =
       filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
@@ -79,24 +83,37 @@ export function AddSignalsModal(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
-          pageSize * (paginationValue - 1)
-        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
       .then((response: AxiosResponse) => {
         setSignalList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
         setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
+          setSignalList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+          setLoading(false);
+        }
       });
-  }, [paginationValue, pageSize]);
+  }, [paginationValue]);
   useEffect(() => {
     setSignalList([]);
+    setError(undefined);
     setLoading(true);
     const steepQueryParameter =
       filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
@@ -112,38 +129,36 @@ export function AddSignalsModal(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
-      .then((countResponse: AxiosResponse) => {
-        setTotalNo(countResponse.data);
-        if (countResponse.data === 0) {
-          setPaginationValue(1);
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+        );
+        setTotalNoOfPages(response.data.total_pages);
+        setPaginationValue(1);
+        setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
           setSignalList([]);
         } else {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
-              {
-                headers: {
-                  access_token: API_ACCESS_TOKEN,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setPaginationValue(1);
-              setLoading(false);
-              setSignalList(
-                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-              );
-            });
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+          setLoading(false);
         }
       });
-  }, [filters]);
+  }, [filters, pageSize]);
   return (
     <Modal
       className='undp-modal'
@@ -253,12 +268,15 @@ export function AddSignalsModal(props: Props) {
         className='flex-div gap-00 margin-bottom-05'
       >
         <Input
-          placeholder='Search a signal'
+          placeholder='Search for a signal'
           className='undp-input'
           size='large'
           value={searchQuery}
           onChange={d => {
             setSearchQuery(d.target.value);
+          }}
+          onPressEnter={() => {
+            setFilters({ ...filters, search: searchQuery });
           }}
         />
         <button
@@ -276,6 +294,13 @@ export function AddSignalsModal(props: Props) {
         <div className='undp-loader-container'>
           <div className='undp-loader' />
         </div>
+      ) : error ? (
+        <p
+          className='margin-top-00 margin-bottom-00'
+          style={{ color: 'var(--dark-red)' }}
+        >
+          {error}
+        </p>
       ) : signalList.length > 0 ? (
         <div className='margin-bottom-09'>
           <Collapse
@@ -354,7 +379,7 @@ export function AddSignalsModal(props: Props) {
           }}
           defaultCurrent={1}
           current={paginationValue}
-          total={totalNo}
+          total={totalNoOfPages * pageSize}
           pageSize={pageSize}
           showSizeChanger
           onShowSizeChange={onShowSizeChange}

@@ -19,11 +19,13 @@ export function AdminPanel() {
   const [paginationValue, setPaginationValue] = useState(1);
   const [filterRole, setFilterRole] = useState('All Roles');
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
+  const [error, setError] = useState<undefined | string>(undefined);
   const [filter, setFilter] = useState<undefined | string>(undefined);
-  const [totalNo, setTotalNo] = useState(0);
+  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   useEffect(() => {
     if (role === 'Admin') {
       setUserList(undefined);
+      setError(undefined);
       const roleQueryParameter =
         filterRole === 'All Roles'
           ? 'roles=User&roles=Curator&roles=Admin'
@@ -31,52 +33,7 @@ export function AdminPanel() {
       const searchQueryParameter = filter ? `&query=${filter}` : '';
       axios
         .get(
-          `https://signals-and-trends-api.azurewebsites.net/v1/users/count?${roleQueryParameter}${searchQueryParameter}`,
-          {
-            headers: {
-              access_token: accessToken,
-            },
-          },
-        )
-        .then((countResponse: AxiosResponse) => {
-          setTotalNo(countResponse.data);
-          if (countResponse.data === 0) {
-            setTotalNo(countResponse.data);
-            setPaginationValue(1);
-            setUserList([]);
-          } else {
-            axios
-              .get(
-                `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
-                  50 * (paginationValue - 1)
-                }&limit=50&${roleQueryParameter}${searchQueryParameter}`,
-                {
-                  headers: {
-                    access_token: accessToken,
-                  },
-                },
-              )
-              .then((response: AxiosResponse) => {
-                setPaginationValue(1);
-                setUserList(response.data);
-              });
-          }
-        });
-    }
-  }, [role, accessToken, filterRole]);
-  useEffect(() => {
-    if (role === 'Admin') {
-      setUserList(undefined);
-      const roleQueryParameter =
-        filterRole === 'All Roles'
-          ? 'roles=User&roles=Curator&roles=Admin'
-          : `roles=${filterRole}`;
-      const searchQueryParameter = filter ? `&query=${filter}` : '';
-      axios
-        .get(
-          `https://signals-and-trends-api.azurewebsites.net/v1/users/list??offset=${
-            50 * (paginationValue - 1)
-          }&limit=50&${roleQueryParameter}${searchQueryParameter}`,
+          `https://signals-and-trends-api.azurewebsites.net/v1/users/list?&page=1&per_page=50&${roleQueryParameter}${searchQueryParameter}`,
           {
             headers: {
               access_token: accessToken,
@@ -84,7 +41,45 @@ export function AdminPanel() {
           },
         )
         .then((response: AxiosResponse) => {
-          setUserList(response.data);
+          setUserList(response.data.data);
+          setPaginationValue(1);
+        })
+        .catch(err => {
+          if (err.response?.status === 404) {
+            setUserList([]);
+          } else {
+            setError(
+              `Error code ${err.response?.status}: ${err.response?.data}. ${
+                err.response?.status === 500
+                  ? 'Please try again in some time'
+                  : ''
+              }`,
+            );
+          }
+        });
+    }
+  }, [role, accessToken, filterRole]);
+  useEffect(() => {
+    if (role === 'Admin') {
+      setUserList(undefined);
+      setError(undefined);
+      const roleQueryParameter =
+        filterRole === 'All Roles'
+          ? 'roles=User&roles=Curator&roles=Admin'
+          : `roles=${filterRole}`;
+      const searchQueryParameter = filter ? `&query=${filter}` : '';
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/users/list?&page=${paginationValue}&per_page=50&${roleQueryParameter}${searchQueryParameter}`,
+          {
+            headers: {
+              access_token: accessToken,
+            },
+          },
+        )
+        .then((response: AxiosResponse) => {
+          setTotalNoOfPages(response.data.total_pages);
+          setUserList(response.data.data);
         });
     }
   }, [paginationValue]);
@@ -148,6 +143,9 @@ export function AdminPanel() {
           onChange={d => {
             setSearchQuery(d.target.value);
           }}
+          onPressEnter={() => {
+            setFilter(searchQuery);
+          }}
         />
         <button
           type='button'
@@ -178,7 +176,7 @@ export function AdminPanel() {
                       }}
                       defaultCurrent={1}
                       current={paginationValue}
-                      total={totalNo}
+                      total={totalNoOfPages * 50}
                       pageSize={50}
                       showSizeChanger={false}
                     />
@@ -198,6 +196,13 @@ export function AdminPanel() {
                   No users available matching your criteria
                 </h5>
               )
+            ) : error ? (
+              <p
+                className='margin-top-00 margin-bottom-00'
+                style={{ color: 'var(--dark-red)' }}
+              >
+                {error}
+              </p>
             ) : (
               <div className='undp-loader-container'>
                 <div className='undp-loader' />

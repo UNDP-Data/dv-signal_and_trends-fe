@@ -1,6 +1,5 @@
 import { Input, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
@@ -37,8 +36,7 @@ export function TrendEntryFormEl(props: Props) {
   const [impactDescription, setImpactDescription] = useState<string | null>(
     updateTrend ? updateTrend.impact_description : null,
   );
-  const [signalList, setSignalList] = useState<SignalDataType[] | null>(null);
-  const [trendsSignal, setTrendsSignal] = useState<string[]>(
+  const [trendsSignal, setTrendsSignal] = useState<number[]>(
     updateTrend ? updateTrend.connected_signals || [] : [],
   );
   const [connectedSignal, setConnectedSignals] = useState<
@@ -47,22 +45,6 @@ export function TrendEntryFormEl(props: Props) {
   const [trendStatus, setTrendStatus] = useState<string>(
     updateTrend?.status || 'New',
   );
-  useEffect(() => {
-    axios
-      .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=100&statuses=Approved`,
-        {
-          headers: {
-            access_token: API_ACCESS_TOKEN,
-          },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        setSignalList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-        );
-      });
-  }, []);
   useEffect(() => {
     if (trendsSignal.length > 0) {
       const signalIds = trendsSignal.toString().replaceAll(',', '&ids=');
@@ -85,7 +67,7 @@ export function TrendEntryFormEl(props: Props) {
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Trend headline*</h5>
+        <h5 className='undp-typography'>Trend Headline*</h5>
         <Input
           className='undp-input'
           placeholder='Enter trend headline (max 50 characters)'
@@ -99,9 +81,9 @@ export function TrendEntryFormEl(props: Props) {
           className='undp-typography margin-top-02 margin-bottom-00'
           style={{ color: 'var(--gray-500)' }}
         >
-          Useful headlines are clear, concise and can stand alone as a simple
-          description of the Signal. {headline ? 100 - headline.length : 100}{' '}
-          characters left
+          A concise, self-sufficient headline that conveys the essence of the
+          trend without needing further explanation.{' '}
+          {headline ? 100 - headline.length : 100} characters left
         </p>
       </div>
       <div className='margin-bottom-07'>
@@ -109,7 +91,7 @@ export function TrendEntryFormEl(props: Props) {
         <Input.TextArea
           className='undp-input'
           placeholder='Trend description'
-          maxLength={200}
+          maxLength={400}
           status={description ? (description.length > 30 ? '' : 'error') : ''}
           onChange={e => {
             setDescription(e.target.value);
@@ -120,14 +102,14 @@ export function TrendEntryFormEl(props: Props) {
           className='undp-typography margin-top-02 margin-bottom-00'
           style={{ color: 'var(--gray-500)' }}
         >
-          Keep this description concise and think about using commonly used
-          terms and clear language. Min 30 characters required.{' '}
-          {description ? 200 - description.length : 200} characters left
+          A concise definition of the trend that makes it easy to decide which
+          signals link to it. {description ? 400 - description.length : 400}{' '}
+          characters left
         </p>
       </div>
       <div className='margin-bottom-09'>
         <h5 className='undp-typography'>Signals related to the trend</h5>
-        {signalList ? (
+        {connectedSignal ? (
           <>
             {connectedSignal?.map((d, i) => (
               <div
@@ -141,13 +123,7 @@ export function TrendEntryFormEl(props: Props) {
                   marginBottom: 'var(--spacing-05)',
                 }}
               >
-                <p className='undp-typography margin-bottom-00'>
-                  {
-                    // eslint-disable-next-line no-underscore-dangle
-                    signalList[signalList.findIndex(el => el.id === d.id)]
-                      .headline
-                  }
-                </p>
+                <p className='undp-typography margin-bottom-00'>{d.headline}</p>
                 <button
                   onClick={() => {
                     const arr = [...trendsSignal.filter(el => el !== d.id)];
@@ -238,8 +214,8 @@ export function TrendEntryFormEl(props: Props) {
           className='undp-typography margin-top-02 margin-bottom-00'
           style={{ color: 'var(--gray-500)' }}
         >
-          Keep this description concise and think about using commonly used
-          terms and clear language. Min 30 characters required
+          A concise description of the impact/s of this trend on development.
+          Min 30 characters required
         </p>
       </div>
       {updateTrend ? (
@@ -313,7 +289,15 @@ export function TrendEntryFormEl(props: Props) {
                 })
                 .catch(err => {
                   setButtonDisabled(false);
-                  setSubmittingError(err.message);
+                  setSubmittingError(
+                    `Error code ${err.response?.status}: ${
+                      err.response?.data
+                    }. ${
+                      err.response?.status === 500
+                        ? 'Please try again in some time'
+                        : ''
+                    }`,
+                  );
                 });
             }}
           >
@@ -383,7 +367,15 @@ export function TrendEntryFormEl(props: Props) {
                 })
                 .catch((err: AxiosError) => {
                   setButtonDisabled(false);
-                  setSubmittingError(err.message);
+                  setSubmittingError(
+                    `Error code ${err.response?.status}: ${
+                      err.response?.data
+                    }. ${
+                      err.response?.status === 500
+                        ? 'Please try again in some time'
+                        : ''
+                    }`,
+                  );
                 });
             }}
           >
@@ -395,7 +387,7 @@ export function TrendEntryFormEl(props: Props) {
               className='margin-top-00 margin-bottom-00'
               style={{ color: 'var(--dark-red)' }}
             >
-              Error submitting trend please try again
+              {submittingError}
             </p>
           ) : null}
         </div>

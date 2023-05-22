@@ -235,7 +235,7 @@ export function SignalDetail() {
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>SDGs</h6>
           <div className='flex-div flex-wrap margin-top-03'>
-            {data.sdgs ? (
+            {data.sdgs && data.sdgs.length > 0 ? (
               <>
                 {data.sdgs.map((sdg, j) => (
                   <div
@@ -258,7 +258,7 @@ export function SignalDetail() {
           </div>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Relevance</h6>
-          <p className='undp-typography margin-top-05'>{data.relevance}</p>
+          <p className='undp-typography'>{data.relevance}</p>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Source</h6>
           {isValidUrl(data.url) ? (
@@ -271,7 +271,7 @@ export function SignalDetail() {
               {data.url}
             </a>
           ) : (
-            <p className='undp-typography margin-top-05'>{data.url}</p>
+            <p className='undp-typography'>{data.url}</p>
           )}
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
@@ -294,7 +294,7 @@ export function SignalDetail() {
           )}
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='undp-typography margin-top-00'>Created by</h6>
-          <p className='undp-typography margin-top-05 margin-bottom-09'>
+          <p className='undp-typography margin-bottom-09'>
             {`${data.created_by} on ${new Date(data.created_at).getDate()}-${
               MONTHS[new Date(data.created_at).getMonth()]
             }-${new Date(data.created_at).getFullYear()}`}
@@ -305,7 +305,7 @@ export function SignalDetail() {
                 className='undp-typography'
                 style={{ color: 'var(--dark-red)' }}
               >
-                You don&apos;t have enough right to edit a signal
+                Admin or curator rights required to edit a signal
               </p>
             ) : (
               <NavLink

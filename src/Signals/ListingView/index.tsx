@@ -17,7 +17,7 @@ export function CardLayout(props: Props) {
   const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [totalNo, setTotalNo] = useState(0);
+  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const { role, accessToken } = useContext(Context);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
@@ -43,9 +43,7 @@ export function CardLayout(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=${
-          pageSize * (paginationValue - 1)
-        }&limit=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -54,10 +52,10 @@ export function CardLayout(props: Props) {
       )
       .then((response: AxiosResponse) => {
         setSignalList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
       });
-  }, [paginationValue, pageSize]);
+  }, [paginationValue]);
   useEffect(() => {
     setSignalList(undefined);
     const steepQueryParameter =
@@ -79,37 +77,21 @@ export function CardLayout(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/count?${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
-      .then((countResponse: AxiosResponse) => {
-        setTotalNo(countResponse.data);
-        if (countResponse.data === 0) {
-          setPaginationValue(1);
-          setSignalList([]);
-        } else {
-          axios
-            .get(
-              `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?offset=0&limit=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
-              {
-                headers: {
-                  access_token: accessToken || API_ACCESS_TOKEN,
-                },
-              },
-            )
-            .then((response: AxiosResponse) => {
-              setPaginationValue(1);
-              setSignalList(
-                sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-              );
-            });
-        }
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+        );
+        setTotalNoOfPages(response.data.total_pages);
+        setPaginationValue(1);
       });
-  }, [role, filters, accessToken]);
+  }, [role, filters, accessToken, pageSize]);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     size,
@@ -122,44 +104,42 @@ export function CardLayout(props: Props) {
     <div style={{ padding: '0 1rem' }}>
       {signalList ? (
         <div>
-          {view === 'cardView' ? (
-            <>
-              <div className='flex-div flex-wrap'>
-                {signalList.length > 0 ? (
-                  <CardList data={signalList} />
-                ) : (
-                  <h5
-                    className='undp-typography bold'
-                    style={{
-                      backgroundColor: 'var(--gray-200)',
-                      textAlign: 'center',
-                      padding: 'var(--spacing-07)',
-                      width: 'calc(100% - 4rem)',
-                      border: '1px solid var(--gray-400)',
-                    }}
-                  >
-                    No signals available matching your criteria
-                  </h5>
-                )}
-              </div>
-              <div className='flex-div flex-hor-align-center margin-top-07'>
-                <Pagination
-                  className='undp-pagination'
-                  onChange={e => {
-                    setPaginationValue(e);
-                  }}
-                  defaultCurrent={1}
-                  current={paginationValue}
-                  total={totalNo}
-                  pageSize={pageSize}
-                  showSizeChanger
-                  onShowSizeChange={onShowSizeChange}
-                />
-              </div>
-            </>
-          ) : (
-            <ListView data={signalList} />
-          )}
+          <div className='flex-div flex-wrap'>
+            {signalList.length > 0 ? (
+              view === 'cardView' ? (
+                <CardList data={signalList} />
+              ) : (
+                <ListView data={signalList} />
+              )
+            ) : (
+              <h5
+                className='undp-typography bold'
+                style={{
+                  backgroundColor: 'var(--gray-200)',
+                  textAlign: 'center',
+                  padding: 'var(--spacing-07)',
+                  width: 'calc(100% - 4rem)',
+                  border: '1px solid var(--gray-400)',
+                }}
+              >
+                No signals available matching your criteria
+              </h5>
+            )}
+          </div>
+          <div className='flex-div flex-hor-align-center margin-top-07'>
+            <Pagination
+              className='undp-pagination'
+              onChange={e => {
+                setPaginationValue(e);
+              }}
+              defaultCurrent={1}
+              current={paginationValue}
+              total={pageSize * totalNoOfPages}
+              pageSize={pageSize}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+            />
+          </div>
         </div>
       ) : (
         <div className='undp-loader-container'>

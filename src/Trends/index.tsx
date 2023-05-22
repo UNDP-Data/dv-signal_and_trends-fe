@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Input, Modal, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
-import { CardLayout } from './CardsListingView';
+import { CardLayout } from './ListingView';
 import { HORIZON } from '../Constants';
 
 const HeroImageEl = styled.div`
@@ -37,10 +37,9 @@ export function TrendsListing() {
             UNDP Future Trends and Signals System
           </h1>
           <h5 className='undp-typography'>
-            The Future Trends and Signals System is a participatory foresight
-            tool that captures signals of change noticed across UNDP, and
-            identifies the trends emerging – helping us all make stronger, more
-            future-aware decisions.
+            The Future Trends and Signals System captures signals of change
+            noticed across UNDP, and identifies the trends emerging – helping us
+            all make stronger, more future-aware decisions.
           </h5>
         </div>
       </HeroImageEl>
@@ -101,12 +100,15 @@ export function TrendsListing() {
             className='flex-div gap-00'
           >
             <Input
-              placeholder='Search a signal'
+              placeholder='Search for a signal'
               className='undp-input'
               size='large'
               value={searchQuery}
               onChange={d => {
                 setSearchQuery(d.target.value);
+              }}
+              onPressEnter={() => {
+                setFilters({ ...filters, search: searchQuery });
               }}
             />
             <button
