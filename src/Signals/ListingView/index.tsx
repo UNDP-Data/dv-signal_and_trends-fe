@@ -85,7 +85,6 @@ export function CardLayout(props: Props) {
         },
       )
       .then((response: AxiosResponse) => {
-        console.log(response.data);
         setSignalList(
           sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
