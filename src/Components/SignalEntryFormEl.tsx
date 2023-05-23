@@ -56,6 +56,21 @@ const UploadButtonEl = styled.div`
   }
 `;
 
+interface HeroImageProps {
+  bgImage: string;
+}
+
+const UploadedImgEl = styled.div<HeroImageProps>`
+  background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
+    ${props => `url(data:${props.bgImage})`} no-repeat center;
+  background-size: cover;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin: var(--spacing-05) 0;
+  border-radius: 0.25rem;
+  border: 1px solid var(--gray-400);
+`;
+
 const FileAttachmentButton = styled.input`
   display: none;
 `;
@@ -96,7 +111,7 @@ export function SignalEntryFormEl(props: Props) {
     updateSignal?.relevance || undefined,
   );
   const [selectedFile, setSelectedFile] = useState<string | undefined>(
-    updateSignal?.attachments || undefined,
+    updateSignal?.attachment || undefined,
   );
   const [keyword1, setKeyword1] = useState<string | undefined>(
     updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
@@ -274,12 +289,15 @@ export function SignalEntryFormEl(props: Props) {
         </Select>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Attachments</h5>
+        <h5 className='undp-typography'>Attachment</h5>
+        {selectedFile ? <UploadedImgEl bgImage={selectedFile} /> : null}
         <p className='label'>
+          {selectedFile
+            ? 'Uploading file with replace the already uploaded image shown above. '
+            : ''}
           Attach an image here to illustrate this Signal, if available. Only use
-          images that are licensed or license-free/Creative Commons. You can
-          attach up to 2 images. Each file must be maximum 4 MBs. Compress
-          larger images, if applicable
+          images that are licensed or license-free/Creative Commons. File must
+          be maximum 1 MBs. Compress larger images, if applicable.
         </p>
         <UploadEl>
           <label htmlFor='file-upload-analyze' className='custom-file-upload'>
@@ -518,7 +536,7 @@ export function SignalEntryFormEl(props: Props) {
                     method: 'post',
                     url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
-                      attachments: selectedFile,
+                      attachment: selectedFile,
                       created_by: userName,
                       status: 'New',
                       description,
@@ -786,7 +804,7 @@ export function SignalEntryFormEl(props: Props) {
                   method: 'post',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
                   data: {
-                    attachments: selectedFile,
+                    attachment: selectedFile,
                     created_by: userName,
                     status: 'New',
                     description,
@@ -862,7 +880,7 @@ export function SignalEntryFormEl(props: Props) {
                   method: 'post',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/submit`,
                   data: {
-                    attachments: selectedFile,
+                    attachment: selectedFile,
                     created_by: userName,
                     status: 'Draft',
                     description,

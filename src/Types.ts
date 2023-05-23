@@ -45,7 +45,7 @@ export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
 export interface SignalDataType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attachments?: any;
+  attachment?: any;
   created_at: string;
   created_by: string;
   description: string;

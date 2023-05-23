@@ -18,7 +18,7 @@ export function CardLayout(props: Props) {
   const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState<undefined | string>(undefined);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
     undefined,
@@ -106,7 +106,7 @@ export function CardLayout(props: Props) {
         setTrendsList(
           sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
-        setTotalNoOfPages(response.data.total_pages);
+        setTotalCount(response.data.total_count);
         setPaginationValue(1);
       })
       .catch(err => {
@@ -157,7 +157,7 @@ export function CardLayout(props: Props) {
               }}
               defaultCurrent={1}
               current={paginationValue}
-              total={pageSize * totalNoOfPages}
+              total={totalCount}
               pageSize={pageSize}
               showSizeChanger
               onShowSizeChange={onShowSizeChange}

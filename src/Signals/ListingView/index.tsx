@@ -17,7 +17,7 @@ export function CardLayout(props: Props) {
   const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const { role, accessToken } = useContext(Context);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
@@ -85,10 +85,11 @@ export function CardLayout(props: Props) {
         },
       )
       .then((response: AxiosResponse) => {
+        console.log(response.data);
         setSignalList(
           sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
-        setTotalNoOfPages(response.data.total_pages);
+        setTotalCount(response.data.total_count);
         setPaginationValue(1);
       });
   }, [role, filters, accessToken, pageSize]);
@@ -133,7 +134,7 @@ export function CardLayout(props: Props) {
               }}
               defaultCurrent={1}
               current={paginationValue}
-              total={pageSize * totalNoOfPages}
+              total={totalCount}
               pageSize={pageSize}
               showSizeChanger
               onShowSizeChange={onShowSizeChange}

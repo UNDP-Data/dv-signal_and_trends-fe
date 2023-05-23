@@ -21,7 +21,7 @@ export function AdminPanel() {
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const [filter, setFilter] = useState<undefined | string>(undefined);
-  const [totalNoOfPages, setTotalNoOfPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   useEffect(() => {
     if (role === 'Admin') {
       setUserList(undefined);
@@ -78,7 +78,7 @@ export function AdminPanel() {
           },
         )
         .then((response: AxiosResponse) => {
-          setTotalNoOfPages(response.data.total_pages);
+          setTotalCount(response.data.total_count);
           setUserList(response.data.data);
         });
     }
@@ -176,7 +176,7 @@ export function AdminPanel() {
                       }}
                       defaultCurrent={1}
                       current={paginationValue}
-                      total={totalNoOfPages * 50}
+                      total={totalCount}
                       pageSize={50}
                       showSizeChanger={false}
                     />

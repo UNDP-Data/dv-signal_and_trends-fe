@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { SignalDataType } from '../Types';
+import Background from '../assets/UNDP-hero-image.png';
 import { STEEPVCOLOR } from '../Constants';
 import Context from '../Context/Context';
 
@@ -10,10 +11,22 @@ interface Props {
   isDraft?: boolean;
 }
 
+interface HeroImageProps {
+  bgImage?: string;
+}
+
+const HeroImageEl = styled.div<HeroImageProps>`
+  background: ${props =>
+      props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
+    no-repeat center;
+  background-size: cover;
+  width: 100%;
+  height: 20rem;
+`;
+
 const CardEl = styled.div`
   flex-grow: 1;
   font-size: 1.4rem;
-  padding: 2rem;
   word-wrap: break-word;
   cursor: pointer;
   display: flex;
@@ -28,82 +41,8 @@ const DescriptionEl = styled.p`
   overflow: hidden;
   word-wrap: break-word;
   -webkit-box-orient: vertical;
+  padding: 0 1.5rem;
 `;
-
-/*
-<hr className='undp-style light margin-top-07 margin-bottom-07' />
-<h6 className='margin-bottom-00 margin-top-00'>
-  Signature Solutions
-</h6>
-<div className='flex-div flex-wrap margin-top-03'>
-  {data.signature_primary !== '' && data.signature_primary ? (
-    <div
-      className='undp-chip'
-      style={{
-        color:
-          SSCOLOR.findIndex(
-            el => el.value === data.signature_primary,
-          ) !== -1
-            ? SSCOLOR[
-                SSCOLOR.findIndex(
-                  el => el.value === data.signature_primary,
-                )
-              ].textColor
-            : 'var(--black)',
-        fontWeight: 'bold',
-      }}
-    >
-      {data.signature_primary}
-    </div>
-  ) : null}
-  {data.signature_secondary !== '' &&
-  data.signature_secondary &&
-  data.signature_secondary !== data.signature_primary ? (
-    <div
-      className='undp-chip'
-      style={{
-        color:
-          SSCOLOR.findIndex(
-            el => el.value === data.signature_secondary,
-          ) !== -1
-            ? SSCOLOR[
-                SSCOLOR.findIndex(
-                  el => el.value === data.signature_secondary,
-                )
-              ].textColor
-            : 'var(--black)',
-        fontWeight: 'bold',
-      }}
-    >
-      {data.signature_secondary}
-    </div>
-  ) : null}
-</div>
-<hr className='undp-style light margin-top-07 margin-bottom-07' />
-<h6 className='margin-bottom-00 margin-top-00'>SDGs</h6>
-<div className='flex-div flex-wrap margin-top-03'>
-  {data.sdgs ? (
-    <>
-      {data.sdgs.map((sdg, j) => (
-        <div
-          key={j}
-          className='undp-chip'
-          style={{
-            color:
-              SDGCOLOR[SDGCOLOR.findIndex(el => el.value === sdg)]
-                .textColor,
-            fontWeight: 'bold',
-          }}
-        >
-          {sdg}
-        </div>
-      ))}
-    </>
-  ) : (
-    'NA'
-  )}
-</div>
-*/
 
 export function SignalCard(props: Props) {
   const { data, isDraft } = props;
@@ -127,24 +66,35 @@ export function SignalCard(props: Props) {
     >
       <CardEl>
         <div>
-          <h5 className='bold undp-typography'>{data.headline}</h5>
-          {role === 'Admin' || role === 'Curator' ? (
-            <div
-              className={`undp-chip margin-bottom-07 ${
-                data.status === 'Approved'
-                  ? 'undp-chip-green'
-                  : data.status === 'New'
-                  ? 'undp-chip-yellow'
-                  : 'undp-chip-red'
-              }`}
-            >
-              {data.status === 'New' ? 'Awaiting Approval' : data.status}
-            </div>
-          ) : null}
+          <HeroImageEl bgImage={data.attachment}>
+            {role === 'Admin' || role === 'Curator' ? (
+              <div
+                className={`undp-chip margin-bottom-05 ${
+                  data.status === 'Approved'
+                    ? 'undp-chip-green'
+                    : data.status === 'New'
+                    ? 'undp-chip-yellow'
+                    : 'undp-chip-red'
+                }`}
+                style={{
+                  borderRadius: '0 0.5rem 0.5rem 0',
+                  marginTop: '1.5rem',
+                }}
+              >
+                {data.status === 'New' ? 'Awaiting Approval' : data.status}
+              </div>
+            ) : null}
+          </HeroImageEl>
+          <h5
+            className='bold undp-typography'
+            style={{ padding: '2rem 1.5rem 0 1.5rem' }}
+          >
+            {data.headline}
+          </h5>
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
           </DescriptionEl>
-          <div className='flex-div flex-wrap'>
+          <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
             {data.keywords?.map((el, j) => (
               <div className='undp-chip' key={`chip-${j}`}>
                 {el}
@@ -152,7 +102,7 @@ export function SignalCard(props: Props) {
             ))}
           </div>
         </div>
-        <div>
+        <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='margin-bottom-00 margin-top-00'>STEEP+V Category</h6>
           <div className='flex-div flex-wrap margin-top-03'>
