@@ -17,7 +17,7 @@ export function CardLayout(props: Props) {
   const { filters, view } = props;
   const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(24);
   const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState<undefined | string>(undefined);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(

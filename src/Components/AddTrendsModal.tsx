@@ -42,7 +42,7 @@ export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
   const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(24);
   const [error, setError] = useState<undefined | string>(undefined);
   const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
@@ -223,7 +223,7 @@ export function AddTrendsModal(props: Props) {
         className='flex-div gap-00 margin-bottom-05'
       >
         <Input
-          placeholder='Search for a signal'
+          placeholder='Search for a trend'
           className='undp-input'
           size='large'
           value={searchQuery}

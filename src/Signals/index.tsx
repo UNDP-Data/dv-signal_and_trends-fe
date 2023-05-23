@@ -92,6 +92,22 @@ export function SignalsListing() {
               Clear Filter
             </button>
           ) : null}
+          {filters.steep !== 'All STEEP+V' ? (
+            <div className='undp-chip undp-chip-red'>
+              STEEP+V: {filters.steep.split('–')[0]}
+            </div>
+          ) : null}
+          {filters.sdg !== 'All SDGs' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.sdg}</div>
+          ) : null}
+          {filters.ss !== 'All Signature Solutions/Enabler' ? (
+            <div className='undp-chip undp-chip-yellow'>
+              Signature Solutions/Enabler: {filters.ss}
+            </div>
+          ) : null}
+          {filters.status !== 'All Status' ? (
+            <div className='undp-chip undp-chip-green'>{filters.status}</div>
+          ) : null}
           <button
             type='button'
             className='undp-button button-secondary'
@@ -108,11 +124,6 @@ export function SignalsListing() {
               setViewType(e.target.value as 'cardView' | 'listView');
             }}
             className='undp-button-radio'
-            style={{
-              width: '195px',
-              display: 'flex',
-              flexWrap: 'nowrap',
-            }}
           >
             <Radio.Button value='cardView'>Card View</Radio.Button>
             <Radio.Button value='listView'>List View</Radio.Button>

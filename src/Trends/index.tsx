@@ -1,18 +1,19 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Input, Modal, Radio, Select } from 'antd';
 import Background from '../assets/UNDP-hero-image.png';
 import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
 import { CardLayout } from './ListingView';
 import { HORIZON } from '../Constants';
+import Context from '../Context/Context';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
   background-size: cover;
   margin-top: 7.1875rem;
 `;
-
 export function TrendsListing() {
+  const { role } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -75,6 +76,17 @@ export function TrendsListing() {
               Clear Filter
             </button>
           ) : null}
+          {filters.impact !== 'All Ratings' ? (
+            <div className='undp-chip undp-chip-red'>
+              Rating: {filters.impact}
+            </div>
+          ) : null}
+          {filters.horizon !== 'All Horizons' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.horizon}</div>
+          ) : null}
+          {filters.status !== 'All Status' ? (
+            <div className='undp-chip undp-chip-green'>{filters.status}</div>
+          ) : null}
           <button
             type='button'
             className='undp-button button-secondary'
@@ -133,102 +145,106 @@ export function TrendsListing() {
         }}
       >
         <h2 className='undp-typography'>Filter Trends</h2>
-        <div className='margin-top-07'>
-          <p className='undp-typography label'>Filter by Rating</p>
-          <Select
-            className='undp-select'
-            style={{
-              flexGrow: 1,
-              minWidth: '15rem',
-            }}
-            placeholder='Please select'
-            defaultValue='All Ratings'
-            value={tempFilters.impact}
-            showSearch
-            allowClear
-            onChange={values => {
-              setTempFilters({
-                ...tempFilters,
-                impact: (values as RatingList) || 'All Ratings',
-              });
-            }}
-            clearIcon={<div className='clearIcon' />}
-          >
-            <Select.Option className='undp-select-option' key='All Ratings'>
-              All Ratings
-            </Select.Option>
-            {[1, 2, 3, 4, 5].map(d => (
-              <Select.Option className='undp-select-option' key={d}>
-                {d}
+        <div className='margin-bottom-07'>
+          <div className='margin-top-07'>
+            <p className='undp-typography label'>Filter by Rating</p>
+            <Select
+              className='undp-select'
+              style={{
+                flexGrow: 1,
+                minWidth: '15rem',
+              }}
+              placeholder='Please select'
+              defaultValue='All Ratings'
+              value={tempFilters.impact}
+              showSearch
+              allowClear
+              onChange={values => {
+                setTempFilters({
+                  ...tempFilters,
+                  impact: (values as RatingList) || 'All Ratings',
+                });
+              }}
+              clearIcon={<div className='clearIcon' />}
+            >
+              <Select.Option className='undp-select-option' key='All Ratings'>
+                All Ratings
               </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div className='margin-top-07'>
-          <p className='undp-typography label'>Filter by Horizon</p>
-          <Select
-            className='undp-select'
-            style={{
-              flexGrow: 1,
-              minWidth: '15rem',
-            }}
-            placeholder='Please select'
-            defaultValue='All Horizons'
-            value={tempFilters.horizon}
-            showSearch
-            allowClear
-            onChange={values => {
-              setTempFilters({
-                ...tempFilters,
-                horizon: (values as HorizonList) || 'All Horizons',
-              });
-            }}
-            clearIcon={<div className='clearIcon' />}
-          >
-            <Select.Option className='undp-select-option' key='All Horizons'>
-              All Horizons
-            </Select.Option>
-            {HORIZON.map(d => (
-              <Select.Option className='undp-select-option' key={d}>
-                {d}
+              {[1, 2, 3, 4, 5].map(d => (
+                <Select.Option className='undp-select-option' key={d}>
+                  {d}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div className='margin-top-07'>
+            <p className='undp-typography label'>Filter by Horizon</p>
+            <Select
+              className='undp-select'
+              style={{
+                flexGrow: 1,
+                minWidth: '15rem',
+              }}
+              placeholder='Please select'
+              defaultValue='All Horizons'
+              value={tempFilters.horizon}
+              showSearch
+              allowClear
+              onChange={values => {
+                setTempFilters({
+                  ...tempFilters,
+                  horizon: (values as HorizonList) || 'All Horizons',
+                });
+              }}
+              clearIcon={<div className='clearIcon' />}
+            >
+              <Select.Option className='undp-select-option' key='All Horizons'>
+                All Horizons
               </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div className='margin-top-07 margin-bottom-07'>
-          <p className='undp-typography label'>Filter by Status</p>
-          <Select
-            className='undp-select'
-            style={{
-              flexGrow: 1,
-              minWidth: '15rem',
-            }}
-            placeholder='Please select'
-            defaultValue='All Status'
-            value={
-              tempFilters.status === 'New'
-                ? 'Awaiting Approval'
-                : tempFilters.status
-            }
-            showSearch
-            allowClear
-            onChange={values => {
-              setTempFilters({
-                ...tempFilters,
-                status:
-                  values === 'Awaiting Approval'
-                    ? 'New'
-                    : (values as 'Approved' | 'All Status'),
-              });
-            }}
-            clearIcon={<div className='clearIcon' />}
-          >
-            {['All Status', 'Approved', 'Awaiting Approval'].map(d => (
-              <Select.Option className='undp-select-option' key={d}>
-                {d}
-              </Select.Option>
-            ))}
-          </Select>
+              {HORIZON.map(d => (
+                <Select.Option className='undp-select-option' key={d}>
+                  {d}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          {role === 'Admin' || role === 'Curator' ? (
+            <div className='margin-top-07'>
+              <p className='undp-typography label'>Filter by Status</p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Status'
+                value={
+                  tempFilters.status === 'New'
+                    ? 'Awaiting Approval'
+                    : tempFilters.status
+                }
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    status:
+                      values === 'Awaiting Approval'
+                        ? 'New'
+                        : (values as 'Approved' | 'All Status'),
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                {['All Status', 'Approved', 'Awaiting Approval'].map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          ) : null}
         </div>
         <button
           type='button'

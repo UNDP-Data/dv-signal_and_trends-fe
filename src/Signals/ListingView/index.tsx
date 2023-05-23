@@ -16,7 +16,7 @@ interface Props {
 export function CardLayout(props: Props) {
   const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(24);
   const [totalCount, setTotalCount] = useState(0);
   const { role, accessToken } = useContext(Context);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(

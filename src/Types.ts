@@ -1,11 +1,11 @@
 export type STEEPVList =
   | 'All STEEP+V'
-  | 'Social – issues related to human culture, demography, communication, movement and migration, work and education'
+  | 'Social – Issues related to human culture, demography, communication, movement and migration, work and education'
   | 'Technological – Made culture, tools, devices, systems, infrastructure and networks'
-  | 'Economic – issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
+  | 'Economic – Issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
   | 'Environmental – The natural world, living environment, sustainability, resources, climate and health'
-  | 'Political – legal issues, policy, governance, rules and regulations and organizational systems'
-  | 'Values – ethics, spirituality, ideology or other forms of values';
+  | 'Political – Legal issues, policy, governance, rules and regulations and organizational systems'
+  | 'Values – Ethics, spirituality, ideology or other forms of values';
 
 export type SDGList =
   | 'GOAL 1: No Poverty'

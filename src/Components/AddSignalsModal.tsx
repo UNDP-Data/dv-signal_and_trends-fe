@@ -44,7 +44,7 @@ export function AddSignalsModal(props: Props) {
   const { setSignalModal, trendsSignal, setTrendsSignal } = props;
   const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(24);
   const [error, setError] = useState<undefined | string>(undefined);
   const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);

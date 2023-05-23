@@ -287,6 +287,13 @@ export function SignalEntryFormEl(props: Props) {
             </Select.Option>
           ))}
         </Select>
+        <p
+          className='undp-typography margin-top-02 margin-bottom-00'
+          style={{ color: 'var(--gray-500)' }}
+        >
+          STEEP+V analysis methodology stands for Social, Technological,
+          Economic, Environmental (or Ecological), Political and Values
+        </p>
       </div>
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Attachment</h5>
@@ -396,6 +403,7 @@ export function SignalEntryFormEl(props: Props) {
         </div>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
           <h5 className='undp-typography'>SDGs</h5>
+          <p className='label'>Select relevant SDGs. Max 2 SDGs allowed.</p>
           <Select
             className='undp-select'
             mode='multiple'
@@ -409,7 +417,12 @@ export function SignalEntryFormEl(props: Props) {
             value={sdg}
           >
             {SDG.map((d, i) => (
-              <Select.Option className='undp-select-option' key={i} value={d}>
+              <Select.Option
+                className='undp-select-option'
+                key={i}
+                value={d}
+                disabled={sdg.length > 1}
+              >
                 {d}
               </Select.Option>
             ))}
