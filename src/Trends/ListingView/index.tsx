@@ -62,6 +62,8 @@ export function CardLayout(props: Props) {
         );
       })
       .catch(err => {
+        /* eslint no-console: ["error", { allow: ["log", "error"] }] */
+        console.log('err.response 1sr get', err.response);
         if (err.response?.status === 404) {
           setTrendsList([]);
         } else {
@@ -110,6 +112,8 @@ export function CardLayout(props: Props) {
         setPaginationValue(1);
       })
       .catch(err => {
+        /* eslint no-console: ["error", { allow: ["log", "error"] }] */
+        console.log('err.response 2nd get', err.response);
         if (err.response?.status === 404) {
           setTrendsList([]);
         } else {
@@ -149,20 +153,22 @@ export function CardLayout(props: Props) {
               </h5>
             )}
           </div>
-          <div className='flex-div flex-hor-align-center margin-top-07'>
-            <Pagination
-              className='undp-pagination'
-              onChange={e => {
-                setPaginationValue(e);
-              }}
-              defaultCurrent={1}
-              current={paginationValue}
-              total={totalCount}
-              pageSize={pageSize}
-              showSizeChanger
-              onShowSizeChange={onShowSizeChange}
-            />
-          </div>
+          {trendsList.length > 0 ? (
+            <div className='flex-div flex-hor-align-center margin-top-07'>
+              <Pagination
+                className='undp-pagination'
+                onChange={e => {
+                  setPaginationValue(e);
+                }}
+                defaultCurrent={1}
+                current={paginationValue}
+                total={totalCount}
+                pageSize={pageSize}
+                showSizeChanger
+                onShowSizeChange={onShowSizeChange}
+              />
+            </div>
+          ) : null}
         </div>
       ) : error ? (
         <p

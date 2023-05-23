@@ -19,11 +19,13 @@ export function CardLayout(props: Props) {
   const [pageSize, setPageSize] = useState(24);
   const [totalCount, setTotalCount] = useState(0);
   const { role, accessToken } = useContext(Context);
+  const [error, setError] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
     undefined,
   );
   useEffect(() => {
     setSignalList(undefined);
+
     const steepQueryParameter =
       filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
     const ssQueryParameter =
@@ -54,6 +56,21 @@ export function CardLayout(props: Props) {
         setSignalList(
           sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
         );
+      })
+      .catch(err => {
+        /* eslint no-console: ["error", { allow: ["log", "error"] }] */
+        console.log('err.response 2nd get', err.response);
+        if (err.response?.status === 404) {
+          setSignalList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+        }
       });
   }, [paginationValue]);
   useEffect(() => {
@@ -90,6 +107,21 @@ export function CardLayout(props: Props) {
         );
         setTotalCount(response.data.total_count);
         setPaginationValue(1);
+      })
+      .catch(err => {
+        /* eslint no-console: ["error", { allow: ["log", "error"] }] */
+        console.log('err.response 2nd get', err.response);
+        if (err.response?.status === 404) {
+          setSignalList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+        }
       });
   }, [role, filters, accessToken, pageSize]);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
@@ -125,21 +157,30 @@ export function CardLayout(props: Props) {
               </h5>
             )}
           </div>
-          <div className='flex-div flex-hor-align-center margin-top-07'>
-            <Pagination
-              className='undp-pagination'
-              onChange={e => {
-                setPaginationValue(e);
-              }}
-              defaultCurrent={1}
-              current={paginationValue}
-              total={totalCount}
-              pageSize={pageSize}
-              showSizeChanger
-              onShowSizeChange={onShowSizeChange}
-            />
-          </div>
+          {signalList.length > 0 ? (
+            <div className='flex-div flex-hor-align-center margin-top-07'>
+              <Pagination
+                className='undp-pagination'
+                onChange={e => {
+                  setPaginationValue(e);
+                }}
+                defaultCurrent={1}
+                current={paginationValue}
+                total={totalCount}
+                pageSize={pageSize}
+                showSizeChanger
+                onShowSizeChange={onShowSizeChange}
+              />
+            </div>
+          ) : null}
         </div>
+      ) : error ? (
+        <p
+          className='margin-top-00 margin-bottom-00'
+          style={{ color: 'var(--dark-red)' }}
+        >
+          {error}
+        </p>
       ) : (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
