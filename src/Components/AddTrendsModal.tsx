@@ -64,7 +64,9 @@ export function AddTrendsModal(props: Props) {
     setLoading(true);
     setError(undefined);
     const horizonQueryParameter =
-      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+      filters.horizon === 'All Horizons'
+        ? ''
+        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''
@@ -106,7 +108,9 @@ export function AddTrendsModal(props: Props) {
     setLoading(true);
     setError(undefined);
     const horizonQueryParameter =
-      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+      filters.horizon === 'All Horizons'
+        ? ''
+        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''

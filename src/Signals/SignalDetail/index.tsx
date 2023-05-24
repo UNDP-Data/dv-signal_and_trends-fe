@@ -278,6 +278,15 @@ export function SignalDetail() {
               )}
             </div>
             <hr className='undp-style light margin-top-07 margin-bottom-07' />
+            <h6 className='undp-typography margin-top-00'>Location</h6>
+            <div className='flex-div flex-wrap margin-top-03'>
+              {data.location ? (
+                <div className='undp-chip'>{data.location}</div>
+              ) : (
+                'NA'
+              )}
+            </div>
+            <hr className='undp-style light margin-top-07 margin-bottom-07' />
             <h6 className='undp-typography margin-top-00'>Relevance</h6>
             <p className='undp-typography'>{data.relevance}</p>
             <hr className='undp-style light margin-top-07 margin-bottom-07' />

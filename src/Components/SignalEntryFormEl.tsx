@@ -618,7 +618,7 @@ export function SignalEntryFormEl(props: Props) {
                     method: 'post',
                     url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
-                      attachments: selectedFile,
+                      attachment: selectedFile,
                       created_by: userName,
                       status: 'Draft',
                       description,
@@ -718,7 +718,7 @@ export function SignalEntryFormEl(props: Props) {
                   method: 'put',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                   data: {
-                    attachments: selectedFile || null,
+                    attachment: selectedFile || null,
                     created_by: updateSignal.created_by,
                     description,
                     headline,

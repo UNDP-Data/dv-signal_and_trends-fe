@@ -7,7 +7,7 @@ import {
 } from '@azure/msal-react';
 import Background from '../assets/UNDP-hero-image.png';
 import { CardLayout } from './ListingView';
-import { SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
+import { SDGCOLOR, SSCOLOR, STEEP_V, LOCATION } from '../Constants';
 import Context from '../Context/Context';
 import {
   SDGList,
@@ -15,6 +15,7 @@ import {
   SSList,
   StatusList,
   STEEPVList,
+  LocationList,
 } from '../Types';
 import { SignInButton } from '../Components/SignInButton';
 
@@ -35,6 +36,7 @@ export function SignalsListing() {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    location: 'Global',
     search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<SignalFiltersDataType>({
@@ -42,6 +44,7 @@ export function SignalsListing() {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    location: 'Global',
     search: undefined,
   });
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -85,6 +88,7 @@ export function SignalsListing() {
                   sdg: 'All SDGs',
                   ss: 'All Signature Solutions/Enabler',
                   status: 'All Status',
+                  location: 'Global',
                   search: undefined,
                 });
               }}
@@ -93,7 +97,7 @@ export function SignalsListing() {
             </button>
           ) : null}
           {filters.steep !== 'All STEEP+V' ? (
-            <div className='undp-chip undp-chip-red'>
+            <div className='undp-chip undp-chip-blue'>
               STEEP+V: {filters.steep.split('–')[0]}
             </div>
           ) : null}
@@ -101,12 +105,17 @@ export function SignalsListing() {
             <div className='undp-chip undp-chip-blue'>{filters.sdg}</div>
           ) : null}
           {filters.ss !== 'All Signature Solutions/Enabler' ? (
-            <div className='undp-chip undp-chip-yellow'>
+            <div className='undp-chip undp-chip-blue'>
               Signature Solutions/Enabler: {filters.ss}
             </div>
           ) : null}
+          {filters.location !== 'Global' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.location}</div>
+          ) : null}
           {filters.status !== 'All Status' ? (
-            <div className='undp-chip undp-chip-green'>{filters.status}</div>
+            <div className='undp-chip undp-chip-blue'>
+              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
+            </div>
           ) : null}
           <button
             type='button'
@@ -261,6 +270,34 @@ export function SignalsListing() {
               {SDGCOLOR.map(d => (
                 <Select.Option className='undp-select-option' key={d.value}>
                   {d.value}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div className='margin-top-07'>
+            <p className='undp-typography label'>Filter by Location</p>
+            <Select
+              className='undp-select'
+              style={{
+                flexGrow: 1,
+                minWidth: '15rem',
+              }}
+              placeholder='Please select'
+              defaultValue='Global'
+              value={tempFilters.location}
+              showSearch
+              allowClear
+              onChange={values => {
+                setTempFilters({
+                  ...tempFilters,
+                  location: (values as LocationList) || 'Global',
+                });
+              }}
+              clearIcon={<div className='clearIcon' />}
+            >
+              {LOCATION.map(d => (
+                <Select.Option className='undp-select-option' key={d}>
+                  {d}
                 </Select.Option>
               ))}
             </Select>

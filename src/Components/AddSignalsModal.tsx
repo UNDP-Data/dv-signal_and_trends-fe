@@ -11,13 +11,20 @@ import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { API_ACCESS_TOKEN, SDGCOLOR, SSCOLOR, STEEP_V } from '../Constants';
+import {
+  API_ACCESS_TOKEN,
+  SDGCOLOR,
+  SSCOLOR,
+  STEEP_V,
+  LOCATION,
+} from '../Constants';
 import {
   SDGList,
   SignalDataType,
   SignalFiltersDataType,
   SSList,
   STEEPVList,
+  LocationList,
 } from '../Types';
 import Context from '../Context/Context';
 
@@ -55,6 +62,7 @@ export function AddSignalsModal(props: Props) {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
+    location: 'Global',
     search: undefined,
   });
   const [loading, setLoading] = useState(true);
@@ -262,31 +270,61 @@ export function AddSignalsModal(props: Props) {
           ))}
         </Select>
       </div>
-      <div
-        style={{ width: '100%' }}
-        className='flex-div gap-00 margin-bottom-05'
-      >
-        <Input
-          placeholder='Search for a signal'
-          className='undp-input'
-          size='large'
-          value={searchQuery}
-          onChange={d => {
-            setSearchQuery(d.target.value);
+      <div style={{ width: '100%' }} className='flex-div margin-bottom-05'>
+        <Select
+          className='undp-select'
+          style={{
+            flexGrow: 1,
+            width: 'calc(50% - 0.667rem)',
           }}
-          onPressEnter={() => {
-            setFilters({ ...filters, search: searchQuery });
+          placeholder='Please select'
+          defaultValue='Global'
+          value={filters.location}
+          showSearch
+          allowClear
+          onChange={values => {
+            setFilters({
+              ...filters,
+              location: (values as LocationList) || 'Global',
+            });
           }}
-        />
-        <button
-          type='button'
-          className='undp-button button-secondary'
-          onClick={() => {
-            setFilters({ ...filters, search: searchQuery });
+          clearIcon={<div className='clearIcon' />}
+        >
+          {LOCATION.map(d => (
+            <Select.Option className='undp-select-option' key={d}>
+              {d}
+            </Select.Option>
+          ))}
+        </Select>
+        <div
+          className='gap-00 flex-div'
+          style={{
+            flexGrow: 1,
+            width: 'calc(50% - 0.667rem)',
           }}
         >
-          Search
-        </button>
+          <Input
+            placeholder='Search for a signal'
+            className='undp-input'
+            size='large'
+            value={searchQuery}
+            onChange={d => {
+              setSearchQuery(d.target.value);
+            }}
+            onPressEnter={() => {
+              setFilters({ ...filters, search: searchQuery });
+            }}
+          />
+          <button
+            type='button'
+            className='undp-button button-secondary'
+            onClick={() => {
+              setFilters({ ...filters, search: searchQuery });
+            }}
+          >
+            Search
+          </button>
+        </div>
       </div>
 
       {loading ? (

@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { Input, Select } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
@@ -11,6 +13,58 @@ interface Props {
   updateTrend?: TrendDataType;
 }
 
+const UploadEl = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border: 2px solid var(--gray-700);
+  background-color: var(--white);
+`;
+
+const SelectedEl = styled.div`
+  font-size: 1rem;
+  background-color: var(--gray-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+interface HeroImageProps {
+  bgImage: string;
+}
+
+const UploadedImgEl = styled.div<HeroImageProps>`
+  background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
+    ${props => `url(data:${props.bgImage})`} no-repeat center;
+  background-size: cover;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin: var(--spacing-05) 0;
+  border-radius: 0.25rem;
+  border: 1px solid var(--gray-400);
+`;
+
+const UploadButtonEl = styled.div`
+  color: var(--black);
+  text-transform: uppercase;
+  cursor: pointer;
+  justify-content: center;
+  padding: 1rem 0.75rem;
+  align-items: center;
+  display: flex;
+  font-size: 0.875rem;
+  line-height: 1;
+  width: fit-content;
+  background-color: var(--gray-200);
+  font-weight: bold;
+  border-right: 2px solid var(--gray-400);
+  &:hover {
+    background-color: var(--gray-300);
+  }
+`;
+const FileAttachmentButton = styled.input`
+  display: none;
+`;
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
   const { accessToken, updateNotificationText } = useContext(Context);
@@ -45,6 +99,9 @@ export function TrendEntryFormEl(props: Props) {
   const [trendStatus, setTrendStatus] = useState<string>(
     updateTrend?.status || 'New',
   );
+  const [selectedFile, setSelectedFile] = useState<string | undefined>(
+    updateTrend?.attachment || undefined,
+  );
   useEffect(() => {
     if (trendsSignal.length > 0) {
       const signalIds = trendsSignal.toString().replaceAll(',', '&ids=');
@@ -64,6 +121,26 @@ export function TrendEntryFormEl(props: Props) {
       setConnectedSignals([]);
     }
   }, [trendsSignal]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fileInputRef = useRef<any>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleFileSelect = (event: any) => {
+    if (event.target.files) {
+      if (event.target.files[0]) {
+        const reader = new FileReader();
+        reader.readAsBinaryString(event.target.files[0]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        reader.onloadend = (e: any) => {
+          const base64String = btoa(e.target.result);
+          setSelectedFile(
+            `${event.target.files[0].type};base64,${base64String}`,
+          );
+        };
+      }
+      setSelectedFileName(event.target.files[0].name);
+    }
+  };
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
@@ -218,6 +295,39 @@ export function TrendEntryFormEl(props: Props) {
           Min 30 characters required
         </p>
       </div>
+      <div className='margin-bottom-07'>
+        <h5 className='undp-typography'>Attachment</h5>
+        {selectedFile ? <UploadedImgEl bgImage={selectedFile} /> : null}
+        <p className='label'>
+          {selectedFile
+            ? 'Uploading file with replace the already uploaded image shown above. '
+            : ''}
+          Attach an image here to illustrate this Signal, if available. Only use
+          images that are licensed or license-free/Creative Commons. File must
+          be maximum 1 MBs. Compress larger images, if applicable.
+        </p>
+        <UploadEl>
+          <label htmlFor='file-upload-analyze' className='custom-file-upload'>
+            <UploadButtonEl style={{ width: '177.55px' }}>
+              Upload a Image
+            </UploadButtonEl>
+          </label>
+          {selectedFileName !== '' ? (
+            <SelectedEl>
+              Selected <span className='bold'>{selectedFileName}</span>
+            </SelectedEl>
+          ) : (
+            <SelectedEl style={{ opacity: '0.6' }}>No file selected</SelectedEl>
+          )}
+          <FileAttachmentButton
+            ref={fileInputRef}
+            id='file-upload-analyze'
+            accept='image/png, image/jpeg, image/jpg, image/gif, image/svg'
+            type='file'
+            onChange={handleFileSelect}
+          />
+        </UploadEl>
+      </div>
       {updateTrend ? (
         <div className='margin-bottom-07'>
           <h5 className='undp-typography'>Status of the trend</h5>
@@ -270,6 +380,7 @@ export function TrendEntryFormEl(props: Props) {
                 method: 'post',
                 url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
                 data: {
+                  attachment: selectedFile,
                   description,
                   headline,
                   status: 'New',
@@ -349,6 +460,7 @@ export function TrendEntryFormEl(props: Props) {
                 method: 'put',
                 url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/update',
                 data: {
+                  attachment: selectedFile,
                   created_by: updateTrend.created_by,
                   description,
                   headline,

@@ -1,11 +1,11 @@
 export type STEEPVList =
   | 'All STEEP+V'
-  | 'Social – Issues related to human culture, demography, communication, movement and migration, work and education'
+  | 'Social – issues related to human culture, demography, communication, movement and migration, work and education'
   | 'Technological – Made culture, tools, devices, systems, infrastructure and networks'
-  | 'Economic – Issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
+  | 'Economic – issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
   | 'Environmental – The natural world, living environment, sustainability, resources, climate and health'
-  | 'Political – Legal issues, policy, governance, rules and regulations and organizational systems'
-  | 'Values – Ethics, spirituality, ideology or other forms of values';
+  | 'Political – legal issues, policy, governance, rules and regulations and organizational systems'
+  | 'Values – ethics, spirituality, ideology or other forms of values';
 
 export type SDGList =
   | 'GOAL 1: No Poverty'
@@ -43,6 +43,15 @@ export type RatingList = '1' | '2' | '3' | '4' | '5';
 
 export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
+export type LocationList =
+  | 'Global'
+  | 'Region: Asia Pacific'
+  | 'Region: Arab States'
+  | 'Region: Africa'
+  | 'Region: Latin America and Caribbean'
+  | 'Region: Europe and Central Asia'
+  | 'Region: North America';
+
 export interface SignalDataType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachment?: any;
@@ -66,6 +75,8 @@ export interface SignalDataType {
 }
 
 export interface TrendDataType {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attachment?: any;
   created_at: string;
   created_by: string;
   description: string;
@@ -114,6 +125,7 @@ export interface SignalFiltersDataType {
   sdg: 'All SDGs' | SDGList;
   ss: 'All Signature Solutions/Enabler' | SSList;
   status: 'All Status' | StatusList;
+  location: 'Global' | LocationList;
   search?: string;
 }
 

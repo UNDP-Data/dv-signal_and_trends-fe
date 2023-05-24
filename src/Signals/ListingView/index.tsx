@@ -74,6 +74,7 @@ export function CardLayout(props: Props) {
       });
   }, [paginationValue]);
   useEffect(() => {
+    setError(undefined);
     setSignalList(undefined);
     const steepQueryParameter =
       filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;

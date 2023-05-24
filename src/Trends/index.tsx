@@ -77,7 +77,7 @@ export function TrendsListing() {
             </button>
           ) : null}
           {filters.impact !== 'All Ratings' ? (
-            <div className='undp-chip undp-chip-red'>
+            <div className='undp-chip undp-chip-blue'>
               Rating: {filters.impact}
             </div>
           ) : null}
@@ -85,7 +85,9 @@ export function TrendsListing() {
             <div className='undp-chip undp-chip-blue'>{filters.horizon}</div>
           ) : null}
           {filters.status !== 'All Status' ? (
-            <div className='undp-chip undp-chip-green'>{filters.status}</div>
+            <div className='undp-chip undp-chip-blue'>
+              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
+            </div>
           ) : null}
           <button
             type='button'
@@ -225,7 +227,6 @@ export function TrendsListing() {
                     : tempFilters.status
                 }
                 showSearch
-                allowClear
                 onChange={values => {
                   setTempFilters({
                     ...tempFilters,

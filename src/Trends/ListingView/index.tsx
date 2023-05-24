@@ -33,7 +33,9 @@ export function CardLayout(props: Props) {
     setTrendsList(undefined);
     setError(undefined);
     const horizonQueryParameter =
-      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+      filters.horizon === 'All Horizons'
+        ? ''
+        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''
@@ -81,7 +83,9 @@ export function CardLayout(props: Props) {
     setTrendsList(undefined);
     setError(undefined);
     const horizonQueryParameter =
-      filters.horizon === 'All Horizons' ? '' : `&horizon=${filters.horizon}`;
+      filters.horizon === 'All Horizons'
+        ? ''
+        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''
