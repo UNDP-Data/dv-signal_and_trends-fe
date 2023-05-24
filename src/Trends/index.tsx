@@ -50,7 +50,6 @@ export function TrendsListing() {
           paddingLeft: '1rem',
           paddingRight: '1rem',
           justifyContent: 'space-between',
-          gap: '10rem',
         }}
       >
         <h4 className='undp-typography margin-bottom-00'>All Trends</h4>
@@ -114,7 +113,7 @@ export function TrendsListing() {
             className='flex-div gap-00'
           >
             <Input
-              placeholder='Search for a signal'
+              placeholder='Search for a trend'
               className='undp-input'
               size='large'
               value={searchQuery}

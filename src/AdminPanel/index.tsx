@@ -26,6 +26,8 @@ export function AdminPanel() {
     if (role === 'Admin') {
       setUserList(undefined);
       setError(undefined);
+      /* eslint no-console: ["error", { allow: ["log", "error"] }] */
+      console.log('filter', filter);
       const roleQueryParameter =
         filterRole === 'All Roles'
           ? 'roles=User&roles=Curator&roles=Admin'
@@ -58,7 +60,7 @@ export function AdminPanel() {
           }
         });
     }
-  }, [role, accessToken, filterRole]);
+  }, [role, accessToken, filterRole, filter]);
   useEffect(() => {
     if (role === 'Admin') {
       setUserList(undefined);
@@ -157,6 +159,11 @@ export function AdminPanel() {
           Search
         </button>
       </div>
+      {userList ? (
+        <div className='margin-bottom-05'>
+          {totalCount} {totalCount > 1 ? 'users' : 'user'}
+        </div>
+      ) : null}
       <AuthenticatedTemplate>
         {role !== 'Admin' ? (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>
