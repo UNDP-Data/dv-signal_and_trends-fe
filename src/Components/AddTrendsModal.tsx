@@ -164,7 +164,8 @@ export function AddTrendsModal(props: Props) {
       width={960}
     >
       <p className='undp-typography italics margin-bottom-07'>
-        Trends are connected or decoupled when you click on the trends
+        Trends are connected or decoupled when you click on the trend&apos;s
+        add/remove button
       </p>
       <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
         <Select

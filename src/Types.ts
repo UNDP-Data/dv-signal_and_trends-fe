@@ -32,7 +32,10 @@ export type SSList =
   | 'Resilience'
   | 'Environment'
   | 'Energy'
-  | 'Gender Equality';
+  | 'Gender Equality'
+  | 'Digitalisation'
+  | 'Strategic Innovation'
+  | 'Development Financing';
 
 export type HorizonList =
   | 'Horizon 1 (0-3Y)'

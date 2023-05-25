@@ -26,8 +26,6 @@ export function AdminPanel() {
     if (role === 'Admin') {
       setUserList(undefined);
       setError(undefined);
-      /* eslint no-console: ["error", { allow: ["log", "error"] }] */
-      console.log('filter', filter);
       const roleQueryParameter =
         filterRole === 'All Roles'
           ? 'roles=User&roles=Curator&roles=Admin'
@@ -44,6 +42,7 @@ export function AdminPanel() {
         )
         .then((response: AxiosResponse) => {
           setUserList(response.data.data);
+          setTotalCount(response.data.total_count);
           setPaginationValue(1);
         })
         .catch(err => {

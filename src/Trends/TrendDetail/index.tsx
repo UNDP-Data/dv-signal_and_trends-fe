@@ -211,40 +211,48 @@ export function TrendDetail() {
               <div className='undp-loader' />
             </div>
           )}
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='undp-typography margin-top-00 margin-bottom-00'>
-            Created by
-          </h6>
-          <p className='undp-typography margin-top-05 margin-bottom-09'>
-            {`${data.created_by} on ${new Date(data.created_at).getDate()}-${
-              MONTHS[new Date(data.created_at).getMonth()]
-            }-${new Date(data.created_at).getFullYear()}`}
-          </p>
-          <AuthenticatedTemplate>
-            {role === 'User' ? (
-              <p
-                className='undp-typography'
-                style={{ color: 'var(--dark-red)' }}
-              >
-                Admin or curator rights required to edit a trend
+          {role === 'Admin' || role === 'Curator' ? (
+            <div>
+              <hr className='undp-style light margin-top-07 margin-bottom-07' />
+              <h6 className='undp-typography margin-top-00 margin-bottom-00'>
+                Created by
+              </h6>
+              <p className='undp-typography margin-top-05'>
+                {`${data.created_by} on ${new Date(
+                  data.created_at,
+                ).getDate()}-${
+                  MONTHS[new Date(data.created_at).getMonth()]
+                }-${new Date(data.created_at).getFullYear()}`}
               </p>
-            ) : (
-              <NavLink
-                to={`/trends/${id}/edit`}
-                style={{ textDecoration: 'none' }}
-              >
-                <button
-                  className='undp-button button-secondary button-arrow'
-                  type='button'
+            </div>
+          ) : null}
+          <div className='margin-top-09'>
+            <AuthenticatedTemplate>
+              {role === 'User' ? (
+                <p
+                  className='undp-typography'
+                  style={{ color: 'var(--dark-red)' }}
                 >
-                  Edit Trend
-                </button>
-              </NavLink>
-            )}
-          </AuthenticatedTemplate>
-          <UnauthenticatedTemplate>
-            <SignInButton buttonText='Sign In to Edit Trends' />
-          </UnauthenticatedTemplate>
+                  Admin or curator rights required to edit a trend
+                </p>
+              ) : (
+                <NavLink
+                  to={`/trends/${id}/edit`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <button
+                    className='undp-button button-secondary button-arrow'
+                    type='button'
+                  >
+                    Edit Trend
+                  </button>
+                </NavLink>
+              )}
+            </AuthenticatedTemplate>
+            <UnauthenticatedTemplate>
+              <SignInButton buttonText='Sign In to Edit Trends' />
+            </UnauthenticatedTemplate>
+          </div>
         </div>
       ) : (
         <div className='undp-loader-container'>

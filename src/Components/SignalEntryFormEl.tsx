@@ -117,10 +117,10 @@ export function SignalEntryFormEl(props: Props) {
     updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
   );
   const [keyword2, setKeyword2] = useState<string | undefined>(
-    updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
+    updateSignal?.keywords ? updateSignal?.keywords[1] || undefined : undefined,
   );
   const [keyword3, setKeyword3] = useState<string | undefined>(
-    updateSignal?.keywords ? updateSignal?.keywords[0] || undefined : undefined,
+    updateSignal?.keywords ? updateSignal?.keywords[2] || undefined : undefined,
   );
   const [primarySS, setPrimarySS] = useState<string | undefined>(
     updateSignal?.signature_primary || undefined,
@@ -146,7 +146,7 @@ export function SignalEntryFormEl(props: Props) {
         )
         .then((response: AxiosResponse) => {
           setTrendsList(
-            sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
+            sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
           );
         });
     } else {
@@ -219,10 +219,10 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Source Material*</h5>
+          <h5 className='undp-typography'>Signal Source*</h5>
           <Input
             className='undp-input'
-            placeholder='Enter source material'
+            placeholder='Enter signal source'
             onChange={d => {
               setSourceLink(d.target.value);
             }}
@@ -459,6 +459,9 @@ export function SignalEntryFormEl(props: Props) {
                     onClick={() => {
                       const arr = [...trendsList.filter(el => el.id !== d.id)];
                       setTrendsList(arr);
+                      setSelectedTrendsList(arr.map(k => k.id));
+                      /* eslint-disable-next-line no-console */
+                      console.log('d.id', d.id, arr);
                     }}
                     type='button'
                     className='undp-button button-tertiary padding-bottom-00 padding-top-00'
@@ -481,7 +484,7 @@ export function SignalEntryFormEl(props: Props) {
                   padding: 'var(--spacing-05)',
                 }}
               >
-                Select trend
+                Add trends
               </button>
             </>
           ) : (
@@ -546,7 +549,7 @@ export function SignalEntryFormEl(props: Props) {
                   setButtonDisabled(true);
                   setSubmittingError(undefined);
                   axios({
-                    method: 'post',
+                    method: 'put',
                     url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
                       attachment: selectedFile,
@@ -596,26 +599,13 @@ export function SignalEntryFormEl(props: Props) {
                 Submit Signal
               </button>
               <button
-                className={`${
-                  !description ||
-                  description?.length < 30 ||
-                  !headline ||
-                  buttonDisabled
-                    ? 'disabled '
-                    : ''
-                }undp-button button-secondary button-arrow`}
+                className='undp-button button-secondary button-arrow'
                 type='button'
-                disabled={
-                  !description ||
-                  description?.length < 30 ||
-                  !headline ||
-                  buttonDisabled
-                }
                 onClick={() => {
                   setButtonDisabled(true);
                   setSubmittingError(undefined);
                   axios({
-                    method: 'post',
+                    method: 'put',
                     url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                     data: {
                       attachment: selectedFile,
@@ -863,29 +853,8 @@ export function SignalEntryFormEl(props: Props) {
               Submit Signal
             </button>
             <button
-              className={`${
-                !description ||
-                description?.length < 30 ||
-                !headline ||
-                buttonDisabled
-                  ? 'disabled '
-                  : ''
-              }undp-button button-secondary button-arrow`}
+              className='undp-button button-secondary button-arrow'
               type='button'
-              disabled={
-                !description ||
-                description?.length < 30 ||
-                !headline ||
-                buttonDisabled
-              }
-              title={
-                !description ||
-                description?.length < 30 ||
-                !headline ||
-                buttonDisabled
-                  ? 'Signal headline and description required. Description should be > 30 letters'
-                  : 'Click to save as a draft'
-              }
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
@@ -924,6 +893,27 @@ export function SignalEntryFormEl(props: Props) {
                   })
                   .catch(err => {
                     setButtonDisabled(false);
+                    // for testing purposes only
+                    const data = {
+                      attachment: selectedFile,
+                      created_by: userName,
+                      status: 'Draft',
+                      description,
+                      headline,
+                      keywords: [keyword1, keyword2, keyword3].filter(
+                        d => d !== null && d !== undefined,
+                      ),
+                      location,
+                      relevance,
+                      sdgs: sdg || [],
+                      signature_primary: primarySS,
+                      signature_secondary: secondarySS,
+                      steep,
+                      url: sourceLink,
+                      connected_trends: selectedTrendsList,
+                    };
+                    /* eslint-disable-next-line no-console */
+                    console.log('data', data);
                     setSubmittingError(
                       `Error code ${err.response?.status}: ${
                         err.response?.data

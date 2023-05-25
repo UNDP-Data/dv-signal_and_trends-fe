@@ -62,6 +62,7 @@ export function SignalCard(props: Props) {
         borderRadius: '0.5rem',
         alignItems: 'stretch',
         display: 'flex',
+        /* maxWidth: 'calc(20% - 1rem)', */
       }}
     >
       <CardEl>

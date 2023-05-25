@@ -180,7 +180,8 @@ export function AddSignalsModal(props: Props) {
       width={960}
     >
       <p className='undp-typography italics margin-bottom-07'>
-        Signals are connected or decoupled when you click on the signal
+        Signals are connected or decoupled when you click on the signal&apos;s
+        add/remove button
       </p>
       <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
         <Select

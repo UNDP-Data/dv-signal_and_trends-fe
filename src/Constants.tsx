@@ -29,6 +29,9 @@ export const SIGNATURE_SOLUTION = [
   'Environment',
   'Energy',
   'Gender Equality',
+  'Digitalisation',
+  'Strategic Innovation',
+  'Development Financing',
 ];
 
 export const LOCATION = [
