@@ -147,7 +147,7 @@ export function TrendEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Trend Headline*</h5>
         <Input
           className='undp-input'
-          placeholder='Enter trend headline (max 50 characters)'
+          placeholder='Enter trend headline (max 100 characters)'
           maxLength={100}
           onChange={d => {
             setHeadline(d.target.value);
@@ -167,7 +167,7 @@ export function TrendEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Trend Description*</h5>
         <Input.TextArea
           className='undp-input'
-          placeholder='Trend description'
+          placeholder='Enter trend description (max 400 characters)'
           maxLength={400}
           status={description ? (description.length > 30 ? '' : 'error') : ''}
           onChange={e => {
@@ -180,8 +180,8 @@ export function TrendEntryFormEl(props: Props) {
           style={{ color: 'var(--gray-500)' }}
         >
           A concise definition of the trend that makes it easy to decide which
-          signals link to it. {description ? 400 - description.length : 400}{' '}
-          characters left
+          signals link to it. Min 30 characters required.{' '}
+          {description ? 400 - description.length : 400} characters left
         </p>
       </div>
       <div className='margin-bottom-09'>
@@ -274,7 +274,7 @@ export function TrendEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Impact Description*</h5>
         <Input.TextArea
           className='undp-input'
-          placeholder='Impact description'
+          placeholder='Enter impact description'
           status={
             impactDescription
               ? impactDescription.length > 30

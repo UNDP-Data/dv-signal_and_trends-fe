@@ -9,7 +9,6 @@ interface Props {
 
 const TableRowEl = styled.div`
   cursor: pointer;
-  width: fit-content;
 `;
 
 const DescriptionEl = styled.div`
@@ -33,10 +32,7 @@ export function ListView(props: Props) {
       style={{ overflow: 'auto', maxHeight: '70vh' }}
       className='undp-scrollbar'
     >
-      <div
-        className='undp-table-head undp-table-head-sticky'
-        style={{ minWidth: 'fit-content' }}
-      >
+      <div className='undp-table-head undp-table-head-sticky'>
         <div
           style={{ width: '37.5%', minWidth: '30rem' }}
           className='undp-table-head-cell'

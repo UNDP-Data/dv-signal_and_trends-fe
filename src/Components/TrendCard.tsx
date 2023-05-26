@@ -3,17 +3,29 @@ import { NavLink } from 'react-router-dom';
 import UNDPColorModule from 'undp-viz-colors';
 import { useContext } from 'react';
 import { TrendDataType } from '../Types';
+import Background from '../assets/UNDP-hero-image.png';
 import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
   data: TrendDataType;
 }
+interface HeroImageProps {
+  bgImage?: string;
+}
+
+const HeroImageEl = styled.div<HeroImageProps>`
+  background: ${props =>
+      props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
+    no-repeat center;
+  background-size: cover;
+  width: 100%;
+  height: 20rem;
+`;
 
 const CardEl = styled.div`
   flex-grow: 1;
   font-size: 1.4rem;
-  padding: 2rem;
   word-wrap: break-word;
   cursor: pointer;
   display: flex;
@@ -28,6 +40,7 @@ const DescriptionEl = styled.p`
   overflow: hidden;
   word-wrap: break-word;
   -webkit-box-orient: vertical;
+  padding: 0 1.5rem;
 `;
 
 export function TrendCard(props: Props) {
@@ -52,24 +65,35 @@ export function TrendCard(props: Props) {
     >
       <CardEl>
         <div>
-          <h5 className='bold undp-typography'>{data.headline}</h5>
-          {role === 'Admin' || role === 'Curator' ? (
-            <div
-              className={`undp-chip margin-bottom-07 ${
-                data.status === 'Approved'
-                  ? 'undp-chip-green'
-                  : data.status === 'New'
-                  ? 'undp-chip-yellow'
-                  : 'undp-chip-red'
-              }`}
-            >
-              {data.status === 'New' ? 'Awaiting Approval' : data.status}
-            </div>
-          ) : null}
+          <HeroImageEl bgImage={data.attachment}>
+            {role === 'Admin' || role === 'Curator' ? (
+              <div
+                className={`undp-chip margin-bottom-07 ${
+                  data.status === 'Approved'
+                    ? 'undp-chip-green'
+                    : data.status === 'New'
+                    ? 'undp-chip-yellow'
+                    : 'undp-chip-red'
+                }`}
+                style={{
+                  borderRadius: '0 0.5rem 0.5rem 0',
+                  marginTop: '1.5rem',
+                }}
+              >
+                {data.status === 'New' ? 'Awaiting Approval' : data.status}
+              </div>
+            ) : null}
+          </HeroImageEl>
+          <h5
+            className='bold undp-typography'
+            style={{ padding: '2rem 1.5rem 0 1.5rem' }}
+          >
+            {data.headline}
+          </h5>
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
           </DescriptionEl>
-          <div className='flex-div flex-wrap'>
+          <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
             <div
               className='undp-chip'
               style={{
@@ -90,7 +114,7 @@ export function TrendCard(props: Props) {
             </div>
           </div>
         </div>
-        <div>
+        <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
           <div className='margin-top-03'>

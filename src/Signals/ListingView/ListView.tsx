@@ -9,7 +9,6 @@ interface Props {
 
 const TableRowEl = styled.div`
   cursor: pointer;
-  width: fit-content;
 `;
 
 const DescriptionEl = styled.div`
@@ -33,36 +32,39 @@ export function ListView(props: Props) {
       style={{ width: '100%', overflow: 'auto', maxHeight: '70vh' }}
       className='undp-scrollbar'
     >
-      <div
-        className='undp-table-head undp-table-head-sticky'
-        style={{ minWidth: 'fit-content' }}
-      >
+      <div className='undp-table-head undp-table-head-sticky'>
         <div
-          style={{ minWidth: '40%', width: '30rem' }}
+          style={{ width: '10%', minWidth: '6rem' }}
+          className='undp-table-head-cell'
+        >
+          <CellDiv>Date created</CellDiv>
+        </div>
+        <div
+          style={{ width: '30%', minWidth: '20rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Signal</CellDiv>
         </div>
         <div
-          style={{ minWidth: '20%', width: '20rem' }}
+          style={{ width: '15%', minWidth: '15rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Keywords</CellDiv>
         </div>
         <div
-          style={{ minWidth: '10%', width: '10rem' }}
+          style={{ width: '15%', minWidth: '10rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>STEEP+V</CellDiv>
         </div>
         <div
-          style={{ minWidth: '20%', width: '20rem' }}
+          style={{ width: '15%', minWidth: '12rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Signature solutions</CellDiv>
         </div>
         <div
-          style={{ minWidth: '20%', width: '20rem' }}
+          style={{ width: '15%', minWidth: '15rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>SDG</CellDiv>
@@ -77,10 +79,17 @@ export function ListView(props: Props) {
             // eslint-disable-next-line no-underscore-dangle
             navigate(`/signals/${d.id}`);
           }}
-          style={{ width: 'fit-content' }}
         >
           <div
-            style={{ minWidth: '40%', width: '30rem' }}
+            style={{ width: '10%', minWidth: '6rem' }}
+            className='undp-table-row-cell'
+          >
+            <CellDiv>
+              <p className='small-font'>{d.created_at.split('T')[0]}</p>
+            </CellDiv>
+          </div>
+          <div
+            style={{ width: '30%', minWidth: '20rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -91,7 +100,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ minWidth: '20%', width: '20rem' }}
+            style={{ width: '15%', minWidth: '15rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -105,7 +114,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ minWidth: '10%', width: '10rem' }}
+            style={{ width: '15%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
             {d.steep ? (
@@ -132,7 +141,7 @@ export function ListView(props: Props) {
             ) : null}
           </div>
           <div
-            style={{ minWidth: '20%', width: '20rem' }}
+            style={{ width: '15%', minWidth: '12rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -182,7 +191,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ minWidth: '20%', width: '20rem' }}
+            style={{ width: '15%', minWidth: '15rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>

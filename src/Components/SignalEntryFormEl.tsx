@@ -177,10 +177,10 @@ export function SignalEntryFormEl(props: Props) {
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal Title*</h5>
+        <h5 className='undp-typography'>Signal Headline*</h5>
         <Input
           className='undp-input'
-          placeholder='Enter signal headline (max 50 characters)'
+          placeholder='Enter signal headline (max 100 characters)'
           value={headline}
           maxLength={100}
           onChange={d => {
@@ -200,7 +200,7 @@ export function SignalEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Signal Description*</h5>
         <Input.TextArea
           className='undp-input'
-          placeholder='Signal description'
+          placeholder='Enter signal description (max 200 characters)'
           maxLength={200}
           status={description ? (description.length > 30 ? '' : 'error') : ''}
           onChange={e => {
@@ -258,7 +258,7 @@ export function SignalEntryFormEl(props: Props) {
         <h5 className='undp-typography'>Signal Relevance*</h5>
         <Input.TextArea
           className='undp-input'
-          placeholder='Signal relevance'
+          placeholder='Enter signal relevance'
           onChange={e => {
             setRelevance(e.target.value);
           }}
@@ -460,8 +460,6 @@ export function SignalEntryFormEl(props: Props) {
                       const arr = [...trendsList.filter(el => el.id !== d.id)];
                       setTrendsList(arr);
                       setSelectedTrendsList(arr.map(k => k.id));
-                      /* eslint-disable-next-line no-console */
-                      console.log('d.id', d.id, arr);
                     }}
                     type='button'
                     className='undp-button button-tertiary padding-bottom-00 padding-top-00'
@@ -893,27 +891,6 @@ export function SignalEntryFormEl(props: Props) {
                   })
                   .catch(err => {
                     setButtonDisabled(false);
-                    // for testing purposes only
-                    const data = {
-                      attachment: selectedFile,
-                      created_by: userName,
-                      status: 'Draft',
-                      description,
-                      headline,
-                      keywords: [keyword1, keyword2, keyword3].filter(
-                        d => d !== null && d !== undefined,
-                      ),
-                      location,
-                      relevance,
-                      sdgs: sdg || [],
-                      signature_primary: primarySS,
-                      signature_secondary: secondarySS,
-                      steep,
-                      url: sourceLink,
-                      connected_trends: selectedTrendsList,
-                    };
-                    /* eslint-disable-next-line no-console */
-                    console.log('data', data);
                     setSubmittingError(
                       `Error code ${err.response?.status}: ${
                         err.response?.data
