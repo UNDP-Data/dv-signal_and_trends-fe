@@ -96,11 +96,13 @@ export function SignalCard(props: Props) {
             {data.description}
           </DescriptionEl>
           <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
-            {data.keywords?.map((el, j) => (
-              <div className='undp-chip' key={`chip-${j}`}>
-                {el}
-              </div>
-            ))}
+            {data.keywords?.map((el, j) =>
+              el !== '' ? (
+                <div className='undp-chip' key={`chip-${j}`}>
+                  {el}
+                </div>
+              ) : null,
+            )}
           </div>
         </div>
         <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>

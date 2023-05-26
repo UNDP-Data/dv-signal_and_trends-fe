@@ -60,6 +60,7 @@ export function CardLayout(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setSignalList([]);
+          setTotalCount(0);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -110,6 +111,7 @@ export function CardLayout(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setSignalList([]);
+          setTotalCount(0);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${

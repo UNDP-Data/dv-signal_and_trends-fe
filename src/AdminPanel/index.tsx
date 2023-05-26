@@ -48,6 +48,7 @@ export function AdminPanel() {
         .catch(err => {
           if (err.response?.status === 404) {
             setUserList([]);
+            setTotalCount(0);
           } else {
             setError(
               `Error code ${err.response?.status}: ${err.response?.data}. ${

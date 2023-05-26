@@ -34,13 +34,19 @@ export function ListView(props: Props) {
     >
       <div className='undp-table-head undp-table-head-sticky'>
         <div
+          style={{ width: '5%', minWidth: '3rem' }}
+          className='undp-table-head-cell'
+        >
+          <CellDiv>ID</CellDiv>
+        </div>
+        <div
           style={{ width: '10%', minWidth: '6rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Date created</CellDiv>
         </div>
         <div
-          style={{ width: '30%', minWidth: '20rem' }}
+          style={{ width: '25%', minWidth: '20rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Signal</CellDiv>
@@ -81,6 +87,14 @@ export function ListView(props: Props) {
           }}
         >
           <div
+            style={{ width: '5%', minWidth: '3rem' }}
+            className='undp-table-row-cell'
+          >
+            <CellDiv>
+              <p className='small-font'>{d.id}</p>
+            </CellDiv>
+          </div>
+          <div
             style={{ width: '10%', minWidth: '6rem' }}
             className='undp-table-row-cell'
           >
@@ -89,7 +103,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ width: '30%', minWidth: '20rem' }}
+            style={{ width: '25%', minWidth: '20rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -105,11 +119,13 @@ export function ListView(props: Props) {
           >
             <CellDiv>
               <div className='flex-div flex-wrap'>
-                {d.keywords?.map((el, j) => (
-                  <div className='undp-chip' key={`chip-${j}`}>
-                    {el}
-                  </div>
-                ))}
+                {d.keywords?.map((el, j) =>
+                  el !== '' ? (
+                    <div className='undp-chip' key={`chip-${j}`}>
+                      {el}
+                    </div>
+                  ) : null,
+                )}
               </div>
             </CellDiv>
           </div>
@@ -167,6 +183,7 @@ export function ListView(props: Props) {
                   </div>
                 ) : null}
                 {d.signature_secondary !== '' &&
+                d.signature_secondary !== null &&
                 d.signature_secondary !== d.signature_primary ? (
                   <div
                     className='undp-chip'
