@@ -92,7 +92,7 @@ export function SignalDetail() {
                   to='/'
                   style={{
                     textDecoration: 'none',
-                    color: 'var(--white',
+                    color: 'var(--white)',
                     fontSize: '0.75rem',
                     textTransform: 'uppercase',
                   }}
