@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Input, Select } from 'antd';
+import { Input, Select, Popconfirm } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -102,6 +102,30 @@ export function TrendEntryFormEl(props: Props) {
   const [selectedFile, setSelectedFile] = useState<string | undefined>(
     updateTrend?.attachment || undefined,
   );
+  const confirmDelete = (id: number, navigatePath: string) => {
+    axios({
+      method: 'delete',
+      url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
+      data: {},
+      headers: {
+        'Content-Type': 'application/json',
+        access_token: accessToken,
+      },
+    })
+      .then(() => {
+        setButtonDisabled(false);
+        navigate(navigatePath);
+        updateNotificationText('Successfully deleted the signal');
+      })
+      .catch(err => {
+        setButtonDisabled(false);
+        setSubmittingError(
+          `Error code ${err.response?.status}: ${err.response?.data}. ${
+            err.response?.status === 500 ? 'Please try again in some time' : ''
+          }`,
+        );
+      });
+  };
   useEffect(() => {
     if (trendsSignal.length > 0) {
       const signalIds = trendsSignal.toString().replaceAll(',', '&ids=');
@@ -339,7 +363,7 @@ export function TrendEntryFormEl(props: Props) {
             }}
             value={trendStatus === 'New' ? 'Awaiting Approval' : trendStatus}
           >
-            {['Approved', 'Awaiting Approval'].map((d, i) => (
+            {['Approved', 'Archived', 'Awaiting Approval'].map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
@@ -347,7 +371,7 @@ export function TrendEntryFormEl(props: Props) {
           </Select>
         </div>
       ) : null}
-      {!updateTrend ? (
+      {!updateTrend ? ( // new trend
         <div className='flex-div flex-vert-align-center'>
           <button
             className={`${
@@ -505,6 +529,27 @@ export function TrendEntryFormEl(props: Props) {
             >
               {submittingError}
             </p>
+          ) : null}
+          {updateTrend.status === 'Archived' ? (
+            <Popconfirm
+              title='Delete Trend'
+              description='Are you sure to delete this trend?'
+              onConfirm={() =>
+                confirmDelete(updateTrend.id, '../../../archived-trends')
+              }
+              onCancel={() => {
+                updateNotificationText('Delete canceled');
+              }}
+              okText='Yes'
+              cancelText='No'
+            >
+              <button
+                className='undp-button button-secondary button-arrow'
+                type='button'
+              >
+                Delete Archived Trend
+              </button>
+            </Popconfirm>
           ) : null}
         </div>
       )}

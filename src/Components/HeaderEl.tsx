@@ -104,14 +104,24 @@ export function Header(props: Props) {
             All Trends
           </NavLink>
           {role === 'Admin' || role === 'Curator' ? (
-            <NavLink
-              to='./archived-signals'
-              className={({ isActive }) =>
-                isActive ? 'header-link-active' : 'header-link'
-              }
-            >
-              Archived Signals
-            </NavLink>
+            <>
+              <NavLink
+                to='./archived-signals'
+                className={({ isActive }) =>
+                  isActive ? 'header-link-active' : 'header-link'
+                }
+              >
+                Archived Signals
+              </NavLink>
+              <NavLink
+                to='./archived-trends'
+                className={({ isActive }) =>
+                  isActive ? 'header-link-active' : 'header-link'
+                }
+              >
+                Archived Trends
+              </NavLink>
+            </>
           ) : null}
         </div>
         <AuthenticatedTemplate>

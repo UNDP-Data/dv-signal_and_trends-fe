@@ -15,7 +15,7 @@ import { HomePage } from './HomePage';
 import { SignalDetail } from './Signals/SignalDetail';
 import { ArchivedSignalsListing, SignalsListing } from './Signals';
 import { TrendDetail } from './Trends/TrendDetail';
-import { TrendsListing } from './Trends';
+import { ArchivedTrendsListing, TrendsListing } from './Trends';
 import { MyDrafts } from './MyDrafts';
 import { msalConfig } from './Config';
 import { Header } from './Components/HeaderEl';
@@ -66,6 +66,10 @@ function MainBody() {
               <Route path='/signals/:id/edit' element={<EditSignal />} />
               <Route path='/trends' element={<TrendsListing />} />
               <Route path='/trends/:id' element={<TrendDetail />} />
+              <Route
+                path='/archived-trends'
+                element={<ArchivedTrendsListing />}
+              />
               <Route path='/trends/:id/edit' element={<EditTrend />} />
               <Route path='/add-new-signal' element={<AddNewSignalEl />} />
               <Route path='/add-new-trend' element={<AddNewTrendEl />} />
