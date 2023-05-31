@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Input, Select } from 'antd';
+import { Input, Select, Popconfirm } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
@@ -66,7 +66,7 @@ const UploadedImgEl = styled.div<HeroImageProps>`
   background-size: cover;
   width: 7.5rem;
   height: 7.5rem;
-  margin: var(--spacing-05) 0;
+  margin-top: var(--spacing-03);
   border-radius: 0.25rem;
   border: 1px solid var(--gray-400);
 `;
@@ -131,6 +131,33 @@ export function SignalEntryFormEl(props: Props) {
   const [signalStatus, setSignalStatus] = useState<string>(
     updateSignal?.status || 'New',
   );
+  const confirmDelete = (id: number) => {
+    axios({
+      method: 'delete',
+      url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
+      data: {},
+      headers: {
+        'Content-Type': 'application/json',
+        access_token: accessToken,
+      },
+    })
+      .then(() => {
+        setButtonDisabled(false);
+        navigate('/my-drafts');
+        updateNotificationText('Successfully deleted the signal');
+      })
+      .catch(err => {
+        setButtonDisabled(false);
+        setSubmittingError(
+          `Error code ${err.response?.status}: ${err.response?.data}. ${
+            err.response?.status === 500 ? 'Please try again in some time' : ''
+          }`,
+        );
+      });
+  };
+  const cancel = () => {
+    updateNotificationText('Delete cancelled');
+  };
   useEffect(() => {
     if (selectedTrendsList.length > 0) {
       axios
@@ -297,7 +324,26 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Attachment</h5>
-        {selectedFile ? <UploadedImgEl bgImage={selectedFile} /> : null}
+        {selectedFile ? (
+          <div className='flex-div padding-bottom-05'>
+            <UploadedImgEl bgImage={selectedFile} />
+            <button
+              type='button'
+              className='undp-button button-tertiary flex'
+              onClick={() => {
+                setSelectedFileName('');
+                setSelectedFile(undefined);
+              }}
+              style={{
+                backgroundColor: 'var(--gray-300)',
+                padding: 'var(--spacing-05)',
+                alignSelf: 'flex-end',
+              }}
+            >
+              Remove image
+            </button>
+          </div>
+        ) : null}
         <p className='label'>
           {selectedFile
             ? 'Uploading file with replace the already uploaded image shown above. '
@@ -652,6 +698,21 @@ export function SignalEntryFormEl(props: Props) {
               >
                 Save Signal as Draft
               </button>
+              <Popconfirm
+                title='Delete Signal'
+                description='Are you sure to delete this signal?'
+                onConfirm={() => confirmDelete(updateSignal.id)}
+                onCancel={cancel}
+                okText='Yes'
+                cancelText='No'
+              >
+                <button
+                  className='undp-button button-secondary button-arrow'
+                  type='button'
+                >
+                  Delete Draft Signal
+                </button>
+              </Popconfirm>
             </div>
           ) : (
             <button
