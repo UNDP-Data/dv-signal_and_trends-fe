@@ -39,7 +39,7 @@ const UploadedImgEl = styled.div<HeroImageProps>`
   background-size: cover;
   width: 7.5rem;
   height: 7.5rem;
-  margin: var(--spacing-05) 0;
+  margin-top: var(--spacing-03);
   border-radius: 0.25rem;
   border: 1px solid var(--gray-400);
 `;
@@ -321,7 +321,26 @@ export function TrendEntryFormEl(props: Props) {
       </div>
       <div className='margin-bottom-07'>
         <h5 className='undp-typography'>Attachment</h5>
-        {selectedFile ? <UploadedImgEl bgImage={selectedFile} /> : null}
+        {selectedFile ? (
+          <div className='flex-div padding-bottom-05'>
+            <UploadedImgEl bgImage={selectedFile} />
+            <button
+              type='button'
+              className='undp-button button-tertiary flex'
+              onClick={() => {
+                setSelectedFileName('');
+                setSelectedFile('');
+              }}
+              style={{
+                backgroundColor: 'var(--gray-300)',
+                padding: 'var(--spacing-05)',
+                alignSelf: 'flex-end',
+              }}
+            >
+              Remove Image
+            </button>
+          </div>
+        ) : null}
         <p className='label'>
           {selectedFile
             ? 'Uploading file with replace the already uploaded image shown above. '

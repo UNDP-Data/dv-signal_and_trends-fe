@@ -110,7 +110,7 @@ export function SignalEntryFormEl(props: Props) {
   const [relevance, setRelevance] = useState<undefined | string>(
     updateSignal?.relevance || undefined,
   );
-  const [selectedFile, setSelectedFile] = useState<string | undefined>(
+  const [selectedFile, setSelectedFile] = useState<undefined | string>(
     updateSignal?.attachment || undefined,
   );
   const [keyword1, setKeyword1] = useState<string | undefined>(
@@ -177,7 +177,6 @@ export function SignalEntryFormEl(props: Props) {
       setTrendsList([]);
     }
   }, [selectedTrendsList]);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileInputRef = useRef<any>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>('');
@@ -329,7 +328,7 @@ export function SignalEntryFormEl(props: Props) {
               className='undp-button button-tertiary flex'
               onClick={() => {
                 setSelectedFileName('');
-                setSelectedFile(undefined);
+                setSelectedFile('');
               }}
               style={{
                 backgroundColor: 'var(--gray-300)',
@@ -337,7 +336,7 @@ export function SignalEntryFormEl(props: Props) {
                 alignSelf: 'flex-end',
               }}
             >
-              Remove image
+              Remove Image
             </button>
           </div>
         ) : null}
@@ -587,6 +586,7 @@ export function SignalEntryFormEl(props: Props) {
                   buttonDisabled
                 }
                 onClick={() => {
+                  // submit signal
                   setButtonDisabled(true);
                   setSubmittingError(undefined);
                   axios({
@@ -643,6 +643,7 @@ export function SignalEntryFormEl(props: Props) {
                 className='undp-button button-secondary button-arrow'
                 type='button'
                 onClick={() => {
+                  // save as draft
                   setButtonDisabled(true);
                   setSubmittingError(undefined);
                   axios({
@@ -760,20 +761,14 @@ export function SignalEntryFormEl(props: Props) {
                   : 'Click to update a signal'
               }
               onClick={() => {
+                // update signal
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
-                // eslint-disable-next-line no-console
-                console.log(
-                  'selectedFile',
-                  selectedFile,
-                  'selectedFileName',
-                  selectedFileName,
-                );
                 axios({
                   method: 'put',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
                   data: {
-                    attachment: selectedFile || null,
+                    attachment: selectedFile,
                     created_by: updateSignal.created_by,
                     description,
                     headline,
