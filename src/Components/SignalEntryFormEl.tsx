@@ -131,7 +131,7 @@ export function SignalEntryFormEl(props: Props) {
   const [signalStatus, setSignalStatus] = useState<string>(
     updateSignal?.status || 'New',
   );
-  const confirmDelete = (id: number) => {
+  const confirmDelete = (id: number, navigatePath: string) => {
     axios({
       method: 'delete',
       url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
@@ -143,7 +143,7 @@ export function SignalEntryFormEl(props: Props) {
     })
       .then(() => {
         setButtonDisabled(false);
-        navigate('/my-drafts');
+        navigate(navigatePath);
         updateNotificationText('Successfully deleted the signal');
       })
       .catch(err => {
@@ -154,9 +154,6 @@ export function SignalEntryFormEl(props: Props) {
           }`,
         );
       });
-  };
-  const cancel = () => {
-    updateNotificationText('Delete cancelled');
   };
   useEffect(() => {
     if (selectedTrendsList.length > 0) {
@@ -701,8 +698,10 @@ export function SignalEntryFormEl(props: Props) {
               <Popconfirm
                 title='Delete Signal'
                 description='Are you sure to delete this signal?'
-                onConfirm={() => confirmDelete(updateSignal.id)}
-                onCancel={cancel}
+                onConfirm={() => confirmDelete(updateSignal.id, '/my-drafts')}
+                onCancel={() => {
+                  updateNotificationText('Delete canceled');
+                }}
                 okText='Yes'
                 cancelText='No'
               >
@@ -763,6 +762,13 @@ export function SignalEntryFormEl(props: Props) {
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
+                // eslint-disable-next-line no-console
+                console.log(
+                  'selectedFile',
+                  selectedFile,
+                  'selectedFileName',
+                  selectedFileName,
+                );
                 axios({
                   method: 'put',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/update`,
@@ -968,6 +974,29 @@ export function SignalEntryFormEl(props: Props) {
             </button>
           </div>
         )}
+        {updateSignal &&
+        updateSignal.status === 'Archived' &&
+        (role === 'Curator' || role === 'Admin') ? (
+          <Popconfirm
+            title='Delete Signal'
+            description='Are you sure to delete this signal?'
+            onConfirm={() =>
+              confirmDelete(updateSignal.id, '../../../archived-signals')
+            }
+            onCancel={() => {
+              updateNotificationText('Delete canceled');
+            }}
+            okText='Yes'
+            cancelText='No'
+          >
+            <button
+              className='undp-button button-secondary button-arrow'
+              type='button'
+            >
+              Delete Archived Signal
+            </button>
+          </Popconfirm>
+        ) : null}
         {buttonDisabled ? <div className='undp-loader' /> : null}
         {submittingError ? (
           <p
