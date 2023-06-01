@@ -8,10 +8,11 @@ import Context from '../Context/Context';
 
 interface Props {
   signOutClickHandler: () => void;
+  mobileView?: boolean;
 }
 
 export function SignOutButton(props: Props) {
-  const { signOutClickHandler } = props;
+  const { signOutClickHandler, mobileView } = props;
   const {
     name,
     userName,
@@ -174,15 +175,54 @@ export function SignOutButton(props: Props) {
           },
         ];
   return (
-    <AuthenticatedTemplate>
-      <Dropdown
-        menu={{ items }}
-        placement='bottomRight'
-        className='undp-button-dropdown'
-        overlayClassName='undp-dropdown-menu'
-      >
-        <div>Hi {name?.split(' ')[0] || userName?.split('@')[0]}</div>
-      </Dropdown>
+    <>
+      {mobileView === true ? (
+        <AuthenticatedTemplate>
+          <div>
+            <NavLink to='/my-drafts'>My Drafts</NavLink>
+          </div>
+          {role === 'Admin' ? (
+            <div>
+              <NavLink to='/admin-panel'>Admin Panel</NavLink>
+            </div>
+          ) : null}
+          <div>
+            <button
+              type='button'
+              onClick={() => {
+                setNameOfUser(name);
+                setSelectedUnit(unit);
+                setOpenModal(true);
+              }}
+              className='undp-button button-secondary'
+            >
+              View My Profile
+            </button>
+          </div>
+          <div>
+            <button
+              type='button'
+              onClick={() => {
+                signOutClickHandler();
+              }}
+              className='undp-button button-secondary'
+            >
+              Sign Out
+            </button>
+          </div>
+        </AuthenticatedTemplate>
+      ) : (
+        <AuthenticatedTemplate>
+          <Dropdown
+            menu={{ items }}
+            placement='bottomRight'
+            className='undp-button-dropdown'
+            overlayClassName='undp-dropdown-menu'
+          >
+            <div>Hi {name?.split(' ')[0] || userName?.split('@')[0]}</div>
+          </Dropdown>
+        </AuthenticatedTemplate>
+      )}
       <Modal
         className='undp-modal'
         onCancel={() => {
@@ -300,6 +340,6 @@ export function SignOutButton(props: Props) {
           </button>
         </div>
       </Modal>
-    </AuthenticatedTemplate>
+    </>
   );
 }
