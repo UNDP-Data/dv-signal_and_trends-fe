@@ -110,7 +110,11 @@ export function SignalDetail() {
                   /
                 </div>
                 <NavLink
-                  to='/signals'
+                  to={
+                    data.status === 'Archived'
+                      ? '/archived-signals'
+                      : '/signals'
+                  }
                   style={{
                     textDecoration: 'none',
                     color: 'var(--white)',
@@ -118,7 +122,9 @@ export function SignalDetail() {
                     textTransform: 'uppercase',
                   }}
                 >
-                  All Signals
+                  {data.status === 'Archived'
+                    ? 'All Archived Signals'
+                    : 'All Signals'}
                 </NavLink>
                 <div
                   style={{
@@ -346,7 +352,11 @@ export function SignalDetail() {
                   </p>
                 ) : (
                   <NavLink
-                    to={`/signals/${id}/edit`}
+                    to={
+                      data.status === 'Archived'
+                        ? `/archived-signals/${id}/edit`
+                        : `/signals/${id}/edit`
+                    }
                     style={{ textDecoration: 'none' }}
                   >
                     <button

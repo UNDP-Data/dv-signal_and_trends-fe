@@ -59,18 +59,25 @@ function MainBody() {
               <Route path='/' element={<HomePage />} />
               <Route path='/signals' element={<SignalsListing />} />
               <Route path='/signals/:id' element={<SignalDetail />} />
+              <Route path='/signals/:id/edit' element={<EditSignal />} />
               <Route
                 path='/archived-signals'
                 element={<ArchivedSignalsListing />}
               />
-              <Route path='/signals/:id/edit' element={<EditSignal />} />
+              <Route path='/archived-signals/:id' element={<SignalDetail />} />
+              <Route
+                path='/archived-signals/:id/edit'
+                element={<EditSignal />}
+              />
               <Route path='/trends' element={<TrendsListing />} />
               <Route path='/trends/:id' element={<TrendDetail />} />
+              <Route path='/trends/:id/edit' element={<EditTrend />} />
               <Route
                 path='/archived-trends'
                 element={<ArchivedTrendsListing />}
               />
-              <Route path='/trends/:id/edit' element={<EditTrend />} />
+              <Route path='/archived-trends/:id' element={<TrendDetail />} />
+              <Route path='/archived-trends/:id/edit' element={<EditTrend />} />
               <Route path='/add-new-signal' element={<AddNewSignalEl />} />
               <Route path='/add-new-trend' element={<AddNewTrendEl />} />
               <Route path='/admin-panel' element={<AdminPanel />} />

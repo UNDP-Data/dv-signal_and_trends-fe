@@ -64,8 +64,11 @@ export function ListView(props: Props) {
           className='undp-table-row'
           key={i}
           onClick={() => {
-            // eslint-disable-next-line no-underscore-dangle
-            navigate(`/trends/${d.id}`);
+            navigate(
+              d.status === 'Archived'
+                ? `/archived-trends/${d.id}`
+                : `/trends/${d.id}`,
+            );
           }}
         >
           <div
@@ -84,24 +87,26 @@ export function ListView(props: Props) {
             className='undp-table-row-cell'
           >
             <CellDiv>
-              <div
-                className='undp-chip'
-                style={{
-                  color:
-                    HORIZONVALUES.findIndex(
-                      el => el.value === d.time_horizon,
-                    ) === -1
-                      ? 'var(--black)'
-                      : HORIZONVALUES[
-                          HORIZONVALUES.findIndex(
-                            el => el.value === d.time_horizon,
-                          )
-                        ].textColor,
-                  fontWeight: 'bold',
-                }}
-              >
-                {d.time_horizon}
-              </div>
+              {d.time_horizon ? (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color:
+                      HORIZONVALUES.findIndex(
+                        el => el.value === d.time_horizon,
+                      ) === -1
+                        ? 'var(--black)'
+                        : HORIZONVALUES[
+                            HORIZONVALUES.findIndex(
+                              el => el.value === d.time_horizon,
+                            )
+                          ].textColor,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {d.time_horizon}
+                </div>
+              ) : null}
             </CellDiv>
           </div>
           <div

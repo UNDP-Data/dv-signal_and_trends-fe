@@ -51,8 +51,11 @@ export function TrendCard(props: Props) {
   return (
     <NavLink
       className='signal-trend-card'
-      // eslint-disable-next-line no-underscore-dangle
-      to={`/trends/${data.id}`}
+      to={
+        data.status === 'Archived'
+          ? `/archived-trends/${data.id}`
+          : `/trends/${data.id}`
+      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
@@ -95,44 +98,60 @@ export function TrendCard(props: Props) {
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
           </DescriptionEl>
-          <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
-            <div
-              className='undp-chip'
-              style={{
-                color:
-                  HORIZONVALUES.findIndex(
-                    el => el.value === data.time_horizon,
-                  ) === -1
-                    ? 'var(--black)'
-                    : HORIZONVALUES[
-                        HORIZONVALUES.findIndex(
-                          el => el.value === data.time_horizon,
-                        )
-                      ].textColor,
-                fontWeight: 'bold',
-              }}
-            >
-              {data.time_horizon}
+          {data.time_horizon ? (
+            <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
+              <div
+                className='undp-chip'
+                style={{
+                  color:
+                    HORIZONVALUES.findIndex(
+                      el => el.value === data.time_horizon,
+                    ) === -1
+                      ? 'var(--black)'
+                      : HORIZONVALUES[
+                          HORIZONVALUES.findIndex(
+                            el => el.value === data.time_horizon,
+                          )
+                        ].textColor,
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.time_horizon}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
         <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>
           <hr className='undp-style light margin-top-07 margin-bottom-07' />
           <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
           <div className='margin-top-03'>
-            <div
-              className='undp-chip'
-              style={{
-                color: data.impact_rating < 3 ? 'var(--black)' : 'var(--white)',
-                backgroundColor:
-                  UNDPColorModule.sequentialColors.neutralColorsx05[
-                    data.impact_rating - 1
-                  ],
-                fontWeight: 'bold',
-              }}
-            >
-              {data.impact_rating}
-            </div>
+            {data.impact_rating ? (
+              <div
+                className='undp-chip'
+                style={{
+                  color:
+                    data.impact_rating < 3 ? 'var(--black)' : 'var(--white)',
+                  backgroundColor:
+                    UNDPColorModule.sequentialColors.neutralColorsx05[
+                      data.impact_rating - 1
+                    ],
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.impact_rating}
+              </div>
+            ) : (
+              <div
+                className='undp-chip'
+                style={{
+                  color: 'var(--black)',
+                  backgroundColor: 'var(--gray-300)',
+                  fontWeight: 'bold',
+                }}
+              >
+                Not available
+              </div>
+            )}
           </div>
         </div>
       </CardEl>

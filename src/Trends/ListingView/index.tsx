@@ -18,7 +18,7 @@ export function CardLayout(props: Props) {
   const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState<undefined | number>(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const [trendsList, setTrendsList] = useState<undefined | TrendDataType[]>(
     undefined,
@@ -131,10 +131,18 @@ export function CardLayout(props: Props) {
   }, [filters, pageSize]);
   return (
     <div style={{ padding: '0 1rem' }}>
-      {trendsList ? (
+      {trendsList && totalCount ? (
         <div>
-          <div className='margin-bottom-05'>
-            {totalCount} {totalCount > 1 ? 'trends' : 'trend'}
+          <div
+            className='margin-bottom-05 margin-top-07 bold'
+            style={{
+              padding: '1rem',
+              backgroundColor: 'var(--gray-200)',
+              textAlign: 'center',
+            }}
+          >
+            {totalCount}{' '}
+            {totalCount > 1 ? 'trends available' : 'trend available'}
           </div>
           <div className='flex-div flex-wrap'>
             {trendsList.length > 0 ? (

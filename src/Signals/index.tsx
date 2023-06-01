@@ -76,47 +76,6 @@ export function SignalsListing() {
           className='flex-div flex-vert-align-center'
           style={{ flexGrow: 1, justifyContent: 'flex-end' }}
         >
-          {noOfFilter > 0 ? (
-            <button
-              type='button'
-              className='undp-chip'
-              onClick={() => {
-                setNoOfFilter(0);
-                setSearchQuery(undefined);
-                setFilters({
-                  steep: 'All STEEP+V',
-                  sdg: 'All SDGs',
-                  ss: 'All Signature Solutions/Enabler',
-                  status: 'All Status',
-                  location: 'Global',
-                  search: undefined,
-                });
-              }}
-            >
-              Clear Filter
-            </button>
-          ) : null}
-          {filters.steep !== 'All STEEP+V' ? (
-            <div className='undp-chip undp-chip-blue'>
-              STEEP+V: {filters.steep.split('–')[0]}
-            </div>
-          ) : null}
-          {filters.sdg !== 'All SDGs' ? (
-            <div className='undp-chip undp-chip-blue'>{filters.sdg}</div>
-          ) : null}
-          {filters.ss !== 'All Signature Solutions/Enabler' ? (
-            <div className='undp-chip undp-chip-blue'>
-              Signature Solutions/Enabler: {filters.ss}
-            </div>
-          ) : null}
-          {filters.location !== 'Global' ? (
-            <div className='undp-chip undp-chip-blue'>{filters.location}</div>
-          ) : null}
-          {filters.status !== 'All Status' ? (
-            <div className='undp-chip undp-chip-blue'>
-              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
-            </div>
-          ) : null}
           <button
             type='button'
             className='undp-button button-secondary'
@@ -165,6 +124,55 @@ export function SignalsListing() {
           </div>
         </div>
       </div>
+      {noOfFilter > 0 ? (
+        <div
+          className='flex-div flex-wrap margin-top-07 margin-bottom-07'
+          style={{
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+          }}
+        >
+          {filters.steep !== 'All STEEP+V' ? (
+            <div className='undp-chip undp-chip-blue'>
+              STEEP+V: {filters.steep.split('–')[0]}
+            </div>
+          ) : null}
+          {filters.sdg !== 'All SDGs' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.sdg}</div>
+          ) : null}
+          {filters.ss !== 'All Signature Solutions/Enabler' ? (
+            <div className='undp-chip undp-chip-blue'>
+              Signature Solutions/Enabler: {filters.ss}
+            </div>
+          ) : null}
+          {filters.location !== 'Global' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.location}</div>
+          ) : null}
+          {filters.status !== 'All Status' ? (
+            <div className='undp-chip undp-chip-blue'>
+              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
+            </div>
+          ) : null}
+          <button
+            type='button'
+            className='undp-chip'
+            onClick={() => {
+              setNoOfFilter(0);
+              setSearchQuery(undefined);
+              setFilters({
+                steep: 'All STEEP+V',
+                sdg: 'All SDGs',
+                ss: 'All Signature Solutions/Enabler',
+                status: 'All Status',
+                location: 'Global',
+                search: undefined,
+              });
+            }}
+          >
+            Clear Filter(s)
+          </button>
+        </div>
+      ) : null}
       <CardLayout filters={filters} view={viewType} />
       <Modal
         className='undp-modal'

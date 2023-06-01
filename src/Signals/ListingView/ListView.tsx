@@ -83,7 +83,11 @@ export function ListView(props: Props) {
           key={i}
           onClick={() => {
             // eslint-disable-next-line no-underscore-dangle
-            navigate(`/signals/${d.id}`);
+            navigate(
+              d.status === 'Archived'
+                ? `/archived-signals/${d.id}`
+                : `/signals/${d.id}`,
+            );
           }}
         >
           <div
@@ -183,7 +187,7 @@ export function ListView(props: Props) {
                   </div>
                 ) : null}
                 {d.signature_secondary !== '' &&
-                d.signature_secondary !== null &&
+                d.signature_secondary &&
                 d.signature_secondary !== d.signature_primary ? (
                   <div
                     className='undp-chip'

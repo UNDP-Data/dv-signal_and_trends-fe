@@ -52,8 +52,13 @@ export function SignalCard(props: Props) {
   return (
     <NavLink
       className='signal-trend-card'
-      // eslint-disable-next-line no-underscore-dangle
-      to={isDraft ? `/signals/${data.id}/edit` : `/signals/${data.id}`}
+      to={
+        isDraft
+          ? `/signals/${data.id}/edit`
+          : data.status === 'Archived'
+          ? `/archived-signals/${data.id}`
+          : `/signals/${data.id}`
+      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
