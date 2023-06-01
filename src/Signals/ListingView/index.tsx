@@ -17,7 +17,7 @@ export function CardLayout(props: Props) {
   const { filters, view } = props;
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(24);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState<number | undefined>(undefined);
   const { role, accessToken } = useContext(Context);
   const [error, setError] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<undefined | SignalDataType[]>(
@@ -25,7 +25,6 @@ export function CardLayout(props: Props) {
   );
   useEffect(() => {
     setSignalList(undefined);
-
     const steepQueryParameter =
       filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
     const ssQueryParameter =
@@ -132,10 +131,18 @@ export function CardLayout(props: Props) {
 
   return (
     <div style={{ padding: '0 1rem' }}>
-      {signalList ? (
+      {signalList && totalCount !== undefined ? (
         <div>
-          <div className='margin-bottom-05'>
-            {totalCount} {totalCount > 1 ? 'signals' : 'signal'}
+          <div
+            className='margin-bottom-05 margin-top-07 bold'
+            style={{
+              padding: '1rem',
+              backgroundColor: 'var(--gray-200)',
+              textAlign: 'center',
+            }}
+          >
+            {totalCount}{' '}
+            {totalCount > 1 ? 'signals available' : 'signal available'}
           </div>
           <div className='flex-div flex-wrap'>
             {signalList.length > 0 ? (

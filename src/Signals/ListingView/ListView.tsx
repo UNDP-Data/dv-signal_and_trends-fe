@@ -183,7 +183,7 @@ export function ListView(props: Props) {
                   </div>
                 ) : null}
                 {d.signature_secondary !== '' &&
-                d.signature_secondary !== null &&
+                d.signature_secondary &&
                 d.signature_secondary !== d.signature_primary ? (
                   <div
                     className='undp-chip'
