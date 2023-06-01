@@ -64,8 +64,11 @@ export function ListView(props: Props) {
           className='undp-table-row'
           key={i}
           onClick={() => {
-            // eslint-disable-next-line no-underscore-dangle
-            navigate(`/trends/${d.id}`);
+            navigate(
+              d.status === 'Archived'
+                ? `/archived-trends/${d.id}`
+                : `/trends/${d.id}`,
+            );
           }}
         >
           <div

@@ -108,7 +108,9 @@ export function TrendDetail() {
                   /
                 </div>
                 <NavLink
-                  to='/trends'
+                  to={
+                    data.status === 'Archived' ? '/archived-trends' : '/trends'
+                  }
                   style={{
                     textDecoration: 'none',
                     color: 'var(--white)',
@@ -116,7 +118,9 @@ export function TrendDetail() {
                     textTransform: 'uppercase',
                   }}
                 >
-                  All Trends
+                  {data.status === 'Archived'
+                    ? 'All Archived Trends'
+                    : 'All Trends'}
                 </NavLink>
                 <div
                   style={{
@@ -256,7 +260,11 @@ export function TrendDetail() {
                   </p>
                 ) : (
                   <NavLink
-                    to={`/trends/${id}/edit`}
+                    to={
+                      data.status === 'Archived'
+                        ? `/archived-trends/${id}/edit`
+                        : `/trends/${id}/edit`
+                    }
                     style={{ textDecoration: 'none' }}
                   >
                     <button

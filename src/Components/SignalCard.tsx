@@ -49,8 +49,13 @@ export function SignalCard(props: Props) {
   const { role } = useContext(Context);
   return (
     <NavLink
-      // eslint-disable-next-line no-underscore-dangle
-      to={isDraft ? `/signals/${data.id}/edit` : `/signals/${data.id}`}
+      to={
+        isDraft
+          ? `/signals/${data.id}/edit`
+          : data.status === 'Archived'
+          ? `/archived-signals/${data.id}`
+          : `/signals/${data.id}`
+      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
@@ -62,7 +67,6 @@ export function SignalCard(props: Props) {
         borderRadius: '0.5rem',
         alignItems: 'stretch',
         display: 'flex',
-        /* maxWidth: 'calc(20% - 1rem)', */
       }}
     >
       <CardEl>

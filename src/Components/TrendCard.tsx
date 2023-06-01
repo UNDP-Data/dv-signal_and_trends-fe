@@ -48,8 +48,11 @@ export function TrendCard(props: Props) {
   const { role } = useContext(Context);
   return (
     <NavLink
-      // eslint-disable-next-line no-underscore-dangle
-      to={`/trends/${data.id}`}
+      to={
+        data.status === 'Archived'
+          ? `/archived-trends/${data.id}`
+          : `/trends/${data.id}`
+      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
