@@ -1,4 +1,5 @@
-import { NavLink, useParams } from 'react-router-dom';
+import { Popconfirm } from 'antd';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -41,13 +42,19 @@ function isValidUrl(url?: string) {
     return false;
   }
 }
+
 export function SignalDetail() {
   const [data, setData] = useState<SignalDataType | undefined>(undefined);
   const [connectedTrends, setConnectedTrends] = useState<
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const { role, accessToken } = useContext(Context);
+  const { role, accessToken, updateNotificationText } = useContext(Context);
+  const navigate = useNavigate();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [submittingError, setSubmittingError] = useState<undefined | string>(
+    undefined,
+  );
   useEffect(() => {
     axios
       .get(
@@ -330,15 +337,22 @@ export function SignalDetail() {
             )}
             {role === 'Admin' || role === 'Curator' ? (
               <div>
-                <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                <h6 className='undp-typography margin-top-00'>Created by</h6>
-                <p className='undp-typography'>
-                  {`${data.created_by} on ${new Date(
-                    data.created_at,
-                  ).getDate()}-${
-                    MONTHS[new Date(data.created_at).getMonth()]
-                  }-${new Date(data.created_at).getFullYear()}`}
-                </p>
+                <div>
+                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
+                  <h6 className='undp-typography margin-top-00'>Created by</h6>
+                  <p className='undp-typography'>
+                    {`${data.created_by} on ${new Date(
+                      data.created_at,
+                    ).getDate()}-${
+                      MONTHS[new Date(data.created_at).getMonth()]
+                    }-${new Date(data.created_at).getFullYear()}`}
+                  </p>
+                </div>
+                <div>
+                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
+                  <h6 className='undp-typography margin-top-00'>Signal ID</h6>
+                  <p className='undp-typography'>{data.id}</p>
+                </div>
               </div>
             ) : null}
             <div className='margin-top-09'>
@@ -351,23 +365,77 @@ export function SignalDetail() {
                     Admin or curator rights required to edit a signal
                   </p>
                 ) : (
-                  <NavLink
-                    to={
-                      data.status === 'Archived'
-                        ? `/archived-signals/${id}/edit`
-                        : `/signals/${id}/edit`
-                    }
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <button
-                      className='undp-button button-secondary button-arrow'
-                      type='button'
+                  <div className='flex-div'>
+                    <NavLink
+                      to={
+                        data.status === 'Archived'
+                          ? `/archived-signals/${id}/edit`
+                          : `/signals/${id}/edit`
+                      }
+                      style={{ textDecoration: 'none' }}
                     >
-                      Edit Signal
-                    </button>
-                  </NavLink>
+                      <button
+                        className='undp-button button-secondary button-arrow'
+                        type='button'
+                      >
+                        Edit Signal
+                      </button>
+                    </NavLink>
+                    <Popconfirm
+                      title='Delete Signal'
+                      description='Are you sure to delete this signal?'
+                      onConfirm={() => {
+                        axios({
+                          method: 'delete',
+                          url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
+                          data: {},
+                          headers: {
+                            'Content-Type': 'application/json',
+                            access_token: accessToken,
+                          },
+                        })
+                          .then(() => {
+                            setButtonDisabled(false);
+                            navigate('../../signals');
+                            updateNotificationText(
+                              'Successfully deleted the signal',
+                            );
+                          })
+                          .catch(err => {
+                            setButtonDisabled(false);
+                            setSubmittingError(
+                              `Error code ${err.response?.status}: ${
+                                err.response?.data
+                              }. ${
+                                err.response?.status === 500
+                                  ? 'Please try again in some time'
+                                  : ''
+                              }`,
+                            );
+                          });
+                      }}
+                      okText='Yes'
+                      cancelText='No'
+                    >
+                      <button
+                        className='undp-button button-secondary button-arrow'
+                        type='button'
+                      >
+                        Delete Signal
+                      </button>
+                    </Popconfirm>
+                  </div>
                 )}
               </AuthenticatedTemplate>
+              {buttonDisabled ? <div className='undp-loader' /> : null}
+              {submittingError ? (
+                <p
+                  className='margin-top-00 margin-bottom-00'
+                  style={{ color: 'var(--dark-red)' }}
+                >
+                  {submittingError}
+                </p>
+              ) : null}
               <UnauthenticatedTemplate>
                 <SignInButton buttonText='Sign In to Edit Signal' />
               </UnauthenticatedTemplate>
