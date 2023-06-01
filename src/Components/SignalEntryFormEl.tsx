@@ -500,9 +500,14 @@ export function SignalEntryFormEl(props: Props) {
                     marginBottom: 'var(--spacing-05)',
                   }}
                 >
-                  <p className='undp-typography margin-bottom-00'>
-                    {d.headline}
-                  </p>
+                  <div>
+                    <p className='undp-typography margin-bottom-01'>
+                      {d.headline}
+                    </p>
+                    <p className='undp-typography small-font'>
+                      {d.description}
+                    </p>
+                  </div>
                   <button
                     onClick={() => {
                       const arr = [...trendsList.filter(el => el.id !== d.id)];

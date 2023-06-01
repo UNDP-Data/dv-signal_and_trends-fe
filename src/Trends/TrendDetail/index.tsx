@@ -1,4 +1,5 @@
-import { NavLink, useParams } from 'react-router-dom';
+import { Popconfirm } from 'antd';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -32,7 +33,12 @@ export function TrendDetail() {
   >(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const { id } = useParams();
-  const { role, accessToken } = useContext(Context);
+  const { role, accessToken, updateNotificationText } = useContext(Context);
+  const navigate = useNavigate();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [submittingError, setSubmittingError] = useState<undefined | string>(
+    undefined,
+  );
   useEffect(() => {
     axios
       .get(
@@ -251,7 +257,7 @@ export function TrendDetail() {
                 </div>
                 <div>
                   <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00'>Signal ID</h6>
+                  <h6 className='undp-typography margin-top-00'>Trend ID</h6>
                   <p className='undp-typography'>{data.id}</p>
                 </div>
               </div>
@@ -266,23 +272,77 @@ export function TrendDetail() {
                     Admin or curator rights required to edit a trend
                   </p>
                 ) : (
-                  <NavLink
-                    to={
-                      data.status === 'Archived'
-                        ? `/archived-trends/${id}/edit`
-                        : `/trends/${id}/edit`
-                    }
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <button
-                      className='undp-button button-secondary button-arrow'
-                      type='button'
+                  <div className='flex-div'>
+                    <NavLink
+                      to={
+                        data.status === 'Archived'
+                          ? `/archived-trends/${id}/edit`
+                          : `/trends/${id}/edit`
+                      }
+                      style={{ textDecoration: 'none' }}
                     >
-                      Edit Trend
-                    </button>
-                  </NavLink>
+                      <button
+                        className='undp-button button-secondary button-arrow'
+                        type='button'
+                      >
+                        Edit Trend
+                      </button>
+                    </NavLink>
+                    <Popconfirm
+                      title='Delete Trend'
+                      description='Are you sure to delete this trend?'
+                      onConfirm={() => {
+                        axios({
+                          method: 'delete',
+                          url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
+                          data: {},
+                          headers: {
+                            'Content-Type': 'application/json',
+                            access_token: accessToken,
+                          },
+                        })
+                          .then(() => {
+                            setButtonDisabled(false);
+                            navigate('../../trends');
+                            updateNotificationText(
+                              'Successfully deleted the trend',
+                            );
+                          })
+                          .catch(err => {
+                            setButtonDisabled(false);
+                            setSubmittingError(
+                              `Error code ${err.response?.status}: ${
+                                err.response?.data
+                              }. ${
+                                err.response?.status === 500
+                                  ? 'Please try again in some time'
+                                  : ''
+                              }`,
+                            );
+                          });
+                      }}
+                      okText='Yes'
+                      cancelText='No'
+                    >
+                      <button
+                        className='undp-button button-secondary button-arrow'
+                        type='button'
+                      >
+                        Delete Trend
+                      </button>
+                    </Popconfirm>
+                  </div>
                 )}
               </AuthenticatedTemplate>
+              {buttonDisabled ? <div className='undp-loader' /> : null}
+              {submittingError ? (
+                <p
+                  className='margin-top-00 margin-bottom-00'
+                  style={{ color: 'var(--dark-red)' }}
+                >
+                  {submittingError}
+                </p>
+              ) : null}
               <UnauthenticatedTemplate>
                 <SignInButton buttonText='Sign In to Edit Trends' />
               </UnauthenticatedTemplate>
