@@ -55,7 +55,8 @@ export function EditSignal() {
           ← Back
         </button>
         <h3 className='undp-typography margin-top-05'>
-          Edit Signal{signal ? `: ${signal.headline}` : null}
+          Edit Signal
+          {signal && signal.headline ? `: ${signal.headline}` : ''}
         </h3>
         {signal?.status !== 'Draft' ? (
           role === 'User' ? (

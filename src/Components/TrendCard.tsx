@@ -56,7 +56,6 @@ export function TrendCard(props: Props) {
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
-        width: 'calc(33.33% - 0.67rem)',
         flexGrow: 1,
         flexBasis: '26.25rem',
         backgroundColor: 'var(--gray-200)',

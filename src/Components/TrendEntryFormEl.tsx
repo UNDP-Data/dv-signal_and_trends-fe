@@ -275,6 +275,12 @@ export function TrendEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
+          <p
+            className='undp-typography margin-top-02 margin-bottom-00'
+            style={{ color: 'var(--gray-500)' }}
+          >
+            Timeframe/period during which this trend might apply
+          </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
           <h5 className='undp-typography'>Impact Rating*</h5>
@@ -292,6 +298,13 @@ export function TrendEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
+          <p
+            className='undp-typography margin-top-02 margin-bottom-00'
+            style={{ color: 'var(--gray-500)' }}
+          >
+            How great of an impact might this trend make on development on the
+            selected time horizon?
+          </p>
         </div>
       </div>
       <div className='margin-bottom-07'>
@@ -345,7 +358,7 @@ export function TrendEntryFormEl(props: Props) {
           {selectedFile
             ? 'Uploading file with replace the already uploaded image shown above. '
             : ''}
-          Attach an image here to illustrate this Signal, if available. Only use
+          Attach an image here to illustrate this Trend, if available. Only use
           images that are licensed or license-free/Creative Commons. File must
           be maximum 1 MBs. Compress larger images, if applicable.
         </p>

@@ -57,7 +57,6 @@ export function SignalCard(props: Props) {
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
-        width: 'calc(33.33% - 0.67rem)',
         flexGrow: 1,
         flexBasis: '26.25rem',
         backgroundColor: 'var(--gray-200)',
@@ -65,7 +64,6 @@ export function SignalCard(props: Props) {
         borderRadius: '0.5rem',
         alignItems: 'stretch',
         display: 'flex',
-        /* maxWidth: 'calc(20% - 1rem)', */
       }}
     >
       <CardEl>

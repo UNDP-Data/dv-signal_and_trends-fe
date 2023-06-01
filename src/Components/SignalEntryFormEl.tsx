@@ -275,6 +275,12 @@ export function SignalEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
+          <p
+            className='undp-typography margin-top-02 margin-bottom-00'
+            style={{ color: 'var(--gray-500)' }}
+          >
+            Region and/or country for which this signal has greatest relevance
+          </p>
         </div>
       </div>
       <div className='margin-bottom-07'>
