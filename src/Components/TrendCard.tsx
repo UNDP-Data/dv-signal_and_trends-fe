@@ -7,6 +7,8 @@ import Background from '../assets/UNDP-hero-image.png';
 import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
+import '../styles.css';
+
 interface Props {
   data: TrendDataType;
 }
@@ -48,6 +50,7 @@ export function TrendCard(props: Props) {
   const { role } = useContext(Context);
   return (
     <NavLink
+      className='signal-trend-card'
       to={
         data.status === 'Archived'
           ? `/archived-trends/${data.id}`
@@ -56,7 +59,6 @@ export function TrendCard(props: Props) {
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
-        width: 'calc(33.33% - 0.67rem)',
         flexGrow: 1,
         flexBasis: '26.25rem',
         backgroundColor: 'var(--gray-200)',

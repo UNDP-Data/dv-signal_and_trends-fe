@@ -1,0 +1,21 @@
+/* signal-trend-card max-width based on flexBasis: 420px (26.25rem) */
+@media(min-width: 888px){
+  .signal-trend-card{
+    max-width: calc(50% - 1rem);
+  }
+}
+@media(min-width: 1312px){
+  .signal-trend-card{
+    max-width: calc(33.3% - 1rem);
+  }
+}
+@media(min-width: 1760px){
+  .signal-trend-card{
+    max-width: calc(25% - 1rem);
+  }
+}
+@media(min-width: 2196px){
+  .signal-trend-card{
+    max-width: calc(20% - 1rem);
+  }
+}

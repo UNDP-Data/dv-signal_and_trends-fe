@@ -42,7 +42,7 @@ export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
   const { accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageSize, setPageSize] = useState(24);
+  const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState<undefined | string>(undefined);
   const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
