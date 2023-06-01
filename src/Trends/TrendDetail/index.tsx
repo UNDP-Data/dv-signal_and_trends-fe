@@ -236,17 +236,24 @@ export function TrendDetail() {
             )}
             {role === 'Admin' || role === 'Curator' ? (
               <div>
-                <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                <h6 className='undp-typography margin-top-00 margin-bottom-00'>
-                  Created by
-                </h6>
-                <p className='undp-typography margin-top-05'>
-                  {`${data.created_by} on ${new Date(
-                    data.created_at,
-                  ).getDate()}-${
-                    MONTHS[new Date(data.created_at).getMonth()]
-                  }-${new Date(data.created_at).getFullYear()}`}
-                </p>
+                <div>
+                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
+                  <h6 className='undp-typography margin-top-00 margin-bottom-00'>
+                    Created by
+                  </h6>
+                  <p className='undp-typography margin-top-05'>
+                    {`${data.created_by} on ${new Date(
+                      data.created_at,
+                    ).getDate()}-${
+                      MONTHS[new Date(data.created_at).getMonth()]
+                    }-${new Date(data.created_at).getFullYear()}`}
+                  </p>
+                </div>
+                <div>
+                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
+                  <h6 className='undp-typography margin-top-00'>Signal ID</h6>
+                  <p className='undp-typography'>{data.id}</p>
+                </div>
               </div>
             ) : null}
             <div className='margin-top-09'>

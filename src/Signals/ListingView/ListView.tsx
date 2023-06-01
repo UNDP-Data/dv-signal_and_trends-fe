@@ -24,6 +24,13 @@ const CellDiv = styled.div`
   padding: 0 2.5rem 0 0.75rem;
 `;
 
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return `${d.getDate().toString()}-${d.toLocaleString('en-US', {
+    month: 'short',
+  })}-${d.getFullYear().toString()}`;
+}
+
 export function ListView(props: Props) {
   const { data } = props;
   const navigate = useNavigate();
@@ -33,18 +40,6 @@ export function ListView(props: Props) {
       className='undp-scrollbar'
     >
       <div className='undp-table-head undp-table-head-sticky'>
-        <div
-          style={{ width: '5%', minWidth: '3rem' }}
-          className='undp-table-head-cell'
-        >
-          <CellDiv>ID</CellDiv>
-        </div>
-        <div
-          style={{ width: '10%', minWidth: '6rem' }}
-          className='undp-table-head-cell'
-        >
-          <CellDiv>Date created</CellDiv>
-        </div>
         <div
           style={{ width: '25%', minWidth: '20rem' }}
           className='undp-table-head-cell'
@@ -75,6 +70,18 @@ export function ListView(props: Props) {
         >
           <CellDiv>SDG</CellDiv>
         </div>
+        <div
+          style={{ width: '10%', minWidth: '6rem' }}
+          className='undp-table-head-cell'
+        >
+          <CellDiv>Date created</CellDiv>
+        </div>
+        <div
+          style={{ width: '5%', minWidth: '3rem' }}
+          className='undp-table-head-cell'
+        >
+          <CellDiv>ID</CellDiv>
+        </div>
       </div>
       {data.map((d, i) => (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
@@ -90,22 +97,6 @@ export function ListView(props: Props) {
             );
           }}
         >
-          <div
-            style={{ width: '5%', minWidth: '3rem' }}
-            className='undp-table-row-cell'
-          >
-            <CellDiv>
-              <p className='small-font'>{d.id}</p>
-            </CellDiv>
-          </div>
-          <div
-            style={{ width: '10%', minWidth: '6rem' }}
-            className='undp-table-row-cell'
-          >
-            <CellDiv>
-              <p className='small-font'>{d.created_at.split('T')[0]}</p>
-            </CellDiv>
-          </div>
           <div
             style={{ width: '25%', minWidth: '20rem' }}
             className='undp-table-row-cell'
@@ -236,6 +227,22 @@ export function ListView(props: Props) {
                   </>
                 ) : null}
               </div>
+            </CellDiv>
+          </div>
+          <div
+            style={{ width: '10%', minWidth: '6rem' }}
+            className='undp-table-row-cell'
+          >
+            <CellDiv>
+              <p className='small-font'>{formatDate(d.created_at)}</p>
+            </CellDiv>
+          </div>
+          <div
+            style={{ width: '5%', minWidth: '3rem' }}
+            className='undp-table-row-cell'
+          >
+            <CellDiv>
+              <p className='small-font'>{d.id}</p>
             </CellDiv>
           </div>
         </TableRowEl>
