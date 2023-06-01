@@ -15,7 +15,7 @@ export function MyDrafts() {
   const { accessToken, userName } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [error, setError] = useState<undefined | string>(undefined);
-  const [pageSize, setPageSize] = useState(24);
+  const [pageSize, setPageSize] = useState(20);
   const [signalList, setSignalList] = useState<SignalDataType[] | undefined>(
     undefined,
   );

@@ -6,6 +6,8 @@ import Background from '../assets/UNDP-hero-image.png';
 import { STEEPVCOLOR } from '../Constants';
 import Context from '../Context/Context';
 
+import '../styles.css';
+
 interface Props {
   data: SignalDataType;
   isDraft?: boolean;
@@ -49,6 +51,7 @@ export function SignalCard(props: Props) {
   const { role } = useContext(Context);
   return (
     <NavLink
+      className='signal-trend-card'
       // eslint-disable-next-line no-underscore-dangle
       to={isDraft ? `/signals/${data.id}/edit` : `/signals/${data.id}`}
       style={{

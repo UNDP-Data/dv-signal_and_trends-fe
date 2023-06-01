@@ -7,6 +7,8 @@ import Background from '../assets/UNDP-hero-image.png';
 import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
+import '../styles.css';
+
 interface Props {
   data: TrendDataType;
 }
@@ -48,6 +50,7 @@ export function TrendCard(props: Props) {
   const { role } = useContext(Context);
   return (
     <NavLink
+      className='signal-trend-card'
       // eslint-disable-next-line no-underscore-dangle
       to={`/trends/${data.id}`}
       style={{
