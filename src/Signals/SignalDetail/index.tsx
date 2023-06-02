@@ -381,49 +381,51 @@ export function SignalDetail() {
                         Edit Signal
                       </button>
                     </NavLink>
-                    <Popconfirm
-                      title='Delete Signal'
-                      description='Are you sure to delete this signal?'
-                      onConfirm={() => {
-                        axios({
-                          method: 'delete',
-                          url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
-                          data: {},
-                          headers: {
-                            'Content-Type': 'application/json',
-                            access_token: accessToken,
-                          },
-                        })
-                          .then(() => {
-                            setButtonDisabled(false);
-                            navigate('../../signals');
-                            updateNotificationText(
-                              'Successfully deleted the signal',
-                            );
+                    {data.status === 'Archived' ? (
+                      <Popconfirm
+                        title='Delete Signal'
+                        description='Are you sure to delete this signal?'
+                        onConfirm={() => {
+                          axios({
+                            method: 'delete',
+                            url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
+                            data: {},
+                            headers: {
+                              'Content-Type': 'application/json',
+                              access_token: accessToken,
+                            },
                           })
-                          .catch(err => {
-                            setButtonDisabled(false);
-                            setSubmittingError(
-                              `Error code ${err.response?.status}: ${
-                                err.response?.data
-                              }. ${
-                                err.response?.status === 500
-                                  ? 'Please try again in some time'
-                                  : ''
-                              }`,
-                            );
-                          });
-                      }}
-                      okText='Yes'
-                      cancelText='No'
-                    >
-                      <button
-                        className='undp-button button-secondary button-arrow'
-                        type='button'
+                            .then(() => {
+                              setButtonDisabled(false);
+                              navigate('../../archived-signals');
+                              updateNotificationText(
+                                'Successfully deleted the signal',
+                              );
+                            })
+                            .catch(err => {
+                              setButtonDisabled(false);
+                              setSubmittingError(
+                                `Error code ${err.response?.status}: ${
+                                  err.response?.data
+                                }. ${
+                                  err.response?.status === 500
+                                    ? 'Please try again in some time'
+                                    : ''
+                                }`,
+                              );
+                            });
+                        }}
+                        okText='Yes'
+                        cancelText='No'
                       >
-                        Delete Signal
-                      </button>
-                    </Popconfirm>
+                        <button
+                          className='undp-button button-secondary button-arrow'
+                          type='button'
+                        >
+                          Delete Signal
+                        </button>
+                      </Popconfirm>
+                    ) : null}
                   </div>
                 )}
               </AuthenticatedTemplate>

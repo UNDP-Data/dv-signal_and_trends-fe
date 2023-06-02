@@ -288,49 +288,51 @@ export function TrendDetail() {
                         Edit Trend
                       </button>
                     </NavLink>
-                    <Popconfirm
-                      title='Delete Trend'
-                      description='Are you sure to delete this trend?'
-                      onConfirm={() => {
-                        axios({
-                          method: 'delete',
-                          url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
-                          data: {},
-                          headers: {
-                            'Content-Type': 'application/json',
-                            access_token: accessToken,
-                          },
-                        })
-                          .then(() => {
-                            setButtonDisabled(false);
-                            navigate('../../trends');
-                            updateNotificationText(
-                              'Successfully deleted the trend',
-                            );
+                    {data.status === 'Archived' ? (
+                      <Popconfirm
+                        title='Delete Trend'
+                        description='Are you sure to delete this trend?'
+                        onConfirm={() => {
+                          axios({
+                            method: 'delete',
+                            url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
+                            data: {},
+                            headers: {
+                              'Content-Type': 'application/json',
+                              access_token: accessToken,
+                            },
                           })
-                          .catch(err => {
-                            setButtonDisabled(false);
-                            setSubmittingError(
-                              `Error code ${err.response?.status}: ${
-                                err.response?.data
-                              }. ${
-                                err.response?.status === 500
-                                  ? 'Please try again in some time'
-                                  : ''
-                              }`,
-                            );
-                          });
-                      }}
-                      okText='Yes'
-                      cancelText='No'
-                    >
-                      <button
-                        className='undp-button button-secondary button-arrow'
-                        type='button'
+                            .then(() => {
+                              setButtonDisabled(false);
+                              navigate('../../archived-trends');
+                              updateNotificationText(
+                                'Successfully deleted the trend',
+                              );
+                            })
+                            .catch(err => {
+                              setButtonDisabled(false);
+                              setSubmittingError(
+                                `Error code ${err.response?.status}: ${
+                                  err.response?.data
+                                }. ${
+                                  err.response?.status === 500
+                                    ? 'Please try again in some time'
+                                    : ''
+                                }`,
+                              );
+                            });
+                        }}
+                        okText='Yes'
+                        cancelText='No'
                       >
-                        Delete Trend
-                      </button>
-                    </Popconfirm>
+                        <button
+                          className='undp-button button-secondary button-arrow'
+                          type='button'
+                        >
+                          Delete Trend
+                        </button>
+                      </Popconfirm>
+                    ) : null}
                   </div>
                 )}
               </AuthenticatedTemplate>
