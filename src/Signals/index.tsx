@@ -68,7 +68,6 @@ export function SignalsListing() {
           paddingLeft: '1rem',
           paddingRight: '1rem',
           justifyContent: 'space-between',
-          gap: '10rem',
         }}
       >
         <h4 className='undp-typography margin-bottom-00'>All Signals</h4>
@@ -126,7 +125,7 @@ export function SignalsListing() {
       </div>
       {noOfFilter > 0 ? (
         <div
-          className='flex-div flex-wrap margin-top-07 margin-bottom-07'
+          className='flex-div flex-wrap margin-top-02 margin-bottom-02'
           style={{
             paddingLeft: '1rem',
             paddingRight: '1rem',

@@ -1,6 +1,6 @@
 import { AuthenticatedTemplate } from '@azure/msal-react';
 import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { UNITS } from '../Constants';
@@ -22,9 +22,14 @@ export function SignOutButton(props: Props) {
     updateUnit,
     accessToken,
     userID,
+    updateNotificationText,
   } = useContext(Context);
   const [selectedUnit, setSelectedUnit] = useState(unit);
   const [nameOfUser, setNameOfUser] = useState(name);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [submittingError, setSubmittingError] = useState<undefined | string>(
+    undefined,
+  );
   useEffect(() => {
     setNameOfUser(name);
     setSelectedUnit(unit);
@@ -304,6 +309,8 @@ export function SignOutButton(props: Props) {
             type='button'
             className='undp-button button-primary button-arrow'
             onClick={() => {
+              setButtonDisabled(true);
+              setSubmittingError(undefined);
               axios({
                 method: 'put',
                 url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
@@ -318,15 +325,38 @@ export function SignOutButton(props: Props) {
                   'Content-Type': 'application/json',
                   access_token: accessToken,
                 },
-              }).then(() => {
-                setOpenModal(false);
-                updateName(nameOfUser);
-                updateUnit(selectedUnit);
-              });
+              })
+                .then(() => {
+                  setOpenModal(false);
+                  setButtonDisabled(false);
+                  updateName(nameOfUser);
+                  updateUnit(selectedUnit);
+                  updateNotificationText('Successfully updated the profile');
+                })
+                .catch((err: AxiosError) => {
+                  setButtonDisabled(false);
+                  setSubmittingError(
+                    `Error code ${err.response?.status}: ${
+                      err.response?.data
+                    }. ${
+                      err.response?.status === 500
+                        ? 'Please try again in some time'
+                        : ''
+                    }`,
+                  );
+                });
             }}
           >
             Update Profile
           </button>
+          {submittingError ? (
+            <p
+              className='margin-top-00 margin-bottom-00'
+              style={{ color: 'var(--dark-red)' }}
+            >
+              {submittingError}
+            </p>
+          ) : null}
           <button
             type='button'
             className='undp-button button-tertiary'
@@ -338,6 +368,11 @@ export function SignOutButton(props: Props) {
           >
             Close
           </button>
+        </div>
+        <div className='margin-top-04 margin-bottom-04'>
+          {buttonDisabled ? (
+            <div className='undp-loader' style={{ margin: '0 auto' }} />
+          ) : null}
         </div>
       </Modal>
     </>

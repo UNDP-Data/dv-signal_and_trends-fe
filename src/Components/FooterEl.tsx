@@ -44,23 +44,13 @@ export function Footer() {
                   Data Futures Platform
                 </a>
               </div>
-              <div>
-                <a
-                  className='undp-footer-link undp-footer-right-link'
-                  href='/'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  Methodology
-                </a>
-              </div>
             </div>
           </div>
           <p
             className='small-font margin-top-05'
             style={{ padding: '0 0.75rem' }}
           >
-            © 2021 United Nations Development Programme
+            © 2023 United Nations Development Programme
           </p>
         </div>
       </footer>
