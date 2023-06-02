@@ -1,3 +1,4 @@
+
 /* signal-trend-card max-width based on flexBasis: 420px (26.25rem) */
 @media(min-width: 888px){
   .signal-trend-card{
@@ -18,4 +19,7 @@
   .signal-trend-card{
     max-width: calc(20% - 1rem);
   }
+}
+.connected .signal-trend-card{
+  max-width: none;
 }

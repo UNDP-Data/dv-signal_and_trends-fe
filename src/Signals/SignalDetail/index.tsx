@@ -319,7 +319,7 @@ export function SignalDetail() {
             <hr className='undp-style light margin-top-07 margin-bottom-07' />
             <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
             {connectedTrends ? (
-              <div className='flex-div flex-wrap'>
+              <div className='flex-div flex-wrap connected'>
                 {connectedTrends.filter(d => d.status === 'Approved').length >
                 0 ? (
                   <>
