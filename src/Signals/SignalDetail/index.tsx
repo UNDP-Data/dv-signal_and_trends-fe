@@ -320,11 +320,14 @@ export function SignalDetail() {
             <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
             {connectedTrends ? (
               <div className='flex-div flex-wrap'>
-                {connectedTrends.length > 0 ? (
+                {connectedTrends.filter(d => d.status === 'Approved').length >
+                0 ? (
                   <>
-                    {connectedTrends.map((d, i) => (
-                      <TrendCard key={i} data={d} />
-                    ))}
+                    {connectedTrends
+                      .filter(d => d.status === 'Approved')
+                      .map((d, i) => (
+                        <TrendCard key={i} data={d} />
+                      ))}
                   </>
                 ) : (
                   <p className='undp-typography'>No connected trends</p>

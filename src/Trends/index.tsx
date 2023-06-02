@@ -62,37 +62,6 @@ export function TrendsListing() {
           className='flex-div flex-vert-align-center'
           style={{ flexGrow: 1, justifyContent: 'flex-end' }}
         >
-          {noOfFilter > 0 ? (
-            <button
-              type='button'
-              className='undp-chip'
-              onClick={() => {
-                setNoOfFilter(0);
-                setSearchQuery(undefined);
-                setFilters({
-                  impact: 'All Ratings',
-                  horizon: 'All Horizons',
-                  status: 'All Status',
-                  search: undefined,
-                });
-              }}
-            >
-              Clear Filter
-            </button>
-          ) : null}
-          {filters.impact !== 'All Ratings' ? (
-            <div className='undp-chip undp-chip-blue'>
-              Rating: {filters.impact}
-            </div>
-          ) : null}
-          {filters.horizon !== 'All Horizons' ? (
-            <div className='undp-chip undp-chip-blue'>{filters.horizon}</div>
-          ) : null}
-          {filters.status !== 'All Status' ? (
-            <div className='undp-chip undp-chip-blue'>
-              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
-            </div>
-          ) : null}
           <button
             type='button'
             className='undp-button button-secondary'
@@ -141,6 +110,45 @@ export function TrendsListing() {
           </div>
         </div>
       </div>
+      {noOfFilter > 0 ? (
+        <div
+          className='flex-div flex-wrap margin-top-02 margin-bottom-02'
+          style={{
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+          }}
+        >
+          {filters.impact !== 'All Ratings' ? (
+            <div className='undp-chip undp-chip-blue'>
+              Rating: {filters.impact}
+            </div>
+          ) : null}
+          {filters.horizon !== 'All Horizons' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.horizon}</div>
+          ) : null}
+          {filters.status !== 'All Status' ? (
+            <div className='undp-chip undp-chip-blue'>
+              {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
+            </div>
+          ) : null}
+          <button
+            type='button'
+            className='undp-chip'
+            onClick={() => {
+              setNoOfFilter(0);
+              setSearchQuery(undefined);
+              setFilters({
+                impact: 'All Ratings',
+                horizon: 'All Horizons',
+                status: 'All Status',
+                search: undefined,
+              });
+            }}
+          >
+            Clear Filter
+          </button>
+        </div>
+      ) : null}
       <CardLayout filters={filters} view={viewType} />
       <Modal
         className='undp-modal'
