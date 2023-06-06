@@ -48,7 +48,7 @@ const DescriptionEl = styled.p`
 
 export function SignalCard(props: Props) {
   const { data, isDraft } = props;
-  const { role } = useContext(Context);
+  const { role, choices } = useContext(Context);
   return (
     <NavLink
       className='signal-trend-card'
@@ -119,16 +119,11 @@ export function SignalCard(props: Props) {
               <div
                 className='undp-chip'
                 style={{
-                  color:
-                    STEEPVCOLOR.findIndex(
-                      el => el.value === data.steep?.split(' – ')[0],
-                    ) === -1
-                      ? 'var(--black)'
-                      : STEEPVCOLOR[
-                          STEEPVCOLOR.findIndex(
-                            el => el.value === data.steep?.split(' – ')[0],
-                          )
-                        ].textColor,
+                  color: !choices
+                    ? 'var(--black)'
+                    : STEEPVCOLOR[
+                        choices?.steepv.findIndex(el => el === data.steep)
+                      ].textColor,
                   fontWeight: 'bold',
                 }}
               >

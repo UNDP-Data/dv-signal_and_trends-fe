@@ -3,7 +3,6 @@ import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
 import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { UNITS } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
@@ -23,6 +22,7 @@ export function SignOutButton(props: Props) {
     accessToken,
     userID,
     updateNotificationText,
+    choices,
   } = useContext(Context);
   const [selectedUnit, setSelectedUnit] = useState(unit);
   const [nameOfUser, setNameOfUser] = useState(name);
@@ -286,7 +286,7 @@ export function SignOutButton(props: Props) {
               value={selectedUnit || unit}
               showSearch
             >
-              {UNITS.map((d, i) => (
+              {choices?.units.map((d, i) => (
                 <Select.Option className='undp-select-option' key={i} value={d}>
                   {d}
                 </Select.Option>

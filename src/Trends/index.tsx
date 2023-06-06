@@ -8,7 +8,6 @@ import {
 import Background from '../assets/UNDP-hero-image.png';
 import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
 import { CardLayout } from './ListingView';
-import { HORIZON } from '../Constants';
 import Context from '../Context/Context';
 import { SignInButton } from '../Components/SignInButton';
 
@@ -18,7 +17,7 @@ const HeroImageEl = styled.div`
   margin-top: 7.1875rem;
 `;
 export function TrendsListing() {
-  const { role } = useContext(Context);
+  const { role, choices } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -215,7 +214,7 @@ export function TrendsListing() {
               <Select.Option className='undp-select-option' key='All Horizons'>
                 All Horizons
               </Select.Option>
-              {HORIZON.map(d => (
+              {choices?.horizons.map(d => (
                 <Select.Option className='undp-select-option' key={d}>
                   {d}
                 </Select.Option>

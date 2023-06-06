@@ -95,25 +95,6 @@ export interface TrendDataType {
   connected_signals: number[];
 }
 
-export interface CtxDataType {
-  userName?: string;
-  name?: string;
-  unit?: string;
-  role?: 'Admin' | 'Curator' | 'User';
-  accessToken?: string;
-  userID?: number;
-  expiresOn?: Date;
-  notificationText?: string;
-  updateUserName: (_d: string) => void;
-  updateName: (_d?: string) => void;
-  updateAccessToken: (_d?: string) => void;
-  updateUnit: (_d?: string) => void;
-  updateUserID: (_d?: number) => void;
-  updateRole: (_d?: 'Admin' | 'Curator' | 'User') => void;
-  updateExpiresOn: (_d: Date) => void;
-  updateNotificationText: (_d?: string) => void;
-}
-
 export interface UserDataType {
   created_at: string;
   email: string;
@@ -137,4 +118,36 @@ export interface TrendFiltersDataType {
   impact: 'All Ratings' | RatingList;
   status: 'All Status' | StatusList;
   search?: string;
+}
+
+export interface ChoicesDataType {
+  horizons: string[];
+  locations: string[];
+  ratings: string[];
+  roles: string[];
+  sdgs: string[];
+  signatures: string[];
+  steepv: string[];
+  units: string[];
+}
+
+export interface CtxDataType {
+  userName?: string;
+  name?: string;
+  unit?: string;
+  role?: 'Admin' | 'Curator' | 'User';
+  accessToken?: string;
+  userID?: number;
+  expiresOn?: Date;
+  notificationText?: string;
+  choices?: ChoicesDataType;
+  updateUserName: (_d: string) => void;
+  updateName: (_d?: string) => void;
+  updateAccessToken: (_d?: string) => void;
+  updateUnit: (_d?: string) => void;
+  updateUserID: (_d?: number) => void;
+  updateRole: (_d?: 'Admin' | 'Curator' | 'User') => void;
+  updateExpiresOn: (_d: Date) => void;
+  updateNotificationText: (_d?: string) => void;
+  updateChoices: (_d?: ChoicesDataType) => void;
 }

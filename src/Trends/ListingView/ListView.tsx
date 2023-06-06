@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useContext } from 'react';
 import { HORIZONVALUES } from '../../Constants';
 import { TrendDataType } from '../../Types';
+import Context from '../../Context/Context';
 
 interface Props {
   data: TrendDataType[];
@@ -33,6 +35,7 @@ function formatDate(dateStr: string) {
 
 export function ListView(props: Props) {
   const { data } = props;
+  const { choices } = useContext(Context);
   const navigate = useNavigate();
   return (
     <div
@@ -110,16 +113,13 @@ export function ListView(props: Props) {
                 <div
                   className='undp-chip'
                   style={{
-                    color:
-                      HORIZONVALUES.findIndex(
-                        el => el.value === d.time_horizon,
-                      ) === -1
-                        ? 'var(--black)'
-                        : HORIZONVALUES[
-                            HORIZONVALUES.findIndex(
-                              el => el.value === d.time_horizon,
-                            )
-                          ].textColor,
+                    color: !choices
+                      ? 'var(--black)'
+                      : HORIZONVALUES[
+                          choices?.horizons.findIndex(
+                            el => el === d.time_horizon,
+                          )
+                        ].textColor,
                     fontWeight: 'bold',
                   }}
                 >

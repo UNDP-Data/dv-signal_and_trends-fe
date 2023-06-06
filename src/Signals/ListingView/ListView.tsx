@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useContext } from 'react';
 import { SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../../Constants';
 import { SignalDataType } from '../../Types';
+import Context from '../../Context/Context';
 
 interface Props {
   data: SignalDataType[];
@@ -33,6 +35,7 @@ function formatDate(dateStr: string) {
 
 export function ListView(props: Props) {
   const { data } = props;
+  const { choices } = useContext(Context);
   const navigate = useNavigate();
   return (
     <div
@@ -133,16 +136,13 @@ export function ListView(props: Props) {
                 <div
                   className='undp-chip'
                   style={{
-                    color:
-                      STEEPVCOLOR.findIndex(
-                        el => el.value === d.steep?.split(' – ')[0],
-                      ) === -1
-                        ? 'var(--black)'
-                        : STEEPVCOLOR[
-                            STEEPVCOLOR.findIndex(
-                              el => el.value === d.steep?.split(' – ')[0],
-                            )
-                          ].textColor,
+                    color: !choices
+                      ? 'var(--black)'
+                      : STEEPVCOLOR[
+                          choices.steepv.findIndex(
+                            el => el === d.steep?.split(' – ')[0],
+                          )
+                        ].textColor,
                     fontWeight: 'bold',
                   }}
                 >
@@ -161,16 +161,13 @@ export function ListView(props: Props) {
                   <div
                     className='undp-chip'
                     style={{
-                      color:
-                        SSCOLOR.findIndex(
-                          el => el.value === d.signature_primary,
-                        ) !== -1
-                          ? SSCOLOR[
-                              SSCOLOR.findIndex(
-                                el => el.value === d.signature_primary,
-                              )
-                            ].textColor
-                          : 'var(--black)',
+                      color: choices
+                        ? SSCOLOR[
+                            choices.signatures.findIndex(
+                              el => el === d.signature_primary,
+                            )
+                          ].textColor
+                        : 'var(--black)',
                       fontWeight: 'bold',
                     }}
                   >
@@ -183,16 +180,13 @@ export function ListView(props: Props) {
                   <div
                     className='undp-chip'
                     style={{
-                      color:
-                        SSCOLOR.findIndex(
-                          el => el.value === d.signature_secondary,
-                        ) !== -1
-                          ? SSCOLOR[
-                              SSCOLOR.findIndex(
-                                el => el.value === d.signature_secondary,
-                              )
-                            ].textColor
-                          : 'var(--black)',
+                      color: choices
+                        ? SSCOLOR[
+                            choices.signatures.findIndex(
+                              el => el === d.signature_secondary,
+                            )
+                          ].textColor
+                        : 'var(--black)',
                       fontWeight: 'bold',
                     }}
                   >
@@ -215,9 +209,10 @@ export function ListView(props: Props) {
                         key={j}
                         className='undp-chip'
                         style={{
-                          color:
-                            SDGCOLOR[SDGCOLOR.findIndex(el => el.value === sdg)]
-                              .textColor,
+                          color: choices
+                            ? SDGCOLOR[choices.sdgs.findIndex(el => el === sdg)]
+                                .textColor
+                            : 'var(--black)',
                           fontWeight: 'bold',
                         }}
                       >

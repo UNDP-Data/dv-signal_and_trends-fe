@@ -47,7 +47,7 @@ const DescriptionEl = styled.p`
 
 export function TrendCard(props: Props) {
   const { data } = props;
-  const { role } = useContext(Context);
+  const { role, choices } = useContext(Context);
   return (
     <NavLink
       className='signal-trend-card'
@@ -103,16 +103,13 @@ export function TrendCard(props: Props) {
               <div
                 className='undp-chip'
                 style={{
-                  color:
-                    HORIZONVALUES.findIndex(
-                      el => el.value === data.time_horizon,
-                    ) === -1
-                      ? 'var(--black)'
-                      : HORIZONVALUES[
-                          HORIZONVALUES.findIndex(
-                            el => el.value === data.time_horizon,
-                          )
-                        ].textColor,
+                  color: !choices
+                    ? 'var(--black)'
+                    : HORIZONVALUES[
+                        choices?.horizons.findIndex(
+                          el => el === data.time_horizon,
+                        )
+                      ].textColor,
                   fontWeight: 'bold',
                 }}
               >

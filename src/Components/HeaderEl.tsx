@@ -173,6 +173,9 @@ export function Header(props: Props) {
             className={({ isActive }) =>
               isActive ? 'header-link-active' : 'header-link'
             }
+            onClick={() => {
+              setShowMenu(false);
+            }}
           >
             All Signals
           </NavLink>
@@ -183,6 +186,9 @@ export function Header(props: Props) {
             className={({ isActive }) =>
               isActive ? 'header-link-active' : 'header-link'
             }
+            onClick={() => {
+              setShowMenu(false);
+            }}
           >
             All Trends
           </NavLink>
@@ -194,8 +200,26 @@ export function Header(props: Props) {
               className={({ isActive }) =>
                 isActive ? 'header-link-active' : 'header-link'
               }
+              onClick={() => {
+                setShowMenu(false);
+              }}
             >
               Archived Signals
+            </NavLink>
+          </div>
+        ) : null}
+        {role === 'Admin' || role === 'Curator' ? (
+          <div>
+            <NavLink
+              to='./archived-trends'
+              className={({ isActive }) =>
+                isActive ? 'header-link-active' : 'header-link'
+              }
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              Archived Trends
             </NavLink>
           </div>
         ) : null}
@@ -206,6 +230,9 @@ export function Header(props: Props) {
               className={({ isActive }) =>
                 isActive ? 'header-link-active' : 'header-link'
               }
+              onClick={() => {
+                setShowMenu(false);
+              }}
             >
               Add new signal
             </NavLink>
@@ -217,6 +244,9 @@ export function Header(props: Props) {
                 className={({ isActive }) =>
                   isActive ? 'header-link-active' : 'header-link'
                 }
+                onClick={() => {
+                  setShowMenu(false);
+                }}
               >
                 Add new signal
               </NavLink>

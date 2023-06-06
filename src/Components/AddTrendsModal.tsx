@@ -11,7 +11,7 @@ import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
+import { API_ACCESS_TOKEN } from '../Constants';
 import {
   HorizonList,
   RatingList,
@@ -40,7 +40,7 @@ const RadioOutline = styled.div`
 
 export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
-  const { accessToken } = useContext(Context);
+  const { accessToken, choices } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState<undefined | string>(undefined);
@@ -189,7 +189,7 @@ export function AddTrendsModal(props: Props) {
           <Select.Option className='undp-select-option' key='All Horizons'>
             All Horizons
           </Select.Option>
-          {HORIZON.map(d => (
+          {choices?.horizons.map(d => (
             <Select.Option className='undp-select-option' key={d}>
               {d}
             </Select.Option>

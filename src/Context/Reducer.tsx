@@ -17,6 +17,8 @@ export default (state: any, action: any) => {
       return { ...state, expiresOn: action.payload };
     case 'UPDATE_NOTIFICATION_TEXT':
       return { ...state, notificationText: action.payload };
+    case 'UPDATE_CHOICES':
+      return { ...state, choices: action.payload };
     default:
       return { ...state };
   }

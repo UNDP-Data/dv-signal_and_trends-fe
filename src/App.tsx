@@ -5,10 +5,11 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useEffect, useReducer, useMemo, useState } from 'react';
 import { Footer } from './Components/FooterEl';
 import { SignUpButton } from './Components/SignUpButton';
-import { UNITS } from './Constants';
+import { API_ACCESS_TOKEN, CHOICES } from './Constants';
 import Context from './Context/Context';
 import Reducer from './Context/Reducer';
 import MainBody from './MainBody';
+import { ChoicesDataType } from './Types';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
@@ -27,6 +28,7 @@ function App() {
     accessToken: undefined,
     expiresOn: undefined,
     notificationText: undefined,
+    choices: undefined,
   };
 
   const [state, dispatch] = useReducer(Reducer, initialState);
@@ -38,6 +40,12 @@ function App() {
     });
   };
 
+  const updateChoices = (d?: ChoicesDataType) => {
+    dispatch({
+      type: 'UPDATE_CHOICES',
+      payload: d,
+    });
+  };
   const updateUserName = (d?: string) => {
     dispatch({
       type: 'UPDATE_USERNAME',
@@ -81,6 +89,22 @@ function App() {
     });
   };
   const { accounts, instance } = useMsal();
+  useEffect(() => {
+    axios
+      .get(`https://signals-and-trends-api.azurewebsites.net/v1/choices/list`, {
+        headers: {
+          access_token: API_ACCESS_TOKEN,
+        },
+      })
+      .then((response: AxiosResponse) => {
+        updateChoices(response.data);
+      })
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.warn(err);
+        updateChoices(CHOICES);
+      });
+  }, []);
   useEffect(() => {
     if (isAuthenticated) {
       const usernameFromMSAL = accounts[0].username;
@@ -176,6 +200,7 @@ function App() {
       >
         <MainBody />
         <Footer />
+        {}
       </div>
       <Modal open={openModal} className='undp-modal'>
         <h5 className='undp-typography bold margin-bottom-07'>
@@ -193,7 +218,7 @@ function App() {
           value={selectedUnit}
           showSearch
         >
-          {UNITS.map((d, i) => (
+          {CHOICES.units.map((d, i) => (
             <Select.Option className='undp-select-option' key={i} value={d}>
               {d}
             </Select.Option>

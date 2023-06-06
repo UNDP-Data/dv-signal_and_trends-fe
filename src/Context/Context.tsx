@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { CtxDataType } from '../Types';
+import { ChoicesDataType, CtxDataType } from '../Types';
 
 const Context = createContext<CtxDataType>({
   userName: undefined,
@@ -10,6 +10,7 @@ const Context = createContext<CtxDataType>({
   expiresOn: undefined,
   userID: undefined,
   notificationText: undefined,
+  choices: undefined,
   updateUserName: (_d?: string) => {},
   updateName: (_d?: string) => {},
   updateUnit: (_d?: string) => {},
@@ -18,6 +19,7 @@ const Context = createContext<CtxDataType>({
   updateRole: (_d?: 'Admin' | 'Curator' | 'User') => {},
   updateExpiresOn: (_d: Date) => {},
   updateNotificationText: (_d?: string) => {},
+  updateChoices: (_d?: ChoicesDataType) => {},
 });
 
 export default Context;

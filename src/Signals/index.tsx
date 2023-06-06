@@ -7,7 +7,6 @@ import {
 } from '@azure/msal-react';
 import Background from '../assets/UNDP-hero-image.png';
 import { CardLayout } from './ListingView';
-import { SDGCOLOR, SSCOLOR, STEEP_V, LOCATION } from '../Constants';
 import Context from '../Context/Context';
 import {
   SDGList,
@@ -26,7 +25,7 @@ const HeroImageEl = styled.div`
 `;
 
 export function SignalsListing() {
-  const { role } = useContext(Context);
+  const { role, choices } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
@@ -207,7 +206,7 @@ export function SignalsListing() {
               <Select.Option className='undp-select-option' key='All STEEP+V'>
                 All STEEP+V
               </Select.Option>
-              {STEEP_V.map(d => (
+              {choices?.steepv.map(d => (
                 <Select.Option className='undp-select-option' key={d}>
                   {d}
                 </Select.Option>
@@ -243,9 +242,9 @@ export function SignalsListing() {
               >
                 All Signature Solutions/Enabler
               </Select.Option>
-              {SSCOLOR.map(d => (
-                <Select.Option className='undp-select-option' key={d.value}>
-                  {d.value}
+              {choices?.signatures.map(d => (
+                <Select.Option className='undp-select-option' key={d}>
+                  {d}
                 </Select.Option>
               ))}
             </Select>
@@ -274,9 +273,9 @@ export function SignalsListing() {
               <Select.Option className='undp-select-option' key='All SDGs'>
                 All SDGs
               </Select.Option>
-              {SDGCOLOR.map(d => (
-                <Select.Option className='undp-select-option' key={d.value}>
-                  {d.value}
+              {choices?.sdgs.map(d => (
+                <Select.Option className='undp-select-option' key={d}>
+                  {d}
                 </Select.Option>
               ))}
             </Select>
@@ -302,7 +301,7 @@ export function SignalsListing() {
               }}
               clearIcon={<div className='clearIcon' />}
             >
-              {LOCATION.map(d => (
+              {choices?.locations.map(d => (
                 <Select.Option className='undp-select-option' key={d}>
                   {d}
                 </Select.Option>

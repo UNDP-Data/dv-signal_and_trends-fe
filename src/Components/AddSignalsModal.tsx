@@ -11,13 +11,7 @@ import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {
-  API_ACCESS_TOKEN,
-  SDGCOLOR,
-  SSCOLOR,
-  STEEP_V,
-  LOCATION,
-} from '../Constants';
+import { API_ACCESS_TOKEN } from '../Constants';
 import {
   SDGList,
   SignalDataType,
@@ -49,7 +43,7 @@ const RadioOutline = styled.div`
 
 export function AddSignalsModal(props: Props) {
   const { setSignalModal, trendsSignal, setTrendsSignal } = props;
-  const { accessToken } = useContext(Context);
+  const { accessToken, choices } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState<undefined | string>(undefined);
@@ -205,7 +199,7 @@ export function AddSignalsModal(props: Props) {
           <Select.Option className='undp-select-option' key='All STEEP+V'>
             All STEEP+V
           </Select.Option>
-          {STEEP_V.map(d => (
+          {choices?.steepv.map(d => (
             <Select.Option className='undp-select-option' key={d}>
               {d}
             </Select.Option>
@@ -237,9 +231,9 @@ export function AddSignalsModal(props: Props) {
           >
             All Signature Solutions/Enabler
           </Select.Option>
-          {SSCOLOR.map(d => (
-            <Select.Option className='undp-select-option' key={d.value}>
-              {d.value}
+          {choices?.signatures.map(d => (
+            <Select.Option className='undp-select-option' key={d}>
+              {d}
             </Select.Option>
           ))}
         </Select>
@@ -264,9 +258,9 @@ export function AddSignalsModal(props: Props) {
           <Select.Option className='undp-select-option' key='All SDGs'>
             All SDGs
           </Select.Option>
-          {SDGCOLOR.map(d => (
-            <Select.Option className='undp-select-option' key={d.value}>
-              {d.value}
+          {choices?.sdgs.map(d => (
+            <Select.Option className='undp-select-option' key={d}>
+              {d}
             </Select.Option>
           ))}
         </Select>
@@ -291,7 +285,7 @@ export function AddSignalsModal(props: Props) {
           }}
           clearIcon={<div className='clearIcon' />}
         >
-          {LOCATION.map(d => (
+          {choices?.locations.map(d => (
             <Select.Option className='undp-select-option' key={d}>
               {d}
             </Select.Option>

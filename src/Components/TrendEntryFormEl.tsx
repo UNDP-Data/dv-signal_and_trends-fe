@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { API_ACCESS_TOKEN, HORIZON } from '../Constants';
+import { API_ACCESS_TOKEN } from '../Constants';
 import { TrendDataType, SignalDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
 import Context from '../Context/Context';
@@ -67,7 +67,7 @@ const FileAttachmentButton = styled.input`
 `;
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { accessToken, updateNotificationText } = useContext(Context);
+  const { accessToken, updateNotificationText, choices } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -274,7 +274,7 @@ export function TrendEntryFormEl(props: Props) {
             }}
             value={timeHorizon}
           >
-            {HORIZON.map((d, i) => (
+            {choices?.horizons.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>

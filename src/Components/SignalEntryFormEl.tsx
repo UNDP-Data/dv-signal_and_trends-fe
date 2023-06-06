@@ -5,13 +5,7 @@ import sortBy from 'lodash.sortby';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {
-  API_ACCESS_TOKEN,
-  LOCATION,
-  SDG,
-  SIGNATURE_SOLUTION,
-  STEEP_V,
-} from '../Constants';
+import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { AddTrendsModal } from './AddTrendsModal';
 import Context from '../Context/Context';
@@ -77,7 +71,7 @@ const FileAttachmentButton = styled.input`
 
 export function SignalEntryFormEl(props: Props) {
   const { updateSignal, draft } = props;
-  const { userName, role, accessToken, updateNotificationText } =
+  const { userName, role, accessToken, updateNotificationText, choices } =
     useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -269,7 +263,7 @@ export function SignalEntryFormEl(props: Props) {
             }}
             value={location}
           >
-            {LOCATION.map((d, i) => (
+            {choices?.locations.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
@@ -310,7 +304,7 @@ export function SignalEntryFormEl(props: Props) {
           }}
           value={steep}
         >
-          {STEEP_V.map((d, i) => (
+          {choices?.steepv.map((d, i) => (
             <Select.Option className='undp-select-option' key={i} value={d}>
               {d}
             </Select.Option>
@@ -421,7 +415,7 @@ export function SignalEntryFormEl(props: Props) {
             }}
             value={primarySS}
           >
-            {SIGNATURE_SOLUTION.map((d, i) => (
+            {choices?.signatures.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
@@ -442,7 +436,7 @@ export function SignalEntryFormEl(props: Props) {
             clearIcon={<div className='clearIcon' />}
             allowClear
           >
-            {SIGNATURE_SOLUTION.map((d, i) => (
+            {choices?.signatures.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
@@ -464,7 +458,7 @@ export function SignalEntryFormEl(props: Props) {
             allowClear
             value={sdg}
           >
-            {SDG.map((d, i) => (
+            {choices?.sdgs.map((d, i) => (
               <Select.Option
                 className='undp-select-option'
                 key={i}
