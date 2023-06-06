@@ -350,12 +350,12 @@ export function TrendDetail() {
                 className='undp-button button-tertiary button-arrow'
                 type='button'
                 onClick={() => {
-                  const obj = [...cardsToPrint];
-                  obj.push({
+                  const cardToPrintTemp = [...cardsToPrint];
+                  cardToPrintTemp.push({
                     type: 'trend',
                     id: `${data.id}`,
                   });
-                  updateCardsToPrint(obj);
+                  updateCardsToPrint(cardToPrintTemp);
                 }}
               >
                 Add to print
