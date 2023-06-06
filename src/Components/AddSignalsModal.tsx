@@ -56,7 +56,7 @@ export function AddSignalsModal(props: Props) {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
-    location: 'Global',
+    location: 'All Locations',
     search: undefined,
   });
   const [loading, setLoading] = useState(true);
@@ -79,12 +79,16 @@ export function AddSignalsModal(props: Props) {
     const statusQueryParameter = '&statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const locationQueryParameter =
+      filters.location === 'All Locations'
+        ? ''
+        : `&location=${filters.location}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -125,12 +129,16 @@ export function AddSignalsModal(props: Props) {
     const statusQueryParameter = 'statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const locationQueryParameter =
+      filters.location === 'All Locations'
+        ? ''
+        : `&location=${filters.location}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

@@ -376,7 +376,7 @@ export function TrendDetail() {
           </div>
         </div>
       ) : (
-        <div className='undp-loader-container'>
+        <div className='undp-loader-container margin-top-13'>
           <div className='undp-loader' />
         </div>
       )}
