@@ -190,7 +190,7 @@ export function TrendDetail() {
                   color: !choices
                     ? 'var(--black)'
                     : HORIZONVALUES[
-                        choices.signatures.findIndex(
+                        choices.horizons.findIndex(
                           el => el === data.time_horizon,
                         )
                       ].textColor,
@@ -353,7 +353,7 @@ export function TrendDetail() {
           </div>
         </div>
       ) : (
-        <div className='undp-loader-container'>
+        <div className='undp-loader-container margin-top-13'>
           <div className='undp-loader' />
         </div>
       )}
