@@ -39,12 +39,16 @@ export function CardLayout(props: Props) {
         : '&statuses=Approved';
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const locationQueryParameter =
+      filters.location === 'All Locations'
+        ? ''
+        : `&location=${filters.location}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -86,6 +90,10 @@ export function CardLayout(props: Props) {
           ? 'statuses=New&statuses=Approved'
           : `statuses=${filters.status}`
         : 'statuses=Approved';
+    const locationQueryParameter =
+      filters.location === 'All Locations'
+        ? ''
+        : `&location=${filters.location}`;
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
     const searchQueryParameter = filters.search
@@ -93,7 +101,7 @@ export function CardLayout(props: Props) {
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

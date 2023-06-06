@@ -109,7 +109,7 @@ export interface SignalFiltersDataType {
   sdg: 'All SDGs' | SDGList;
   ss: 'All Signature Solutions/Enabler' | SSList;
   status: 'All Status' | StatusList;
-  location: 'Global' | LocationList;
+  location: string;
   search?: string;
 }
 

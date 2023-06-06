@@ -35,7 +35,7 @@ export function SignalsListing() {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
-    location: 'Global',
+    location: 'All Locations',
     search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<SignalFiltersDataType>({
@@ -43,7 +43,7 @@ export function SignalsListing() {
     sdg: 'All SDGs',
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
-    location: 'Global',
+    location: 'All Locations',
     search: undefined,
   });
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -143,7 +143,7 @@ export function SignalsListing() {
               Signature Solutions/Enabler: {filters.ss}
             </div>
           ) : null}
-          {filters.location !== 'Global' ? (
+          {filters.location !== 'All Locations' ? (
             <div className='undp-chip undp-chip-blue'>{filters.location}</div>
           ) : null}
           {filters.status !== 'All Status' ? (
@@ -162,7 +162,7 @@ export function SignalsListing() {
                 sdg: 'All SDGs',
                 ss: 'All Signature Solutions/Enabler',
                 status: 'All Status',
-                location: 'Global',
+                location: 'All Locations',
                 search: undefined,
               });
             }}
@@ -358,6 +358,9 @@ export function SignalsListing() {
               i += 1;
             }
             if (tempFilters.steep !== 'All STEEP+V') {
+              i += 1;
+            }
+            if (tempFilters.location !== 'All Locations') {
               i += 1;
             }
             setFilters(tempFilters);
