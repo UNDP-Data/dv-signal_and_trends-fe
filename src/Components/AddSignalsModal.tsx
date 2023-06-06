@@ -50,6 +50,7 @@ export function AddSignalsModal(props: Props) {
   const [totalNoOfPages, setTotalNoOfPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<SignalDataType[]>([]);
+  const [idsList, setIdsList] = useState<string[]>([]);
 
   const [filters, setFilters] = useState<SignalFiltersDataType>({
     steep: 'All STEEP+V',
@@ -65,6 +66,38 @@ export function AddSignalsModal(props: Props) {
     size,
   ) => {
     setPageSize(size);
+  };
+  const fetchIds = ids => {
+    const signalIds = ids.toString().replaceAll(',', '&ids=');
+    axios
+      .get(
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+        {
+          headers: {
+            access_token: API_ACCESS_TOKEN,
+          },
+        },
+      )
+      .then((response: AxiosResponse) => {
+        setSignalList(
+          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+        );
+        setLoading(false);
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
+          setSignalList([]);
+        } else {
+          setError(
+            `Error code ${err.response?.status}: ${err.response?.data}. ${
+              err.response?.status === 500
+                ? 'Please try again in some time'
+                : ''
+            }`,
+          );
+          setLoading(false);
+        }
+      });
   };
   useEffect(() => {
     setLoading(true);
@@ -281,14 +314,14 @@ export function AddSignalsModal(props: Props) {
             width: 'calc(50% - 0.667rem)',
           }}
           placeholder='Please select'
-          defaultValue='Global'
+          defaultValue='All Locations'
           value={filters.location}
           showSearch
           allowClear
           onChange={values => {
             setFilters({
               ...filters,
-              location: (values as LocationList) || 'Global',
+              location: (values as LocationList) || 'All Locations',
             });
           }}
           clearIcon={<div className='clearIcon' />}
@@ -329,7 +362,44 @@ export function AddSignalsModal(props: Props) {
           </button>
         </div>
       </div>
-
+      <div style={{ width: '100%' }} className='flex-div margin-bottom-05'>
+        <div>
+          <p>
+            Search by signal id: add one or multiple ids separated by commas
+          </p>
+        </div>
+        <div
+          className='gap-00 flex-div'
+          style={{
+            flexGrow: 1,
+            width: 'calc(50% - 0.667rem)',
+          }}
+        >
+          <Input
+            placeholder='Search for a signal by ID'
+            className='undp-input'
+            size='large'
+            value={idsList}
+            onChange={d => {
+              // eslint-disable-next-line no-console
+              console.log('d', d.target.value.split(','));
+              setIdsList(d.target.value.split(','));
+            }}
+            onPressEnter={() => {
+              if (idsList?.length > 0) fetchIds(idsList);
+            }}
+          />
+          <button
+            type='button'
+            className='undp-button button-secondary'
+            onClick={() => {
+              if (idsList?.length > 0) fetchIds(idsList);
+            }}
+          >
+            Search
+          </button>
+        </div>
+      </div>
       {loading ? (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
