@@ -131,6 +131,11 @@ export interface ChoicesDataType {
   units: string[];
 }
 
+export interface CardsToPrintDataType {
+  type: 'trend' | 'signal';
+  id: string;
+}
+
 export interface CtxDataType {
   userName?: string;
   name?: string;
@@ -141,6 +146,7 @@ export interface CtxDataType {
   expiresOn?: Date;
   notificationText?: string;
   choices?: ChoicesDataType;
+  cardsToPrint: CardsToPrintDataType[];
   updateUserName: (_d: string) => void;
   updateName: (_d?: string) => void;
   updateAccessToken: (_d?: string) => void;
@@ -150,4 +156,5 @@ export interface CtxDataType {
   updateExpiresOn: (_d: Date) => void;
   updateNotificationText: (_d?: string) => void;
   updateChoices: (_d?: ChoicesDataType) => void;
+  updateCardsToPrint: (_d: CardsToPrintDataType[]) => void;
 }

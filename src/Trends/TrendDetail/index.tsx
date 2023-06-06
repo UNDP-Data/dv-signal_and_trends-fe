@@ -33,8 +33,14 @@ export function TrendDetail() {
   >(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const { id } = useParams();
-  const { role, accessToken, updateNotificationText, choices } =
-    useContext(Context);
+  const {
+    role,
+    accessToken,
+    updateNotificationText,
+    choices,
+    updateCardsToPrint,
+    cardsToPrint,
+  } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -190,7 +196,7 @@ export function TrendDetail() {
                   color: !choices
                     ? 'var(--black)'
                     : HORIZONVALUES[
-                        choices.signatures.findIndex(
+                        choices.horizons.findIndex(
                           el => el === data.time_horizon,
                         )
                       ].textColor,
@@ -263,7 +269,10 @@ export function TrendDetail() {
                 </div>
               </div>
             ) : null}
-            <div className='margin-top-09'>
+            <div
+              className='margin-top-09 flex-div flex-wrap'
+              style={{ justifyContent: 'space-between' }}
+            >
               <AuthenticatedTemplate>
                 {role === 'User' ? (
                   <p
@@ -337,6 +346,20 @@ export function TrendDetail() {
                   </div>
                 )}
               </AuthenticatedTemplate>
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
+                onClick={() => {
+                  const obj = [...cardsToPrint];
+                  obj.push({
+                    type: 'trend',
+                    id: `${data.id}`,
+                  });
+                  updateCardsToPrint(obj);
+                }}
+              >
+                Add to print
+              </button>
               {buttonDisabled ? <div className='undp-loader' /> : null}
               {submittingError ? (
                 <p
