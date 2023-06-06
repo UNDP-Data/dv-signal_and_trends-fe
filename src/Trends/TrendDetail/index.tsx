@@ -33,7 +33,8 @@ export function TrendDetail() {
   >(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const { id } = useParams();
-  const { role, accessToken, updateNotificationText } = useContext(Context);
+  const { role, accessToken, updateNotificationText, choices } =
+    useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -186,16 +187,13 @@ export function TrendDetail() {
               <div
                 className='undp-chip'
                 style={{
-                  color:
-                    HORIZONVALUES.findIndex(
-                      el => el.value === data.time_horizon,
-                    ) === -1
-                      ? 'var(--black)'
-                      : HORIZONVALUES[
-                          HORIZONVALUES.findIndex(
-                            el => el.value === data.time_horizon,
-                          )
-                        ].textColor,
+                  color: !choices
+                    ? 'var(--black)'
+                    : HORIZONVALUES[
+                        choices.signatures.findIndex(
+                          el => el === data.time_horizon,
+                        )
+                      ].textColor,
                   fontWeight: 'bold',
                 }}
               >

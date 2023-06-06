@@ -49,7 +49,8 @@ export function SignalDetail() {
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const { role, accessToken, updateNotificationText } = useContext(Context);
+  const { role, accessToken, updateNotificationText, choices } =
+    useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -201,16 +202,11 @@ export function SignalDetail() {
                 <div
                   className='undp-chip'
                   style={{
-                    color:
-                      STEEPVCOLOR.findIndex(
-                        el => el.value === data.steep?.split(' – ')[0],
-                      ) === -1
-                        ? 'var(--black)'
-                        : STEEPVCOLOR[
-                            STEEPVCOLOR.findIndex(
-                              el => el.value === data.steep?.split(' – ')[0],
-                            )
-                          ].textColor,
+                    color: !choices
+                      ? 'var(--black)'
+                      : STEEPVCOLOR[
+                          choices.steepv.findIndex(el => el === data.steep)
+                        ].textColor,
                     fontWeight: 'bold',
                   }}
                 >
@@ -227,16 +223,13 @@ export function SignalDetail() {
                 <div
                   className='undp-chip'
                   style={{
-                    color:
-                      SSCOLOR.findIndex(
-                        el => el.value === data.signature_primary,
-                      ) !== -1
-                        ? SSCOLOR[
-                            SSCOLOR.findIndex(
-                              el => el.value === data.signature_primary,
-                            )
-                          ].textColor
-                        : 'var(--black)',
+                    color: !choices
+                      ? 'var(--black)'
+                      : SSCOLOR[
+                          choices.signatures.findIndex(
+                            el => el === data.signature_primary,
+                          )
+                        ].textColor,
                     fontWeight: 'bold',
                   }}
                 >
@@ -249,16 +242,13 @@ export function SignalDetail() {
                 <div
                   className='undp-chip'
                   style={{
-                    color:
-                      SSCOLOR.findIndex(
-                        el => el.value === data.signature_secondary,
-                      ) !== -1
-                        ? SSCOLOR[
-                            SSCOLOR.findIndex(
-                              el => el.value === data.signature_secondary,
-                            )
-                          ].textColor
-                        : 'var(--black)',
+                    color: !choices
+                      ? 'var(--black)'
+                      : SSCOLOR[
+                          choices.signatures.findIndex(
+                            el => el === data.signature_secondary,
+                          )
+                        ].textColor,
                     fontWeight: 'bold',
                   }}
                 >
@@ -276,9 +266,10 @@ export function SignalDetail() {
                       key={j}
                       className='undp-chip'
                       style={{
-                        color:
-                          SDGCOLOR[SDGCOLOR.findIndex(el => el.value === sdg)]
-                            .textColor,
+                        color: !choices
+                          ? 'var(--black)'
+                          : SDGCOLOR[choices.sdgs.findIndex(el => el === sdg)]
+                              .textColor,
                         fontWeight: 'bold',
                       }}
                     >

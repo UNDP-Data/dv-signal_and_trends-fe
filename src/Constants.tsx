@@ -81,6 +81,10 @@ export const SSCOLOR = [
     value: 'Development Financing',
     textColor: UNDPColorModule.categoricalColors.colors[2],
   },
+  {
+    value: 'Others',
+    textColor: '#000000',
+  },
 ];
 
 export const SDGCOLOR = [
@@ -199,6 +203,7 @@ export const CHOICES = {
     'Strategic Innovation',
     'Digitalisation',
     'Development Financing',
+    'Others',
   ],
   locations: [
     'Global',

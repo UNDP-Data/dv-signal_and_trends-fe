@@ -139,9 +139,7 @@ export function ListView(props: Props) {
                     color: !choices
                       ? 'var(--black)'
                       : STEEPVCOLOR[
-                          choices.steepv.findIndex(
-                            el => el === d.steep?.split(' – ')[0],
-                          )
+                          choices.steepv.findIndex(el => el === d.steep)
                         ].textColor,
                     fontWeight: 'bold',
                   }}
