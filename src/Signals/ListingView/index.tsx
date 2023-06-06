@@ -144,7 +144,7 @@ export function CardLayout(props: Props) {
             {totalCount}{' '}
             {totalCount > 1 ? 'signals available' : 'signal available'}
           </div>
-          <div className='flex-div flex-wrap'>
+          <div className='flex-div flex-wrap listing'>
             {signalList.length > 0 ? (
               view === 'cardView' ? (
                 <CardList data={signalList} />

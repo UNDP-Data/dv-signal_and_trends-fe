@@ -100,7 +100,7 @@ export function MyDrafts() {
         {signalList ? (
           <div>
             <h3 className='undp-typography margin-top-05'>My Drafts</h3>
-            <div className='flex-div flex-wrap'>
+            <div className='flex-div flex-wrap listing'>
               {signalList.length > 0 ? (
                 <CardList data={signalList} />
               ) : (

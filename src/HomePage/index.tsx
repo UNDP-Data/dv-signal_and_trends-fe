@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Background from '../assets/UNDP-hero-image.png';
 import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
+import { TrendCard } from '../Components/TrendCard';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -18,15 +19,6 @@ const CardEl = styled.div`
   background-color: var(--gray-200);
   color: var(--black);
   padding: var(--spacing-07);
-`;
-
-const DescriptionEl = styled.p`
-  display: -webkit-box;
-  max-width: 100%;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  word-wrap: break-word;
-  -webkit-box-orient: vertical;
 `;
 
 export function HomePage() {
@@ -65,7 +57,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=5&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=3&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -77,7 +69,7 @@ export function HomePage() {
           setTrendList(
             sortBy(response.data.data, d => Date.parse(d.created_at))
               .reverse()
-              .filter((_d, i) => i < 5),
+              .filter((_d, i) => i < 3),
           );
         }
       })
@@ -103,80 +95,26 @@ export function HomePage() {
         </div>
       </HeroImageEl>
       <div
-        className='margin-top-05 margin-bottom-05 max-width'
+        className='margin-top-08 margin-bottom-05 max-width home'
         style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
       >
-        {trendListing ? (
-          <div
-            className='flex-div flex-wrap margin-bottom-09'
-            style={{ alignItems: 'stretch' }}
-          >
-            <div
-              style={{
-                width: 'calc(33.33% - 1.33rem)',
-                flexGrow: 1,
-                minWidth: '20rem',
-              }}
-            >
-              <h2 className='undp-typography margin-top-05 gap-07'>
-                Most Recent Trends
-              </h2>
-              <NavLink to='./trends' style={{ textDecoration: 'auto' }}>
-                <div className='flex-div'>
-                  <button
-                    type='button'
-                    className='undp-button button-tertiary button-arrow'
-                  >
-                    Explore All Trends
-                  </button>
-                </div>
-              </NavLink>
-            </div>
-            {trendListing.map((d, i) => (
-              <NavLink
-                key={i}
-                to={`/trends/${d.id}`}
-                style={{
-                  width: 'calc(33.33% - 1.33rem)',
-                  flexGrow: 1,
-                  minWidth: '20rem',
-                  alignItems: 'stretch',
-                  backgroundColor: 'var(--gray-200)',
-                  textDecoration: 'none',
-                  color: 'var(--black)',
-                }}
-              >
-                <CardEl>
-                  <h3 className='undp-typography'>{d.headline}</h3>
-                  <DescriptionEl className='undp-typography'>
-                    {d.description}
-                  </DescriptionEl>
-                </CardEl>
-              </NavLink>
-            ))}
-          </div>
-        ) : (
-          <div className='undp-loader-container'>
-            <div className='undp-loader' />
-          </div>
-        )}
         {signalListing ? (
           <div
-            className='flex-div flex-wrap margin-bottom-11'
+            className='flex-div flex-wrap margin-bottom-08'
             style={{ alignItems: 'stretch' }}
           >
             <div
               style={{
-                width: 'calc(33.33% - 1.33rem)',
-                flexGrow: 1,
-                minWidth: '20rem',
+                flexBasis: '33rem',
+                flexGrow: 2,
+                flexShrink: 1,
               }}
             >
               <h2 className='undp-typography margin-top-05 gap-07'>
                 Most Recent Signals
               </h2>
               <NavLink to='./signals' style={{ textDecoration: 'auto' }}>
-                <div className='flex-div'>
+                <div className='flex-div margin-bottom-05'>
                   <button
                     type='button'
                     className='undp-button button-tertiary button-arrow'
@@ -186,28 +124,77 @@ export function HomePage() {
                 </div>
               </NavLink>
             </div>
-            {signalListing.map((d, i) => (
-              <NavLink
-                to={`/signals/${d.id}`}
-                key={i}
-                style={{
-                  width: 'calc(33.33% - 1.33rem)',
-                  flexGrow: 1,
-                  minWidth: '20rem',
-                  alignItems: 'stretch',
-                  backgroundColor: 'var(--gray-200)',
-                  textDecoration: 'none',
-                  color: 'var(--black)',
-                }}
-              >
-                <CardEl>
-                  <h3 className='undp-typography'>{d.headline}</h3>
-                  <DescriptionEl className='undp-typography'>
-                    {d.description}
-                  </DescriptionEl>
-                </CardEl>
+            <div
+              className='flex-div flex-wrap'
+              style={{
+                flexBasis: '66rem',
+                flexGrow: 3,
+                flexShrink: 1,
+              }}
+            >
+              {signalListing.map((d, i) => (
+                <NavLink
+                  to={`/signals/${d.id}`}
+                  key={i}
+                  style={{
+                    flexBasis: '12rem',
+                    flexGrow: 1,
+                    flexShrink: 1,
+                    backgroundColor: 'var(--gray-200)',
+                    textDecoration: 'none',
+                    color: 'var(--black)',
+                  }}
+                >
+                  <CardEl>
+                    <p className='undp-typography'>{d.headline}</p>
+                  </CardEl>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className='undp-loader-container'>
+            <div className='undp-loader' />
+          </div>
+        )}
+        {trendListing ? (
+          <div
+            className='flex-div flex-wrap margin-bottom-09'
+            style={{ alignItems: 'stretch' }}
+          >
+            <div
+              style={{
+                flexBasis: '33rem',
+                flexGrow: 2,
+                flexShrink: 1,
+              }}
+            >
+              <h2 className='undp-typography margin-top-05 gap-07'>
+                Most Recent Trends
+              </h2>
+              <NavLink to='./trends' style={{ textDecoration: 'auto' }}>
+                <div className='flex-div margin-bottom-05'>
+                  <button
+                    type='button'
+                    className='undp-button button-tertiary button-arrow'
+                  >
+                    Explore All Trends
+                  </button>
+                </div>
               </NavLink>
-            ))}
+            </div>
+            <div
+              className='flex-div flex-wrap'
+              style={{
+                flexBasis: '66rem',
+                flexGrow: 3,
+                flexShrink: 1,
+              }}
+            >
+              {trendListing.map((d, i) => (
+                <TrendCard key={i} data={d} />
+              ))}
+            </div>
           </div>
         ) : (
           <div className='undp-loader-container'>
