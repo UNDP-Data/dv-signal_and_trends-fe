@@ -88,45 +88,50 @@ export function Header(props: Props) {
           </div>
         </div>
         <div
-          className='undp-nav-div'
-          style={{ justifyContent: 'space-between' }}
+          className='undp-nav-div flex-div'
+          style={{ justifyContent: 'space-between', flexGrow: 1 }}
         >
-          <NavLink
-            to='./signals'
-            className={({ isActive }) =>
-              isActive ? 'header-link-active' : 'header-link'
-            }
+          <div
+            className='flex-div gap-09'
+            style={{ flexGrow: 1, justifyContent: 'center' }}
           >
-            All Signals
-          </NavLink>
-          <NavLink
-            to='./trends'
-            className={({ isActive }) =>
-              isActive ? 'header-link-active' : 'header-link'
-            }
-          >
-            All Trends
-          </NavLink>
-          {role === 'Admin' || role === 'Curator' ? (
-            <>
-              <NavLink
-                to='./archived-signals'
-                className={({ isActive }) =>
-                  isActive ? 'header-link-active' : 'header-link'
-                }
-              >
-                Archived Signals
-              </NavLink>
-              <NavLink
-                to='./archived-trends'
-                className={({ isActive }) =>
-                  isActive ? 'header-link-active' : 'header-link'
-                }
-              >
-                Archived Trends
-              </NavLink>
-            </>
-          ) : null}
+            <NavLink
+              to='./signals'
+              className={({ isActive }) =>
+                isActive ? 'header-link-active' : 'header-link'
+              }
+            >
+              All Signals
+            </NavLink>
+            <NavLink
+              to='./trends'
+              className={({ isActive }) =>
+                isActive ? 'header-link-active' : 'header-link'
+              }
+            >
+              All Trends
+            </NavLink>
+            {role === 'Admin' || role === 'Curator' ? (
+              <>
+                <NavLink
+                  to='./archived-signals'
+                  className={({ isActive }) =>
+                    isActive ? 'header-link-active' : 'header-link'
+                  }
+                >
+                  Archived Signals
+                </NavLink>
+                <NavLink
+                  to='./archived-trends'
+                  className={({ isActive }) =>
+                    isActive ? 'header-link-active' : 'header-link'
+                  }
+                >
+                  Archived Trends
+                </NavLink>
+              </>
+            ) : null}
+          </div>
           <div>
             <AuthenticatedTemplate>
               <div className='flex-div flex-vert-align-center'>
