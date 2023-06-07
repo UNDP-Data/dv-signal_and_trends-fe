@@ -344,9 +344,9 @@ export function SignalEntryFormEl(props: Props) {
           {selectedFile
             ? 'Uploading file with replace the already uploaded image shown above. '
             : ''}
-          Attach an image here to illustrate this Signal, if available. Only use
-          images that are licensed or license-free/Creative Commons. File must
-          be maximum 1 MBs. Compress larger images, if applicable.
+          Attach an image here to illustrate this Signal, if available. Use only
+          images that are non-copyright or license-free/Creative Commons. File
+          must be maximum 1 MBs. Compress larger images, if applicable.
         </p>
         <UploadEl>
           <label htmlFor='file-upload-analyze' className='custom-file-upload'>

@@ -92,6 +92,7 @@ export function AddTrendsModal(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setTrendsList([]);
+          setLoading(false);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -138,6 +139,7 @@ export function AddTrendsModal(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setTrendsList([]);
+          setLoading(false);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${

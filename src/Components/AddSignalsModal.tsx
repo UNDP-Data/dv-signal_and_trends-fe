@@ -51,7 +51,6 @@ export function AddSignalsModal(props: Props) {
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
   const [signalList, setSignalList] = useState<SignalDataType[]>([]);
   const [idsList, setIdsList] = useState<string[]>([]);
-
   const [filters, setFilters] = useState<SignalFiltersDataType>({
     steep: 'All STEEP+V',
     sdg: 'All SDGs',
@@ -67,7 +66,15 @@ export function AddSignalsModal(props: Props) {
   ) => {
     setPageSize(size);
   };
-  const fetchIds = ids => {
+  const fetchIds = (ids: string) => {
+    /* setFilters({
+      steep: 'All STEEP+V',
+      sdg: 'All SDGs',
+      ss: 'All Signature Solutions/Enabler',
+      status: 'All Status',
+      location: 'All Locations',
+      search: undefined,
+    }); */
     const signalIds = ids.toString().replaceAll(',', '&ids=');
     axios
       .get(
@@ -87,6 +94,7 @@ export function AddSignalsModal(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setSignalList([]);
+          setLoading(false);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -137,6 +145,7 @@ export function AddSignalsModal(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setSignalList([]);
+          setLoading(false);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -189,6 +198,9 @@ export function AddSignalsModal(props: Props) {
       .catch(err => {
         if (err.response?.status === 404) {
           setSignalList([]);
+          setLoading(false);
+          // eslint-disable-next-line no-console
+          console.log('err.response', err.response);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -218,7 +230,8 @@ export function AddSignalsModal(props: Props) {
         Signals are connected or decoupled when you click on the signal&apos;s
         add/remove button
       </p>
-      <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
+      <p className='label'>Filter signals</p>
+      <div className='flex-div margin-bottom-05 flex-wrap'>
         <Select
           className='undp-select'
           style={{ width: 'calc(33.33% - 0.667rem)' }}
@@ -362,12 +375,10 @@ export function AddSignalsModal(props: Props) {
           </button>
         </div>
       </div>
-      <div style={{ width: '100%' }} className='flex-div margin-bottom-05'>
-        <div>
-          <p>
-            Search by signal id: add one or multiple ids separated by commas
-          </p>
-        </div>
+      <p className='label'>
+        Or search signals by ID (one ID or multiple IDs separated by commas)
+      </p>
+      <div style={{ width: '100%' }} className='flex-div margin-bottom-06'>
         <div
           className='gap-00 flex-div'
           style={{
