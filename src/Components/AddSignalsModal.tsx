@@ -6,6 +6,7 @@ import {
   Pagination,
   PaginationProps,
   Select,
+  Tabs,
 } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
@@ -66,46 +67,49 @@ export function AddSignalsModal(props: Props) {
   ) => {
     setPageSize(size);
   };
-  const fetchIds = (ids: string) => {
-    /* setFilters({
-      steep: 'All STEEP+V',
-      sdg: 'All SDGs',
-      ss: 'All Signature Solutions/Enabler',
-      status: 'All Status',
-      location: 'All Locations',
-      search: undefined,
-    }); */
-    const signalIds = ids.toString().replaceAll(',', '&ids=');
-    axios
-      .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
-        {
-          headers: {
-            access_token: API_ACCESS_TOKEN,
+  const fetchIds = (ids: string[]) => {
+    if (ids?.length > 0 && ids[0] !== '') {
+      const signalIds = ids.toString().replaceAll(',', '&ids=');
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+          {
+            headers: {
+              access_token: API_ACCESS_TOKEN,
+            },
           },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        setSignalList(
-          sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
-        );
-        setLoading(false);
-      })
-      .catch(err => {
-        if (err.response?.status === 404) {
-          setSignalList([]);
-          setLoading(false);
-        } else {
-          setError(
-            `Error code ${err.response?.status}: ${err.response?.data}. ${
-              err.response?.status === 500
-                ? 'Please try again in some time'
-                : ''
-            }`,
+        )
+        .then((response: AxiosResponse) => {
+          setSignalList(
+            sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
           );
           setLoading(false);
-        }
+        })
+        .catch(err => {
+          if (err.response?.status === 404) {
+            setSignalList([]);
+            setLoading(false);
+          } else {
+            setError(
+              `Error code ${err.response?.status}: ${err.response?.data}. ${
+                err.response?.status === 500
+                  ? 'Please try again in some time'
+                  : ''
+              }`,
+            );
+            setLoading(false);
+          }
+        });
+    } else {
+      setFilters({
+        steep: 'All STEEP+V',
+        sdg: 'All SDGs',
+        ss: 'All Signature Solutions/Enabler',
+        status: 'All Status',
+        location: 'All Locations',
+        search: undefined,
       });
+    }
   };
   useEffect(() => {
     setLoading(true);
@@ -199,8 +203,6 @@ export function AddSignalsModal(props: Props) {
         if (err.response?.status === 404) {
           setSignalList([]);
           setLoading(false);
-          // eslint-disable-next-line no-console
-          console.log('err.response', err.response);
         } else {
           setError(
             `Error code ${err.response?.status}: ${err.response?.data}. ${
@@ -230,187 +232,233 @@ export function AddSignalsModal(props: Props) {
         Signals are connected or decoupled when you click on the signal&apos;s
         add/remove button
       </p>
-      <p className='label'>Filter signals</p>
-      <div className='flex-div margin-bottom-05 flex-wrap'>
-        <Select
-          className='undp-select'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
-          placeholder='Please select'
-          defaultValue='All STEEP+V'
-          value={filters.steep}
-          showSearch
-          allowClear
-          disabled={loading}
-          onChange={values => {
-            const val = values ? (`${values}` as STEEPVList) : 'All STEEP+V';
-            setFilters({
-              ...filters,
-              steep: val,
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          <Select.Option className='undp-select-option' key='All STEEP+V'>
-            All STEEP+V
-          </Select.Option>
-          {choices?.steepv.map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          className='undp-select'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
-          placeholder='Please select'
-          defaultValue='All Signature Solutions/Enabler'
-          value={filters.ss}
-          showSearch
-          allowClear
-          disabled={loading}
-          onChange={values => {
-            const val = values
-              ? (`${values}` as SSList)
-              : 'All Signature Solutions/Enabler';
-            setFilters({
-              ...filters,
-              ss: val,
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          <Select.Option
-            className='undp-select-option'
-            key='All Signature Solutions/Enabler'
-          >
-            All Signature Solutions/Enabler
-          </Select.Option>
-          {choices?.signatures.map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          className='undp-select'
-          style={{ width: 'calc(33.33% - 0.667rem)' }}
-          placeholder='Please select'
-          defaultValue='All SDGs'
-          value={filters.sdg}
-          showSearch
-          allowClear
-          disabled={loading}
-          onChange={values => {
-            const val = values ? (`${values}` as SDGList) : 'All SDGs';
-            setFilters({
-              ...filters,
-              sdg: val,
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          <Select.Option className='undp-select-option' key='All SDGs'>
-            All SDGs
-          </Select.Option>
-          {choices?.sdgs.map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
-      <div style={{ width: '100%' }} className='flex-div margin-bottom-05'>
-        <Select
-          className='undp-select'
-          style={{
-            flexGrow: 1,
-            width: 'calc(50% - 0.667rem)',
-          }}
-          placeholder='Please select'
-          defaultValue='All Locations'
-          value={filters.location}
-          showSearch
-          allowClear
-          onChange={values => {
-            setFilters({
-              ...filters,
-              location: (values as LocationList) || 'All Locations',
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          {choices?.locations.map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-        <div
-          className='gap-00 flex-div'
-          style={{
-            flexGrow: 1,
-            width: 'calc(50% - 0.667rem)',
-          }}
-        >
-          <Input
-            placeholder='Search for a signal'
-            className='undp-input'
-            size='large'
-            value={searchQuery}
-            onChange={d => {
-              setSearchQuery(d.target.value);
-            }}
-            onPressEnter={() => {
-              setFilters({ ...filters, search: searchQuery });
-            }}
-          />
-          <button
-            type='button'
-            className='undp-button button-secondary'
-            onClick={() => {
-              setFilters({ ...filters, search: searchQuery });
-            }}
-          >
-            Search
-          </button>
-        </div>
-      </div>
-      <p className='label'>
-        Or search signals by ID (one ID or multiple IDs separated by commas)
-      </p>
-      <div style={{ width: '100%' }} className='flex-div margin-bottom-06'>
-        <div
-          className='gap-00 flex-div'
-          style={{
-            flexGrow: 1,
-            width: 'calc(50% - 0.667rem)',
-          }}
-        >
-          <Input
-            placeholder='Search for a signal by ID'
-            className='undp-input'
-            size='large'
-            value={idsList}
-            onChange={d => {
-              // eslint-disable-next-line no-console
-              console.log('d', d.target.value.split(','));
-              setIdsList(d.target.value.split(','));
-            }}
-            onPressEnter={() => {
-              if (idsList?.length > 0) fetchIds(idsList);
-            }}
-          />
-          <button
-            type='button'
-            className='undp-button button-secondary'
-            onClick={() => {
-              if (idsList?.length > 0) fetchIds(idsList);
-            }}
-          >
-            Search
-          </button>
-        </div>
-      </div>
+      <Tabs
+        defaultActiveKey='1'
+        className='undp-tabs'
+        onChange={() => {
+          setFilters({
+            steep: 'All STEEP+V',
+            sdg: 'All SDGs',
+            ss: 'All Signature Solutions/Enabler',
+            status: 'All Status',
+            location: 'All Locations',
+            search: undefined,
+          });
+          setIdsList([]);
+        }}
+        items={[
+          {
+            label: 'Filter signals',
+            key: '1',
+            children: (
+              <div>
+                <div className='flex-div margin-bottom-05 flex-wrap'>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All STEEP+V'
+                    value={filters.steep}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as STEEPVList)
+                        : 'All STEEP+V';
+                      setFilters({
+                        ...filters,
+                        steep: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All STEEP+V'
+                    >
+                      All STEEP+V
+                    </Select.Option>
+                    {choices?.steepv.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Signature Solutions/Enabler'
+                    value={filters.ss}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as SSList)
+                        : 'All Signature Solutions/Enabler';
+                      setFilters({
+                        ...filters,
+                        ss: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Signature Solutions/Enabler'
+                    >
+                      All Signature Solutions/Enabler
+                    </Select.Option>
+                    {choices?.signatures.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All SDGs'
+                    value={filters.sdg}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as SDGList)
+                        : 'All SDGs';
+                      setFilters({
+                        ...filters,
+                        sdg: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All SDGs'
+                    >
+                      All SDGs
+                    </Select.Option>
+                    {choices?.sdgs.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
+                <div
+                  style={{ width: '100%' }}
+                  className='flex-div margin-bottom-05'
+                >
+                  <Select
+                    className='undp-select'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                    placeholder='Please select'
+                    defaultValue='All Locations'
+                    value={filters.location}
+                    showSearch
+                    allowClear
+                    onChange={values => {
+                      setFilters({
+                        ...filters,
+                        location: (values as LocationList) || 'All Locations',
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    {choices?.locations.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <div
+                    className='gap-00 flex-div'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                  >
+                    <Input
+                      placeholder='Search for a signal'
+                      className='undp-input'
+                      size='large'
+                      value={searchQuery}
+                      onChange={d => {
+                        setSearchQuery(d.target.value);
+                      }}
+                      onPressEnter={() => {
+                        setFilters({ ...filters, search: searchQuery });
+                      }}
+                    />
+                    <button
+                      type='button'
+                      className='undp-button button-secondary'
+                      onClick={() => {
+                        setFilters({ ...filters, search: searchQuery });
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ),
+          },
+          {
+            label: 'Search by ID',
+            key: '2',
+            children: (
+              <div>
+                <p className='label'>
+                  Fill in one ID, or multiple IDs separated by commas
+                </p>
+                <div
+                  style={{ width: '100%' }}
+                  className='flex-div margin-bottom-06'
+                >
+                  <div
+                    className='gap-00 flex-div'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                  >
+                    <Input
+                      placeholder='Search for a signal by ID'
+                      className='undp-input'
+                      size='large'
+                      value={idsList}
+                      onChange={d => {
+                        setIdsList(d.target.value.split(','));
+                      }}
+                      onPressEnter={() => {
+                        fetchIds(idsList);
+                      }}
+                    />
+                    <button
+                      type='button'
+                      className='undp-button button-secondary'
+                      onClick={() => {
+                        fetchIds(idsList);
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ),
+          },
+        ]}
+      />
       {loading ? (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
