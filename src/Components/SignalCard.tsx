@@ -97,6 +97,7 @@ export function SignalCard(props: Props) {
             style={{ padding: '2rem 1.5rem 0 1.5rem' }}
           >
             {data.headline}
+            <span className='idCode'>{` (ID: ${data.id})`}</span>
           </h5>
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}

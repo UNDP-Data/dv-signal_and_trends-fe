@@ -289,14 +289,14 @@ export function SignalsListing() {
                 minWidth: '15rem',
               }}
               placeholder='Please select'
-              defaultValue='Global'
+              defaultValue='All Locations'
               value={tempFilters.location}
               showSearch
               allowClear
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  location: (values as LocationList) || 'Global',
+                  location: (values as LocationList) || 'All Locations',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -423,7 +423,7 @@ export function ArchivedSignalsListing() {
               steep: 'All STEEP+V',
               sdg: 'All SDGs',
               ss: 'All Signature Solutions/Enabler',
-              location: 'Global',
+              location: 'All Locations',
               status: 'Archived',
             }}
             view={viewType}

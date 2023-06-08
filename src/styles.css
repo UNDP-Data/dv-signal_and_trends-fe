@@ -24,3 +24,11 @@
   flex-basis: 21rem !important;
   flex-shrink: 1;
 }
+.idCode{
+  display: none;
+}
+.connected .idCode{
+  display: inline;
+  font-weight: normal;
+  font-size: 1.2rem;
+}
