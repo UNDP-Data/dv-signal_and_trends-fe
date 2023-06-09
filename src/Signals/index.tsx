@@ -289,14 +289,14 @@ export function SignalsListing() {
                 minWidth: '15rem',
               }}
               placeholder='Please select'
-              defaultValue='Global'
+              defaultValue='All Locations'
               value={tempFilters.location}
               showSearch
               allowClear
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  location: (values as LocationList) || 'Global',
+                  location: (values as LocationList) || 'All Locations',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
