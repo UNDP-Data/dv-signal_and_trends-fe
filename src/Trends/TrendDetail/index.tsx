@@ -161,6 +161,9 @@ export function TrendDetail() {
                 </div>
               </div>
               <h2 className='undp-typography'>{data.headline}</h2>
+              <h6 className='undp-typography margin-bottom-07'>
+                ID: {data.id}
+              </h6>
               {role === 'Admin' || role === 'Curator' ? (
                 <div
                   className={`undp-chip margin-bottom-07 ${
@@ -261,11 +264,6 @@ export function TrendDetail() {
                       MONTHS[new Date(data.created_at).getMonth()]
                     }-${new Date(data.created_at).getFullYear()}`}
                   </p>
-                </div>
-                <div>
-                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00'>Trend ID</h6>
-                  <p className='undp-typography'>{data.id}</p>
                 </div>
               </div>
             ) : null}

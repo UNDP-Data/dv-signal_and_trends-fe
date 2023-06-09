@@ -30,10 +30,10 @@ const CardEl = styled.div`
   flex-grow: 1;
   font-size: 1.4rem;
   word-wrap: break-word;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-bottom: 1rem;
 `;
 
 const DescriptionEl = styled.p`
@@ -48,17 +48,11 @@ const DescriptionEl = styled.p`
 
 export function SignalCard(props: Props) {
   const { data, isDraft } = props;
-  const { role, choices } = useContext(Context);
+  const { role, choices, updateCardsToPrint, cardsToPrint } =
+    useContext(Context);
   return (
-    <NavLink
+    <div
       className='signal-trend-card'
-      to={
-        isDraft
-          ? `/signals/${data.id}/edit`
-          : data.status === 'Archived'
-          ? `/archived-signals/${data.id}`
-          : `/signals/${data.id}`
-      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
@@ -96,7 +90,10 @@ export function SignalCard(props: Props) {
             className='bold undp-typography'
             style={{ padding: '2rem 1.5rem 0 1.5rem' }}
           >
-            {data.headline}
+            {data.headline}{' '}
+            <span style={{ fontSize: '1rem', color: 'var(--gray-500)' }}>
+              (ID: {data.id})
+            </span>
           </h5>
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
@@ -111,28 +108,72 @@ export function SignalCard(props: Props) {
             )}
           </div>
         </div>
-        <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='margin-bottom-00 margin-top-00'>STEEP+V Category</h6>
-          <div className='flex-div flex-wrap margin-top-03'>
-            {data.steep ? (
-              <div
-                className='undp-chip'
-                style={{
-                  color: !choices
-                    ? 'var(--black)'
-                    : STEEPVCOLOR[
-                        choices?.steepv.findIndex(el => el === data.steep)
-                      ].textColor,
-                  fontWeight: 'bold',
-                }}
+        <div>
+          <div style={{ padding: '0 1.5rem' }}>
+            <hr className='undp-style light margin-top-07 margin-bottom-07' />
+            <h6 className='margin-bottom-00 margin-top-00'>STEEP+V Category</h6>
+            <div className='flex-div flex-wrap margin-top-03'>
+              {data.steep ? (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color: !choices
+                      ? 'var(--black)'
+                      : STEEPVCOLOR[
+                          choices?.steepv.findIndex(el => el === data.steep)
+                        ].textColor,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {data.steep?.split(' – ')[0]}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div
+            className='flex-div'
+            style={{
+              justifyContent: 'space-between',
+              padding: '1rem 1.5rem 0 1.5rem',
+            }}
+          >
+            <NavLink
+              to={
+                isDraft
+                  ? `/signals/${data.id}/edit`
+                  : data.status === 'Archived'
+                  ? `/archived-signals/${data.id}`
+                  : `/signals/${data.id}`
+              }
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
               >
-                {data.steep?.split(' – ')[0]}
-              </div>
-            ) : null}
+                Read More
+              </button>
+            </NavLink>
+            <button
+              className='undp-button button-tertiary button-arrow'
+              type='button'
+              onClick={e => {
+                e.stopPropagation();
+                const cardToPrintTemp = [...cardsToPrint];
+                cardToPrintTemp.push({
+                  type: 'signal',
+                  id: `${data.id}`,
+                });
+                updateCardsToPrint(cardToPrintTemp);
+              }}
+            >
+              Add to print
+            </button>
           </div>
         </div>
       </CardEl>
-    </NavLink>
+    </div>
   );
 }

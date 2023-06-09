@@ -9,7 +9,7 @@ import { API_ACCESS_TOKEN, CHOICES } from './Constants';
 import Context from './Context/Context';
 import Reducer from './Context/Reducer';
 import MainBody from './MainBody';
-import { ChoicesDataType } from './Types';
+import { CardsToPrintDataType, ChoicesDataType } from './Types';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
@@ -29,6 +29,7 @@ function App() {
     expiresOn: undefined,
     notificationText: undefined,
     choices: undefined,
+    cardsToPrint: [],
   };
 
   const [state, dispatch] = useReducer(Reducer, initialState);
@@ -43,6 +44,12 @@ function App() {
   const updateChoices = (d?: ChoicesDataType) => {
     dispatch({
       type: 'UPDATE_CHOICES',
+      payload: d,
+    });
+  };
+  const updateCardsToPrint = (d: CardsToPrintDataType[]) => {
+    dispatch({
+      type: 'UPDATE_CARDS_TO_PRINT',
       payload: d,
     });
   };
@@ -174,6 +181,7 @@ function App() {
       updateExpiresOn,
       updateUserID,
       updateNotificationText,
+      updateCardsToPrint,
     }),
     [
       state,
@@ -185,6 +193,7 @@ function App() {
       updateExpiresOn,
       updateUserID,
       updateNotificationText,
+      updateCardsToPrint,
     ],
   );
   return (

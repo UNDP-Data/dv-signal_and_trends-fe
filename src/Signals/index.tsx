@@ -423,7 +423,7 @@ export function ArchivedSignalsListing() {
               steep: 'All STEEP+V',
               sdg: 'All SDGs',
               ss: 'All Signature Solutions/Enabler',
-              location: 'Global',
+              location: 'All Locations',
               status: 'Archived',
             }}
             view={viewType}

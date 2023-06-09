@@ -64,8 +64,8 @@ export interface SignalDataType {
   headline: string;
   keywords: string[];
   location: string | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modifications: any;
+  modified_at: string;
+  modified_by: string;
   status?: StatusList;
   relevance: string;
   sdgs: SDGList[];
@@ -74,7 +74,7 @@ export interface SignalDataType {
   steep: STEEPVList;
   url: string;
   id: number;
-  connected_trends: number[];
+  connected_trends: number[] | null;
 }
 
 export interface TrendDataType {
@@ -82,17 +82,17 @@ export interface TrendDataType {
   attachment?: any;
   created_at: string;
   created_by: string;
+  modified_at: string;
+  modified_by: string;
   description: string;
   headline: string;
   impact_description: string;
-  impact_rating: 1 | 2 | 3 | 4 | 5;
+  impact_rating: '1' | '2' | '3' | '4' | '5';
   status?: StatusList;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modifications: any;
   time_horizon: 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)';
   signals: number[];
   id: number;
-  connected_signals: number[];
+  connected_signals: number[] | null;
 }
 
 export interface UserDataType {
@@ -157,4 +157,9 @@ export interface CtxDataType {
   updateNotificationText: (_d?: string) => void;
   updateChoices: (_d?: ChoicesDataType) => void;
   updateCardsToPrint: (_d: CardsToPrintDataType[]) => void;
+}
+
+export interface ObjForPrintingDataType {
+  type: 'trend' | 'signal';
+  data: SignalDataType | TrendDataType;
 }

@@ -688,3 +688,5 @@ export const CHOICES = {
     'Zimbabwe',
   ],
 };
+
+export const WEB_ADDRESS = 'https://undp-signal-and-trends.netlify.app/';
