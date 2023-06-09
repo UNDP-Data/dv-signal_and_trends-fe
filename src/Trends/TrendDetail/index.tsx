@@ -184,15 +184,22 @@ export function TrendDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09 flex-div gap-11 max-width'
+            className='margin-top-09 flex-div gap-09 max-width'
             style={{
               marginLeft: 'auto',
               marginRight: 'auto',
               paddingLeft: '2rem',
               paddingRight: '2rem',
+              flexWrap: 'wrap-reverse',
             }}
           >
-            <div style={{ width: 'calc(33.33% - 2rem)' }}>
+            <div
+              style={{
+                width: 'calc(33.33% - 2rem)',
+                minWidth: '20rem',
+                flexGrow: 1,
+              }}
+            >
               <div>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>
                   Time Horizon
@@ -350,7 +357,7 @@ export function TrendDetail() {
                 </UnauthenticatedTemplate>
               </div>
             </div>
-            <div style={{ width: 'calc(66.67% - 2rem)' }}>
+            <div style={{ width: 'calc(66.67% - 2rem)', flexGrow: 1 }}>
               <div>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>
                   Impact Description
@@ -373,7 +380,9 @@ export function TrendDetail() {
                           ))}
                       </>
                     ) : (
-                      <p className='undp-typography'>No connected signals</p>
+                      <p className='undp-typography margin-bottom-00'>
+                        No connected signals
+                      </p>
                     )}
                   </div>
                 ) : error ? (

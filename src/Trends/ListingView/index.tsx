@@ -134,7 +134,7 @@ export function CardLayout(props: Props) {
       {trendsList && totalCount ? (
         <div>
           <div
-            className='margin-bottom-05 margin-top-07 bold'
+            className='margin-bottom-05 bold'
             style={{
               padding: '1rem',
               backgroundColor: 'var(--gray-200)',
@@ -144,7 +144,7 @@ export function CardLayout(props: Props) {
             {totalCount}{' '}
             {totalCount > 1 ? 'trends available' : 'trend available'}
           </div>
-          <div className='flex-div flex-wrap listing'>
+          <div className='flex-div flex-wrap'>
             {trendsList.length > 0 ? (
               view === 'cardView' ? (
                 <CardList data={trendsList} />

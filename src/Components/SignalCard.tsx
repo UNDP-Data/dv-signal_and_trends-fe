@@ -24,7 +24,8 @@ const HeroImageEl = styled.div<HeroImageProps>`
     no-repeat center;
   background-size: cover;
   width: 100%;
-  height: 20rem;
+  height: 0;
+  padding-bottom: 55%;
 `;
 
 const CardEl = styled.div`
@@ -51,18 +52,7 @@ export function SignalCard(props: Props) {
   const { role, choices, updateCardsToPrint, cardsToPrint } =
     useContext(Context);
   return (
-    <div
-      className='signal-trend-card'
-      style={{
-        color: 'var(--black)',
-        textDecoration: 'none',
-        flexGrow: 1,
-        flexBasis: '26.25rem',
-        backgroundColor: 'var(--gray-300)',
-        alignItems: 'stretch',
-        display: 'flex',
-      }}
-    >
+    <div className='signal-card'>
       <CardEl>
         <div>
           <HeroImageEl bgImage={data.attachment}>

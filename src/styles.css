@@ -1,30 +1,64 @@
 
-/* signal-trend-card max-width based on flexBasis: 420px (26.25rem) */
+.home .signal-trend-card {
+  flex-basis: 21rem;
+  flex-shrink: 1;
+}
+
+.trend-card{
+  width: calc(33.33% - 0.67rem);
+  min-width: min(100%, 600px);
+  color: var(--black);
+  text-decoration: none;
+  background-color: var(--gray-300);
+  align-items: stretch;
+  display: flex;
+}
+
+.signal-card{
+  width: calc(25% - 0.75rem);
+  min-width: min(100%, 320px);
+  color: var(--black);
+  text-decoration: none;
+  background-color: var(--gray-300);
+  align-items: stretch;
+  display: flex;
+}
+
 @media(min-width: 888px){
-  .listing .signal-trend-card{
-    max-width: calc(50% - 1rem);
+  .signal-card{
+    width: calc(50% - 0.5rem);
+  }
+}
+@media(min-width: 1200px){
+  .signal-card{
+    width: 100%;
   }
 }
 @media(min-width: 1312px){
-  .listing .signal-trend-card{
-    max-width: calc(33.3% - 1rem);
+  .signal-card{
+    width: calc(33.3% - 0.67rem);
+  }
+  .trend-card{
+    width: calc(50% - 0.5rem);
   }
 }
 @media(min-width: 1760px){
-  .listing .signal-trend-card{
-    max-width: calc(25% - 1rem);
+  .signal-card{
+    width: calc(25% - 0.75rem);
+  }
+  .trend-card{
+    width: calc(33.3% - 0.67rem);
   }
 }
 @media(min-width: 2196px){
-  .listing .signal-trend-card{
-    max-width: calc(20% - 1rem);
+  .signal-card{
+    width: calc(20% - 0.8rem);
+  }
+  .trend-card{
+    width: calc(25% - 0.75rem);
   }
 }
 
-.home .signal-trend-card {
-  flex-basis: 21rem !important;
-  flex-shrink: 1;
-}
 .idCode{
   display: none;
 }
