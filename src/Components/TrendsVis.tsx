@@ -72,7 +72,7 @@ export function TrendsVis() {
     setTrendsList([]);
     setError(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    json('../../public/testdata/response.json').then((response: any) => {
+    json('/testData/response.json').then((response: any) => {
       setTrendsList(response.data);
     });
     /* axios
