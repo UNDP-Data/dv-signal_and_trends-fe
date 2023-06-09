@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { ChoicesDataType, CtxDataType } from '../Types';
+import { CardsToPrintDataType, ChoicesDataType, CtxDataType } from '../Types';
 
 const Context = createContext<CtxDataType>({
   userName: undefined,
@@ -11,6 +11,7 @@ const Context = createContext<CtxDataType>({
   userID: undefined,
   notificationText: undefined,
   choices: undefined,
+  cardsToPrint: [],
   updateUserName: (_d?: string) => {},
   updateName: (_d?: string) => {},
   updateUnit: (_d?: string) => {},
@@ -20,6 +21,7 @@ const Context = createContext<CtxDataType>({
   updateExpiresOn: (_d: Date) => {},
   updateNotificationText: (_d?: string) => {},
   updateChoices: (_d?: ChoicesDataType) => {},
+  updateCardsToPrint: (_d: CardsToPrintDataType[]) => {},
 });
 
 export default Context;

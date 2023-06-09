@@ -19,6 +19,8 @@ export default (state: any, action: any) => {
       return { ...state, notificationText: action.payload };
     case 'UPDATE_CHOICES':
       return { ...state, choices: action.payload };
+    case 'UPDATE_CARDS_TO_PRINT':
+      return { ...state, cardsToPrint: action.payload };
     default:
       return { ...state };
   }

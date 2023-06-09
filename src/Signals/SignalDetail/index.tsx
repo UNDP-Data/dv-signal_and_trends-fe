@@ -49,8 +49,14 @@ export function SignalDetail() {
     TrendDataType[] | undefined
   >(undefined);
   const { id } = useParams();
-  const { role, accessToken, updateNotificationText, choices } =
-    useContext(Context);
+  const {
+    role,
+    accessToken,
+    updateNotificationText,
+    choices,
+    updateCardsToPrint,
+    cardsToPrint,
+  } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -160,6 +166,9 @@ export function SignalDetail() {
                 </div>
               </div>
               <h2 className='undp-typography'>{data.headline}</h2>
+              <h6 className='undp-typography margin-bottom-07'>
+                ID: {data.id}
+              </h6>
               {role === 'Admin' || role === 'Curator' ? (
                 <div
                   className={`undp-chip margin-bottom-07 ${
@@ -342,14 +351,12 @@ export function SignalDetail() {
                     }-${new Date(data.created_at).getFullYear()}`}
                   </p>
                 </div>
-                <div>
-                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00'>Signal ID</h6>
-                  <p className='undp-typography'>{data.id}</p>
-                </div>
               </div>
             ) : null}
-            <div className='margin-top-09'>
+            <div
+              className='margin-top-09 flex-div flex-wrap'
+              style={{ justifyContent: 'space-between' }}
+            >
               <AuthenticatedTemplate>
                 {role === 'User' ? (
                   <p
@@ -423,6 +430,20 @@ export function SignalDetail() {
                   </div>
                 )}
               </AuthenticatedTemplate>
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
+                onClick={() => {
+                  const cardToPrintTemp = [...cardsToPrint];
+                  cardToPrintTemp.push({
+                    type: 'signal',
+                    id: `${data.id}`,
+                  });
+                  updateCardsToPrint(cardToPrintTemp);
+                }}
+              >
+                Add to print
+              </button>
               {buttonDisabled ? <div className='undp-loader' /> : null}
               {submittingError ? (
                 <p
