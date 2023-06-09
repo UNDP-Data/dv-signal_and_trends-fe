@@ -6,7 +6,7 @@
 
 .trend-card{
   width: calc(33.33% - 0.67rem);
-  min-width: min(100%, 600px);
+  min-width: min(100%, 580px);
   color: var(--black);
   text-decoration: none;
   background-color: var(--gray-300);
@@ -17,6 +17,7 @@
 .signal-card{
   width: calc(25% - 0.75rem);
   min-width: min(100%, 320px);
+  flex-grow: 1;
   color: var(--black);
   text-decoration: none;
   background-color: var(--gray-300);
@@ -29,35 +30,43 @@
     width: calc(50% - 0.5rem);
   }
 }
-@media(min-width: 1200px){
-  .signal-card{
+@media(min-width: 320px){
+  .trend-card{
     width: 100%;
+  }
+}
+@media(min-width: 1224px){
+  .trend-card{
+    width: calc(50% - 0.5rem);
   }
 }
 @media(min-width: 1312px){
   .signal-card{
     width: calc(33.3% - 0.67rem);
   }
+}
+@media(min-width: 1820px){  
   .trend-card{
-    width: calc(50% - 0.5rem);
+    width: calc(33.3% - 0.67rem);
   }
 }
+
 @media(min-width: 1760px){
   .signal-card{
     width: calc(25% - 0.75rem);
-  }
-  .trend-card{
-    width: calc(33.3% - 0.67rem);
   }
 }
 @media(min-width: 2196px){
   .signal-card{
     width: calc(20% - 0.8rem);
   }
+}
+@media(min-width: 2416px){  
   .trend-card{
     width: calc(25% - 0.75rem);
   }
 }
+
 
 .idCode{
   display: none;

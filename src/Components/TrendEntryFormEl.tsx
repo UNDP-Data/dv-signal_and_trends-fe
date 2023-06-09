@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN } from '../Constants';
-import { TrendDataType, SignalDataType } from '../Types';
+import { TrendDataType, SignalDataType, HorizonList } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
 import Context from '../Context/Context';
 
@@ -80,9 +80,9 @@ export function TrendEntryFormEl(props: Props) {
   const [description, setDescription] = useState<undefined | string>(
     updateTrend ? updateTrend.description : undefined,
   );
-  const [timeHorizon, setTimeHorizon] = useState<
-    undefined | 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)'
-  >(updateTrend ? updateTrend.time_horizon : undefined);
+  const [timeHorizon, setTimeHorizon] = useState<undefined | HorizonList>(
+    updateTrend ? updateTrend.time_horizon : undefined,
+  );
 
   const [impactRating, setImpactRating] = useState<string | null>(
     updateTrend ? updateTrend.impact_rating : null,

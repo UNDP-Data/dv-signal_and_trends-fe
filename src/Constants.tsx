@@ -4,15 +4,15 @@ export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
 
 export const HORIZONVALUES = [
   {
-    value: 'Horizon 1 (0-3Y)',
+    value: 'Horizon 1 (0-3 years)',
     textColor: UNDPColorModule.categoricalColors.colors[8],
   },
   {
-    value: 'Horizon 2 (4-6Y)',
+    value: 'Horizon 2 (3-7 years)',
     textColor: UNDPColorModule.categoricalColors.colors[7],
   },
   {
-    value: 'Horizon 3 (7+Y)',
+    value: 'Horizon 3 (7-10 years)',
     textColor: UNDPColorModule.categoricalColors.colors[6],
   },
 ];
@@ -87,77 +87,6 @@ export const SSCOLOR = [
   },
 ];
 
-export const SDGCOLOR = [
-  {
-    value: 'GOAL 1: No Poverty',
-    textColor: UNDPColorModule.sdgColors.sdg1,
-  },
-  {
-    value: 'GOAL 2: Zero Hunger',
-    textColor: UNDPColorModule.sdgColors.sdg2,
-  },
-  {
-    value: 'GOAL 3: Good Health and Well-being',
-    textColor: UNDPColorModule.sdgColors.sdg3,
-  },
-  {
-    value: 'GOAL 4: Quality Education',
-    textColor: UNDPColorModule.sdgColors.sdg4,
-  },
-  {
-    value: 'GOAL 5: Gender Equality',
-    textColor: UNDPColorModule.sdgColors.sdg5,
-  },
-  {
-    value: 'GOAL 6: Clean Water and Sanitation',
-    textColor: UNDPColorModule.sdgColors.sdg6,
-  },
-  {
-    value: 'GOAL 7: Affordable and Clean Energy',
-    textColor: UNDPColorModule.sdgColors.sdg7,
-  },
-  {
-    value: 'GOAL 8: Decent Work and Economic Growth',
-    textColor: UNDPColorModule.sdgColors.sdg8,
-  },
-  {
-    value: 'GOAL 9: Industry, Innovation and Infrastructure',
-    textColor: UNDPColorModule.sdgColors.sdg9,
-  },
-  {
-    value: 'GOAL 10: Reduced Inequality',
-    textColor: UNDPColorModule.sdgColors.sdg10,
-  },
-  {
-    value: 'GOAL 11: Sustainable Cities and Communities',
-    textColor: UNDPColorModule.sdgColors.sdg11,
-  },
-  {
-    value: 'GOAL 12: Responsible Consumption and Production',
-    textColor: UNDPColorModule.sdgColors.sdg12,
-  },
-  {
-    value: 'GOAL 13: Climate Action',
-    textColor: UNDPColorModule.sdgColors.sdg13,
-  },
-  {
-    value: 'GOAL 14: Life Below Water',
-    textColor: UNDPColorModule.sdgColors.sdg14,
-  },
-  {
-    value: 'GOAL 15: Life on Land',
-    textColor: UNDPColorModule.sdgColors.sdg15,
-  },
-  {
-    value: 'GOAL 16: Peace and Justice Strong Institutions',
-    textColor: UNDPColorModule.sdgColors.sdg16,
-  },
-  {
-    value: 'GOAL 17: Partnerships to achieve the Goal',
-    textColor: UNDPColorModule.sdgColors.sdg17,
-  },
-];
-
 export const HORIZONTYPE = {
   '2021-2022': 'Short Term',
   '2022-2023': 'Short Term',
@@ -186,12 +115,12 @@ export const NO_OF_ITEMS_IN_PAGE = 25;
 export const CHOICES = {
   roles: ['Admin', 'Curator', 'User', 'Visitor'],
   steepv: [
-    'Social – issues related to human culture, demography, communication, movement and migration, work and education',
+    'Social – Issues related to human culture, demography, communication, movement and migration, work and education',
     'Technological – Made culture, tools, devices, systems, infrastructure and networks',
-    'Economic – issues of value, money, financial tools and systems, business and business models, exchanges and transactions',
+    'Economic – Issues of value, money, financial tools and systems, business and business models, exchanges and transactions',
     'Environmental – The natural world, living environment, sustainability, resources, climate and health',
-    'Political – legal issues, policy, governance, rules and regulations and organizational systems',
-    'Values – ethics, spirituality, ideology or other forms of values',
+    'Political – Legal issues, policy, governance, rules and regulations and organizational systems',
+    'Values – Ethics, spirituality, ideology or other forms of values',
   ],
   signatures: [
     'Poverty and Inequality',
@@ -203,7 +132,6 @@ export const CHOICES = {
     'Strategic Innovation',
     'Digitalisation',
     'Development Financing',
-    'Others',
   ],
   locations: [
     'Global',
@@ -482,8 +410,23 @@ export const CHOICES = {
     'GOAL 16: Peace and Justice Strong Institutions',
     'GOAL 17: Partnerships to achieve the Goal',
   ],
-  horizons: ['Horizon 1 (0-3Y)', 'Horizon 2 (4-6Y)', 'Horizon 3 (7+Y)'],
-  ratings: ['1', '2', '3', '4', '5'],
+  scores: [
+    '1 — Non-novel (known, but potentially notable in particular context)',
+    '2',
+    '3 — Potentially novel or uncertain, but not clear in its potential impact',
+    '4',
+    '5 — Something that introduces or points to a potentially interesting or consequential change in direction of trends',
+  ],
+  horizons: [
+    'Horizon 1 (0-3 years)',
+    'Horizon 2 (3-7 years)',
+    'Horizon 3 (7-10 years)',
+  ],
+  ratings: [
+    '1 — Notable but not significant impact within the assigned Horizon',
+    '2 — Moderate impact within the assigned Horizon',
+    '3 — Significant impact within the assigned Horizon',
+  ],
   statuses: ['Draft', 'New', 'Approved', 'Archived'],
   units: [
     'Afghanistan',

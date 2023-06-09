@@ -170,22 +170,21 @@ export function ListView(props: Props) {
                     text={d.signature_primary}
                   />
                 ) : null}
-                {d.signature_secondary !== '' &&
-                d.signature_secondary &&
-                d.signature_secondary !== d.signature_primary ? (
-                  <ChipEl
-                    circleColor={
-                      choices
-                        ? SSCOLOR[
-                            choices.signatures.findIndex(
-                              el => el === d.signature_secondary,
-                            )
-                          ].textColor
-                        : 'var(--black)'
-                    }
-                    text={d.signature_secondary}
-                  />
-                ) : null}
+                {d.signature_secondary
+                  .filter(el => el !== d.signature_primary)
+                  .map((el, j) => (
+                    <ChipEl
+                      text={el}
+                      key={j}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : SSCOLOR[
+                              choices.signatures.findIndex(sig => sig === el)
+                            ].textColor
+                      }
+                    />
+                  ))}
               </div>
             </CellDiv>
           </div>

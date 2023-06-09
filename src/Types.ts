@@ -1,11 +1,11 @@
 export type STEEPVList =
   | 'All STEEP+V'
-  | 'Social - issues related to human culture, demography, communication, movement and migration, work and education'
-  | 'Technological - Made culture, tools, devices, systems, infrastructure and networks'
-  | 'Economic - issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
-  | 'Environmental - The natural world, living environment, sustainability, resources, climate and health'
-  | 'Political - legal issues, policy, governance, rules and regulations and organizational systems'
-  | 'Values - ethics, spirituality, ideology or other forms of values';
+  | 'Social – Issues related to human culture, demography, communication, movement and migration, work and education'
+  | 'Technological – Made culture, tools, devices, systems, infrastructure and networks'
+  | 'Economic – Issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
+  | 'Environmental – The natural world, living environment, sustainability, resources, climate and health'
+  | 'Political – Legal issues, policy, governance, rules and regulations and organizational systems'
+  | 'Values – Ethics, spirituality, ideology or other forms of values';
 
 export type SDGList =
   | 'GOAL 1: No Poverty'
@@ -38,11 +38,14 @@ export type SSList =
   | 'Development Financing';
 
 export type HorizonList =
-  | 'Horizon 1 (0-3Y)'
-  | 'Horizon 2 (4-6Y)'
-  | 'Horizon 3 (7+Y)';
+  | 'Horizon 1 (0-3 years)'
+  | 'Horizon 2 (3-7 years)'
+  | 'Horizon 3 (7-10 years)';
 
-export type RatingList = '1' | '2' | '3' | '4' | '5';
+export type RatingList =
+  | '1 — Notable but not significant impact within the assigned Horizon'
+  | '2 — Moderate impact within the assigned Horizon'
+  | '3 — Significant impact within the assigned Horizon';
 
 export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
@@ -70,7 +73,7 @@ export interface SignalDataType {
   relevance: string;
   sdgs: SDGList[];
   signature_primary: SSList | '';
-  signature_secondary: SSList | '';
+  signature_secondary: SSList[];
   steep: STEEPVList;
   url: string;
   id: number;
@@ -87,9 +90,9 @@ export interface TrendDataType {
   description: string;
   headline: string;
   impact_description: string;
-  impact_rating: '1' | '2' | '3' | '4' | '5';
+  impact_rating: RatingList;
   status?: StatusList;
-  time_horizon: 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)';
+  time_horizon: HorizonList;
   signals: number[];
   id: number;
   connected_signals: number[] | null;

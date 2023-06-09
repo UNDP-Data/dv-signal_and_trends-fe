@@ -127,7 +127,10 @@ export function TrendCard(props: Props) {
                     <p className='bold small-font undp-typography margin-bottom-04'>
                       Impact Rating
                     </p>
-                    <ImpactCircleEl impact={data.impact_rating} />
+                    <ImpactCircleEl
+                      impact={data.impact_rating}
+                      showText={false}
+                    />
                   </div>
                 ) : null}
               </div>

@@ -260,22 +260,21 @@ export function SignalDetail() {
                       }
                     />
                   ) : null}
-                  {data.signature_secondary !== '' &&
-                  data.signature_secondary &&
-                  data.signature_secondary !== data.signature_primary ? (
-                    <ChipEl
-                      text={data.signature_secondary}
-                      circleColor={
-                        !choices
-                          ? 'var(--black)'
-                          : SSCOLOR[
-                              choices.signatures.findIndex(
-                                el => el === data.signature_secondary,
-                              )
-                            ].textColor
-                      }
-                    />
-                  ) : null}
+                  {data.signature_secondary
+                    .filter(d => d !== data.signature_primary)
+                    .map((d, i) => (
+                      <ChipEl
+                        text={d}
+                        key={i}
+                        circleColor={
+                          !choices
+                            ? 'var(--black)'
+                            : SSCOLOR[
+                                choices.signatures.findIndex(el => el === d)
+                              ].textColor
+                        }
+                      />
+                    ))}
                 </div>
               </div>
               {role === 'Admin' || role === 'Curator' ? (

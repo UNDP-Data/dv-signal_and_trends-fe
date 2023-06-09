@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN } from '../Constants';
-import { SignalDataType, TrendDataType } from '../Types';
+import { SSList, SignalDataType, TrendDataType } from '../Types';
 import { AddTrendsModal } from './AddTrendsModal';
 import Context from '../Context/Context';
 
@@ -116,10 +116,10 @@ export function SignalEntryFormEl(props: Props) {
   const [keyword3, setKeyword3] = useState<string | undefined>(
     updateSignal?.keywords ? updateSignal?.keywords[2] || undefined : undefined,
   );
-  const [primarySS, setPrimarySS] = useState<string | undefined>(
+  const [primarySS, setPrimarySS] = useState<SSList | undefined>(
     updateSignal?.signature_primary || undefined,
   );
-  const [secondarySS, setSecondarySS] = useState<string | undefined>(
+  const [secondarySS, setSecondarySS] = useState<SSList[] | undefined>(
     updateSignal?.signature_secondary || undefined,
   );
   const [signalStatus, setSignalStatus] = useState<string>(
@@ -416,6 +416,7 @@ export function SignalEntryFormEl(props: Props) {
             onChange={e => {
               setSecondarySS(e);
             }}
+            mode='multiple'
             value={secondarySS}
             clearIcon={<div className='clearIcon' />}
             allowClear
