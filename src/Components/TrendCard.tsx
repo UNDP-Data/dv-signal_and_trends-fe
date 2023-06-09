@@ -117,77 +117,79 @@ export function TrendCard(props: Props) {
             </div>
           ) : null}
         </div>
-        <div className='margin-bottom-05' style={{ padding: '0 1.5rem' }}>
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
-          <div className='margin-top-03'>
-            {data.impact_rating ? (
-              <div
-                className='undp-chip'
-                style={{
-                  color:
-                    parseInt(data.impact_rating, 10) < 3
-                      ? 'var(--black)'
-                      : 'var(--white)',
-                  backgroundColor:
-                    UNDPColorModule.sequentialColors.neutralColorsx05[
-                      parseInt(data.impact_rating, 10) - 1
-                    ],
-                  fontWeight: 'bold',
-                }}
-              >
-                {data.impact_rating}
-              </div>
-            ) : (
-              <div
-                className='undp-chip'
-                style={{
-                  color: 'var(--black)',
-                  backgroundColor: 'var(--gray-300)',
-                  fontWeight: 'bold',
-                }}
-              >
-                Not available
-              </div>
-            )}
+        <div>
+          <div className='margin-bottom-05' style={{ padding: '0 1.5rem' }}>
+            <hr className='undp-style light margin-top-07 margin-bottom-07' />
+            <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
+            <div className='margin-top-03'>
+              {data.impact_rating ? (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color:
+                      parseInt(data.impact_rating, 10) < 3
+                        ? 'var(--black)'
+                        : 'var(--white)',
+                    backgroundColor:
+                      UNDPColorModule.sequentialColors.neutralColorsx05[
+                        parseInt(data.impact_rating, 10) - 1
+                      ],
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {data.impact_rating}
+                </div>
+              ) : (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color: 'var(--black)',
+                    backgroundColor: 'var(--gray-300)',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Not available
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div
-          className='flex-div'
-          style={{ justifyContent: 'space-between', padding: '0 1.5rem' }}
-        >
-          <NavLink
-            to={
-              data.status === 'Archived'
-                ? `/archived-trends/${data.id}`
-                : `/trends/${data.id}`
-            }
-            style={{
-              textDecoration: 'none',
-            }}
+          <div
+            className='flex-div'
+            style={{ justifyContent: 'space-between', padding: '0 1.5rem' }}
           >
+            <NavLink
+              to={
+                data.status === 'Archived'
+                  ? `/archived-trends/${data.id}`
+                  : `/trends/${data.id}`
+              }
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
+              >
+                Read More
+              </button>
+            </NavLink>
             <button
               className='undp-button button-tertiary button-arrow'
               type='button'
+              onClick={e => {
+                e.stopPropagation();
+                const cardToPrintTemp = [...cardsToPrint];
+                cardToPrintTemp.push({
+                  type: 'trend',
+                  id: `${data.id}`,
+                });
+                updateCardsToPrint(cardToPrintTemp);
+              }}
             >
-              Read More
+              Add to print
             </button>
-          </NavLink>
-          <button
-            className='undp-button button-tertiary button-arrow'
-            type='button'
-            onClick={e => {
-              e.stopPropagation();
-              const cardToPrintTemp = [...cardsToPrint];
-              cardToPrintTemp.push({
-                type: 'trend',
-                id: `${data.id}`,
-              });
-              updateCardsToPrint(cardToPrintTemp);
-            }}
-          >
-            Add to print
-          </button>
+          </div>
         </div>
       </CardEl>
     </div>
