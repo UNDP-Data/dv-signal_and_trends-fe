@@ -89,11 +89,20 @@ export function AddSignalsModal(props: Props) {
           if (err.response?.status === 404) {
             setSignalList([]);
             setLoading(false);
-          } else {
+          } else if (err.response?.status === 500) {
             setError(
               `Error code ${err.response?.status}: ${err.response?.data}. ${
                 err.response?.status === 500
                   ? 'Please try again in some time'
+                  : ''
+              }`,
+            );
+            setLoading(false);
+          } else if (err.response?.status === 422) {
+            setError(
+              `Error code ${err.response?.status}: ${
+                err.response?.status === 422
+                  ? 'Please check if the input to this field is correct, IDs are numerical and must be separated by commas'
                   : ''
               }`,
             );
@@ -252,7 +261,7 @@ export function AddSignalsModal(props: Props) {
             key: '1',
             children: (
               <div>
-                <div className='flex-div margin-bottom-05 flex-wrap'>
+                <div className='flex-div margin-bottom-05 margin-top-00 flex-wrap'>
                   <Select
                     className='undp-select'
                     style={{ width: 'calc(33.33% - 0.667rem)' }}
@@ -465,66 +474,85 @@ export function AddSignalsModal(props: Props) {
         </div>
       ) : error ? (
         <p
-          className='margin-top-00 margin-bottom-00'
+          className='margin-top-00 margin-bottom-08 margin-left-02'
           style={{ color: 'var(--dark-red)' }}
         >
           {error}
         </p>
       ) : signalList.length > 0 ? (
-        <div className='margin-bottom-09'>
-          <Collapse
-            expandIconPosition='start'
-            className='undp-accordion-with-bg'
-            expandIcon={({ isActive }) => (
-              <img
-                src='https://design.undp.org/icons/chevron-right.svg'
-                alt='chevron-left-icon'
-                style={{ rotate: `${isActive ? '90deg' : '0deg'}` }}
-              />
-            )}
-          >
-            {signalList.map((d, i) => (
-              <Collapse.Panel
-                key={i}
-                header={d.headline}
-                className='undp-accordion-with-bg-item'
-                extra={
-                  <RadioOutline
-                    onClick={e => {
-                      e.stopPropagation();
-                      if (trendsSignal.findIndex(el => el === d.id) === -1) {
-                        const arr = [...trendsSignal];
-                        arr.push(d.id);
-                        setTrendsSignal(arr);
-                      } else {
-                        setTrendsSignal([
-                          ...trendsSignal.filter(el => el !== d.id),
-                        ]);
-                      }
-                    }}
-                  >
-                    {trendsSignal ? (
-                      trendsSignal.findIndex(selTrend => selTrend === d.id) ===
-                      -1 ? (
-                        <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+        <div>
+          <div className='margin-bottom-09'>
+            <Collapse
+              expandIconPosition='start'
+              className='undp-accordion-with-bg'
+              expandIcon={({ isActive }) => (
+                <img
+                  src='https://design.undp.org/icons/chevron-right.svg'
+                  alt='chevron-left-icon'
+                  style={{ rotate: `${isActive ? '90deg' : '0deg'}` }}
+                />
+              )}
+            >
+              {signalList.map((d, i) => (
+                <Collapse.Panel
+                  key={i}
+                  header={`${d.headline} (ID: ${d.id})`}
+                  className='undp-accordion-with-bg-item'
+                  extra={
+                    <RadioOutline
+                      onClick={e => {
+                        e.stopPropagation();
+                        if (trendsSignal.findIndex(el => el === d.id) === -1) {
+                          const arr = [...trendsSignal];
+                          arr.push(d.id);
+                          setTrendsSignal(arr);
+                        } else {
+                          setTrendsSignal([
+                            ...trendsSignal.filter(el => el !== d.id),
+                          ]);
+                        }
+                      }}
+                    >
+                      {trendsSignal ? (
+                        trendsSignal.findIndex(
+                          selTrend => selTrend === d.id,
+                        ) === -1 ? (
+                          <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+                        ) : (
+                          <div style={{ color: 'var(--dark-red)' }}>
+                            - Remove
+                          </div>
+                        )
                       ) : (
-                        <div style={{ color: 'var(--dark-red)' }}>- Remove</div>
-                      )
-                    ) : (
-                      <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
-                    )}
-                  </RadioOutline>
-                }
-              >
-                <p
-                  className='undp-typography margin-bottom-00 small-font'
-                  style={{ textAlign: 'left' }}
+                        <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+                      )}
+                    </RadioOutline>
+                  }
                 >
-                  {d.description}
-                </p>
-              </Collapse.Panel>
-            ))}
-          </Collapse>
+                  <p
+                    className='undp-typography margin-bottom-00 small-font'
+                    style={{ textAlign: 'left' }}
+                  >
+                    {d.description}
+                  </p>
+                </Collapse.Panel>
+              ))}
+            </Collapse>
+          </div>
+          <div className='flex-div flex-hor-align-center margin-bottom-07'>
+            <Pagination
+              className='undp-pagination'
+              onChange={e => {
+                setPaginationValue(e);
+              }}
+              defaultCurrent={1}
+              current={paginationValue}
+              total={totalNoOfPages * pageSize}
+              pageSize={pageSize}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+            />
+          </div>
         </div>
       ) : (
         <h5
@@ -540,20 +568,6 @@ export function AddSignalsModal(props: Props) {
           No signals available matching your criteria
         </h5>
       )}
-      <div className='flex-div flex-hor-align-center margin-bottom-07'>
-        <Pagination
-          className='undp-pagination'
-          onChange={e => {
-            setPaginationValue(e);
-          }}
-          defaultCurrent={1}
-          current={paginationValue}
-          total={totalNoOfPages * pageSize}
-          pageSize={pageSize}
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-        />
-      </div>
       <button
         className='undp-button button-secondary button-arrow'
         type='button'

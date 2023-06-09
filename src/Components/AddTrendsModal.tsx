@@ -6,6 +6,7 @@ import {
   Pagination,
   PaginationProps,
   Select,
+  Tabs,
 } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
@@ -48,18 +49,70 @@ export function AddTrendsModal(props: Props) {
   const [trendsList, setTrendsList] = useState<TrendDataType[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-    _current,
-    size,
-  ) => {
-    setPageSize(size);
-  };
+  const [idsList, setIdsList] = useState<string[]>([]);
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
     status: 'All Status',
     search: undefined,
   });
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    _current,
+    size,
+  ) => {
+    setPageSize(size);
+  };
+  const fetchIds = (ids: string[]) => {
+    if (ids?.length > 0 && ids[0] !== '') {
+      const trendsIds = ids.toString().replaceAll(',', '&ids=');
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
+          {
+            headers: {
+              access_token: API_ACCESS_TOKEN,
+            },
+          },
+        )
+        .then((response: AxiosResponse) => {
+          setTrendsList(
+            sortBy(response.data, d => Date.parse(d.created_at)).reverse(),
+          );
+          setLoading(false);
+        })
+        .catch(err => {
+          if (err.response?.status === 404) {
+            setTrendsList([]);
+            setLoading(false);
+          } else if (err.response?.status === 500) {
+            setError(
+              `Error code ${err.response?.status}: ${err.response?.data}. ${
+                err.response?.status === 500
+                  ? 'Please try again in some time'
+                  : ''
+              }`,
+            );
+            setLoading(false);
+          } else if (err.response?.status === 422) {
+            setError(
+              `Error code ${err.response?.status}: ${
+                err.response?.status === 422
+                  ? 'Please check if the input to this field is correct, IDs are numerical and must be separated by commas'
+                  : ''
+              }`,
+            );
+            setLoading(false);
+          }
+        });
+    } else {
+      setFilters({
+        impact: 'All Ratings',
+        horizon: 'All Horizons',
+        status: 'All Status',
+        search: undefined,
+      });
+    }
+  };
   useEffect(() => {
     setLoading(true);
     setError(undefined);
@@ -169,88 +222,166 @@ export function AddTrendsModal(props: Props) {
         Trends are connected or decoupled when you click on the trend&apos;s
         add/remove button
       </p>
-      <div className='flex-div margin-top-07 margin-bottom-05 flex-wrap'>
-        <Select
-          className='undp-select'
-          style={{ width: 'calc(50% - 0.667rem)' }}
-          placeholder='Please select'
-          defaultValue='All Horizons'
-          value={filters.horizon}
-          showSearch
-          allowClear
-          disabled={loading}
-          onChange={values => {
-            const val = values ? (`${values}` as HorizonList) : 'All Horizons';
-            setFilters({
-              ...filters,
-              horizon: val,
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          <Select.Option className='undp-select-option' key='All Horizons'>
-            All Horizons
-          </Select.Option>
-          {choices?.horizons.map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          className='undp-select'
-          style={{ width: 'calc(50% - 0.667rem)' }}
-          placeholder='Please select'
-          defaultValue='All Ratings'
-          value={filters.impact}
-          showSearch
-          disabled={loading}
-          allowClear
-          onChange={values => {
-            const val = values ? (`${values}` as RatingList) : 'All Ratings';
-            setFilters({
-              ...filters,
-              impact: val,
-            });
-          }}
-          clearIcon={<div className='clearIcon' />}
-        >
-          <Select.Option className='undp-select-option' key='All Ratings'>
-            All Ratings
-          </Select.Option>
-          {['1', '2', '3', '4', '5'].map(d => (
-            <Select.Option className='undp-select-option' key={d}>
-              {d}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
-      <div
-        style={{ width: '100%' }}
-        className='flex-div gap-00 margin-bottom-05'
-      >
-        <Input
-          placeholder='Search for a trend'
-          className='undp-input'
-          size='large'
-          value={searchQuery}
-          onChange={d => {
-            setSearchQuery(d.target.value);
-          }}
-          onPressEnter={() => {
-            setFilters({ ...filters, search: searchQuery });
-          }}
-        />
-        <button
-          type='button'
-          className='undp-button button-secondary'
-          onClick={() => {
-            setFilters({ ...filters, search: searchQuery });
-          }}
-        >
-          Search
-        </button>
-      </div>
+      <Tabs
+        defaultActiveKey='1'
+        className='undp-tabs'
+        onChange={() => {
+          setFilters({
+            impact: 'All Ratings',
+            horizon: 'All Horizons',
+            status: 'All Status',
+            search: undefined,
+          });
+          setIdsList([]);
+        }}
+        items={[
+          {
+            label: 'Filter signals',
+            key: '1',
+            children: (
+              <div>
+                <div className='flex-div margin-top-00 margin-bottom-05 flex-wrap'>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(50% - 0.667rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Horizons'
+                    value={filters.horizon}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as HorizonList)
+                        : 'All Horizons';
+                      setFilters({
+                        ...filters,
+                        horizon: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Horizons'
+                    >
+                      All Horizons
+                    </Select.Option>
+                    {choices?.horizons.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(50% - 0.667rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Ratings'
+                    value={filters.impact}
+                    showSearch
+                    disabled={loading}
+                    allowClear
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as RatingList)
+                        : 'All Ratings';
+                      setFilters({
+                        ...filters,
+                        impact: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Ratings'
+                    >
+                      All Ratings
+                    </Select.Option>
+                    {['1', '2', '3', '4', '5'].map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
+                <div
+                  style={{ width: '100%' }}
+                  className='flex-div gap-00 margin-bottom-05'
+                >
+                  <Input
+                    placeholder='Search for a trend'
+                    className='undp-input'
+                    size='large'
+                    value={searchQuery}
+                    onChange={d => {
+                      setSearchQuery(d.target.value);
+                    }}
+                    onPressEnter={() => {
+                      setFilters({ ...filters, search: searchQuery });
+                    }}
+                  />
+                  <button
+                    type='button'
+                    className='undp-button button-secondary'
+                    onClick={() => {
+                      setFilters({ ...filters, search: searchQuery });
+                    }}
+                  >
+                    Search
+                  </button>
+                </div>
+              </div>
+            ),
+          },
+          {
+            label: 'Search by ID',
+            key: '2',
+            children: (
+              <div>
+                <p className='label'>
+                  Fill in one ID, or multiple IDs separated by commas
+                </p>
+                <div
+                  style={{ width: '100%' }}
+                  className='flex-div margin-bottom-06'
+                >
+                  <div
+                    className='gap-00 flex-div'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                  >
+                    <Input
+                      placeholder='Search for a signal by ID'
+                      className='undp-input'
+                      size='large'
+                      value={idsList}
+                      onChange={d => {
+                        setIdsList(d.target.value.split(','));
+                      }}
+                      onPressEnter={() => {
+                        fetchIds(idsList);
+                      }}
+                    />
+                    <button
+                      type='button'
+                      className='undp-button button-secondary'
+                      onClick={() => {
+                        fetchIds(idsList);
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ),
+          },
+        ]}
+      />
       {loading ? (
         <div className='undp-loader-container'>
           <div className='undp-loader' />
@@ -263,63 +394,82 @@ export function AddTrendsModal(props: Props) {
           {error}
         </p>
       ) : trendsList.length > 0 ? (
-        <div className='margin-bottom-09'>
-          <Collapse
-            expandIconPosition='start'
-            className='undp-accordion-with-bg'
-            expandIcon={({ isActive }) => (
-              <img
-                src='https://design.undp.org/icons/chevron-right.svg'
-                alt='chevron-left-icon'
-                style={{ rotate: `${isActive ? '90deg' : '0deg'}` }}
-              />
-            )}
-          >
-            {trendsList.map((d, i) => (
-              <Collapse.Panel
-                key={i}
-                header={d.headline}
-                className='undp-accordion-with-bg-item'
-                extra={
-                  <RadioOutline
-                    onClick={e => {
-                      e.stopPropagation();
-                      if (
-                        selectedTrendsList?.findIndex(el => el === d.id) === -1
-                      ) {
-                        const arr = [...selectedTrendsList];
-                        arr.push(d.id);
-                        setSelectedTrendsList(arr);
-                      } else {
-                        setSelectedTrendsList([
-                          ...selectedTrendsList.filter(el => el !== d.id),
-                        ]);
-                      }
-                    }}
-                  >
-                    {selectedTrendsList ? (
-                      selectedTrendsList.findIndex(
-                        selTrend => selTrend === d.id,
-                      ) === -1 ? (
-                        <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+        <div>
+          <div className='margin-bottom-09'>
+            <Collapse
+              expandIconPosition='start'
+              className='undp-accordion-with-bg'
+              expandIcon={({ isActive }) => (
+                <img
+                  src='https://design.undp.org/icons/chevron-right.svg'
+                  alt='chevron-left-icon'
+                  style={{ rotate: `${isActive ? '90deg' : '0deg'}` }}
+                />
+              )}
+            >
+              {trendsList.map((d, i) => (
+                <Collapse.Panel
+                  key={i}
+                  header={`${d.headline} (ID: ${d.id})`}
+                  className='undp-accordion-with-bg-item'
+                  extra={
+                    <RadioOutline
+                      onClick={e => {
+                        e.stopPropagation();
+                        if (
+                          selectedTrendsList?.findIndex(el => el === d.id) ===
+                          -1
+                        ) {
+                          const arr = [...selectedTrendsList];
+                          arr.push(d.id);
+                          setSelectedTrendsList(arr);
+                        } else {
+                          setSelectedTrendsList([
+                            ...selectedTrendsList.filter(el => el !== d.id),
+                          ]);
+                        }
+                      }}
+                    >
+                      {selectedTrendsList ? (
+                        selectedTrendsList.findIndex(
+                          selTrend => selTrend === d.id,
+                        ) === -1 ? (
+                          <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+                        ) : (
+                          <div style={{ color: 'var(--dark-red)' }}>
+                            - Remove
+                          </div>
+                        )
                       ) : (
-                        <div style={{ color: 'var(--dark-red)' }}>- Remove</div>
-                      )
-                    ) : (
-                      <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
-                    )}
-                  </RadioOutline>
-                }
-              >
-                <p
-                  className='undp-typography margin-bottom-00 small-font'
-                  style={{ textAlign: 'left' }}
+                        <div style={{ color: 'var(--blue-600)' }}>+ Add</div>
+                      )}
+                    </RadioOutline>
+                  }
                 >
-                  {d.description}
-                </p>
-              </Collapse.Panel>
-            ))}
-          </Collapse>
+                  <p
+                    className='undp-typography margin-bottom-00 small-font'
+                    style={{ textAlign: 'left' }}
+                  >
+                    {d.description}
+                  </p>
+                </Collapse.Panel>
+              ))}
+            </Collapse>
+          </div>
+          <div className='flex-div flex-hor-align-center margin-bottom-07'>
+            <Pagination
+              className='undp-pagination'
+              onChange={e => {
+                setPaginationValue(e);
+              }}
+              defaultCurrent={1}
+              current={paginationValue}
+              total={pageSize * totalNoOfPages}
+              pageSize={pageSize}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+            />
+          </div>
         </div>
       ) : (
         <h5
@@ -335,20 +485,6 @@ export function AddTrendsModal(props: Props) {
           No signals available matching your criteria
         </h5>
       )}
-      <div className='flex-div flex-hor-align-center margin-bottom-07'>
-        <Pagination
-          className='undp-pagination'
-          onChange={e => {
-            setPaginationValue(e);
-          }}
-          defaultCurrent={1}
-          current={paginationValue}
-          total={pageSize * totalNoOfPages}
-          pageSize={pageSize}
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
-        />
-      </div>
       <button
         className='undp-button button-secondary button-arrow'
         type='button'

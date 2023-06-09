@@ -8,6 +8,7 @@ import Background from '../assets/UNDP-hero-image.png';
 import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { TrendCard } from '../Components/TrendCard';
+import { TrendsVis } from '../Components/TrendsVis';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -170,6 +171,10 @@ export function HomePage() {
             <div className='undp-loader' />
           </div>
         )}
+        <h2 className='undp-typography margin-top-10 margin-bottom-08 gap-07'>
+          Trends visualized
+        </h2>
+        <TrendsVis />
       </div>
     </>
   );

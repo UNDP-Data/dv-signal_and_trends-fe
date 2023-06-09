@@ -193,11 +193,17 @@ export function SignalEntryFormEl(props: Props) {
   };
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
+      <p className='undp-typography'>
+        A Signal is defined as a single piece of evidence or indicator that
+        points to, relates to, or otherwise supports a trend. A signal can also
+        stand alone as a potential indicator of future change in one or more
+        trends.
+      </p>
       <div className='margin-bottom-07'>
-        <p className='undp-typography margin-bottom-01'>Signal Headline*</p>
+        <p className='undp-typography margin-bottom-01'>Signal Title*</p>
         <Input
           className='undp-input'
-          placeholder='Enter signal headline (max 100 characters)'
+          placeholder='Enter signal title (max 100 characters)'
           value={headline}
           maxLength={100}
           onChange={d => {
@@ -205,7 +211,7 @@ export function SignalEntryFormEl(props: Props) {
           }}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-          Useful headlines are clear, concise and can stand alone as a simple
+          Useful titles are clear, concise and can stand alone as a simple
           description of the signal. {headline ? 100 - headline.length : 100}{' '}
           characters left
         </p>
@@ -223,9 +229,11 @@ export function SignalEntryFormEl(props: Props) {
           value={description}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-          Keep this description concise and think about using commonly used
-          terms and clear language. Min 30 characters required.{' '}
-          {description ? 200 - description.length : 200} characters left
+          What is the Signal about? Keep this description concise and think
+          about using commonly used terms and clear language. This should be
+          your summarised description, not cut-and-paste from article. Min 30
+          characters required. {description ? 200 - description.length : 200}{' '}
+          characters left
         </p>
       </div>
       <div className='flex-div'>
@@ -278,7 +286,8 @@ export function SignalEntryFormEl(props: Props) {
           value={relevance}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-          Consider both the near term and longer term futures of development.
+          What is the significance of this Signal to UNDP? Consider both the
+          near term and longer term futures of development.
         </p>
       </div>
       <div className='margin-bottom-07'>
@@ -383,7 +392,7 @@ export function SignalEntryFormEl(props: Props) {
           />
         </div>
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-          Add relevant keywords for this signal. Max 3 keywords allowed.
+          Use clear, simple keywords for ease of searchability.
         </p>
       </div>
       <div className='flex-div flex-wrap'>
@@ -428,6 +437,12 @@ export function SignalEntryFormEl(props: Props) {
             ))}
           </Select>
         </div>
+        <p
+          className='undp-typography margin-top-00 margin-bottom-05'
+          style={{ color: 'var(--gray-500)' }}
+        >
+          Which Signature Solutions/Enablers does this Signal most align with?
+        </p>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
           <p className='undp-typography margin-bottom-01'>SDGs</p>
           <Select
