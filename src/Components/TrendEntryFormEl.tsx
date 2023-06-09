@@ -84,7 +84,7 @@ export function TrendEntryFormEl(props: Props) {
     undefined | 'Horizon 1 (0-3Y)' | 'Horizon 2 (4-6Y)' | 'Horizon 3 (7+Y)'
   >(updateTrend ? updateTrend.time_horizon : undefined);
 
-  const [impactRating, setImpactRating] = useState<number | null>(
+  const [impactRating, setImpactRating] = useState<string | null>(
     updateTrend ? updateTrend.impact_rating : null,
   );
   const [impactDescription, setImpactDescription] = useState<string | null>(
