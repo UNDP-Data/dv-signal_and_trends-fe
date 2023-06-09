@@ -12,13 +12,14 @@ import { SignalDataType, TrendDataType } from '../../Types';
 import {
   API_ACCESS_TOKEN,
   MONTHS,
-  SDGCOLOR,
   SSCOLOR,
   STEEPVCOLOR,
 } from '../../Constants';
 import { TrendCard } from '../../Components/TrendCard';
 import { SignInButton } from '../../Components/SignInButton';
 import Context from '../../Context/Context';
+import { ChipEl } from '../../Components/ChipEl';
+import { getSDGIcon } from '../../Utils/GetSDGIcons';
 
 interface HeroImageProps {
   bgImage?: string;
@@ -187,275 +188,284 @@ export function SignalDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09'
+            className='margin-top-09 flex-div gap-11 max-width'
             style={{
-              maxWidth: '60rem',
               marginLeft: 'auto',
               marginRight: 'auto',
               paddingLeft: '1rem',
               paddingRight: '1rem',
             }}
           >
-            <h6 className='undp-typography margin-top-00'>Keywords</h6>
-            <div className='flex-div flex-wrap margin-bottom-07'>
-              {data.keywords?.map((el, j) => (
-                <div className='undp-chip' key={j}>
-                  {el}
-                </div>
-              ))}
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>STEEP+V Category</h6>
-            <div className='flex-div flex-wrap margin-top-03'>
-              {data.steep ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
-                      ? 'var(--black)'
-                      : STEEPVCOLOR[
-                          choices.steepv.findIndex(el => el === data.steep)
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {data.steep?.split(' – ')[0]}
-                </div>
-              ) : null}
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>
-              Signature Solutions
-            </h6>
-            <div className='flex-div flex-wrap margin-top-03'>
-              {data.signature_primary !== '' && data.signature_primary ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
-                      ? 'var(--black)'
-                      : SSCOLOR[
-                          choices.signatures.findIndex(
-                            el => el === data.signature_primary,
-                          )
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {data.signature_primary}
-                </div>
-              ) : null}
-              {data.signature_secondary !== '' &&
-              data.signature_secondary &&
-              data.signature_secondary !== data.signature_primary ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
-                      ? 'var(--black)'
-                      : SSCOLOR[
-                          choices.signatures.findIndex(
-                            el => el === data.signature_secondary,
-                          )
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {data.signature_secondary}
-                </div>
-              ) : null}
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>SDGs</h6>
-            <div className='flex-div flex-wrap margin-top-03'>
-              {data.sdgs && data.sdgs.length > 0 ? (
-                <>
-                  {data.sdgs.map((sdg, j) => (
-                    <div
-                      key={j}
-                      className='undp-chip'
-                      style={{
-                        color: !choices
-                          ? 'var(--black)'
-                          : SDGCOLOR[choices.sdgs.findIndex(el => el === sdg)]
-                              .textColor,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {sdg}
+            <div style={{ width: 'calc(33.33% - 2rem)' }}>
+              <div>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Location
+                </h6>
+                <div>{data.location}</div>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Keywords
+                </h6>
+                <div className='flex-div flex-wrap'>
+                  {data.keywords?.map((el, j) => (
+                    <div className='undp-chip' key={j}>
+                      {el}
                     </div>
                   ))}
-                </>
-              ) : (
-                'NA'
-              )}
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Location</h6>
-            <div className='flex-div flex-wrap margin-top-03'>
-              {data.location ? (
-                <div className='undp-chip'>{data.location}</div>
-              ) : (
-                'NA'
-              )}
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Relevance</h6>
-            <p className='undp-typography'>{data.relevance}</p>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Source</h6>
-            {isValidUrl(data.url) ? (
-              <a
-                href={data.url}
-                target='_blank'
-                rel='noreferrer'
-                className='undp-style'
-              >
-                {data.url}
-              </a>
-            ) : (
-              <p className='undp-typography'>{data.url}</p>
-            )}
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Connected Trends</h6>
-            {connectedTrends ? (
-              <div className='flex-div flex-wrap connected'>
-                {connectedTrends.filter(d => d.status === 'Approved').length >
-                0 ? (
-                  <>
-                    {connectedTrends
-                      .filter(d => d.status === 'Approved')
-                      .map((d, i) => (
-                        <TrendCard key={i} data={d} />
-                      ))}
-                  </>
-                ) : (
-                  <p className='undp-typography'>No connected trends</p>
-                )}
-              </div>
-            ) : (
-              <div className='undp-loader-container'>
-                <div className='undp-loader' />
-              </div>
-            )}
-            {role === 'Admin' || role === 'Curator' ? (
-              <div>
-                <div>
-                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00'>Created by</h6>
-                  <p className='undp-typography'>
-                    {`${data.created_by} on ${new Date(
-                      data.created_at,
-                    ).getDate()}-${
-                      MONTHS[new Date(data.created_at).getMonth()]
-                    }-${new Date(data.created_at).getFullYear()}`}
-                  </p>
                 </div>
               </div>
-            ) : null}
-            <div
-              className='margin-top-09 flex-div flex-wrap'
-              style={{ justifyContent: 'space-between' }}
-            >
-              <AuthenticatedTemplate>
-                {role === 'User' ? (
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  STEEP+V Category
+                </h6>
+                <div className='flex-div flex-wrap'>
+                  {data.steep ? (
+                    <ChipEl
+                      text={data.steep?.split(' – ')[0]}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : STEEPVCOLOR[
+                              choices.steepv.findIndex(el => el === data.steep)
+                            ].textColor
+                      }
+                    />
+                  ) : null}
+                </div>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Signature Solutions
+                </h6>
+                <div className='flex-div flex-wrap'>
+                  {data.signature_primary !== '' && data.signature_primary ? (
+                    <ChipEl
+                      text={data.signature_primary}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : SSCOLOR[
+                              choices.signatures.findIndex(
+                                el => el === data.signature_primary,
+                              )
+                            ].textColor
+                      }
+                    />
+                  ) : null}
+                  {data.signature_secondary !== '' &&
+                  data.signature_secondary &&
+                  data.signature_secondary !== data.signature_primary ? (
+                    <ChipEl
+                      text={data.signature_secondary}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : SSCOLOR[
+                              choices.signatures.findIndex(
+                                el => el === data.signature_secondary,
+                              )
+                            ].textColor
+                      }
+                    />
+                  ) : null}
+                </div>
+              </div>
+              {role === 'Admin' || role === 'Curator' ? (
+                <div className='margin-top-07'>
+                  <div>
+                    <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                      Created by
+                    </h6>
+                    <p className='undp-typography small-font'>
+                      {`${data.created_by} on ${new Date(
+                        data.created_at,
+                      ).getDate()}-${
+                        MONTHS[new Date(data.created_at).getMonth()]
+                      }-${new Date(data.created_at).getFullYear()}`}
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+              <hr className='undp-style light margin-top-07' />
+              <div className='margin-top-07'>
+                <AuthenticatedTemplate>
+                  <div
+                    className='flex-div margin-bottom-03'
+                    style={{ justifyContent: 'space-between' }}
+                  >
+                    {role === 'User' ? (
+                      <p
+                        className='undp-typography'
+                        style={{ color: 'var(--dark-red)' }}
+                      >
+                        Admin or curator rights required to edit a signal
+                      </p>
+                    ) : (
+                      <div
+                        className='flex-div gap-05'
+                        style={{
+                          justifyContent: 'space-between',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <NavLink
+                          to={
+                            data.status === 'Archived'
+                              ? `/archived-signals/${id}/edit`
+                              : `/signals/${id}/edit`
+                          }
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <button
+                            className='undp-button button-secondary button-arrow'
+                            type='button'
+                          >
+                            Edit Signal
+                          </button>
+                        </NavLink>
+                        {data.status === 'Archived' ? (
+                          <Popconfirm
+                            title='Delete Signal'
+                            description='Are you sure to delete this signal?'
+                            onConfirm={() => {
+                              axios({
+                                method: 'delete',
+                                url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
+                                data: {},
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  access_token: accessToken,
+                                },
+                              })
+                                .then(() => {
+                                  setButtonDisabled(false);
+                                  navigate('../../archived-signals');
+                                  updateNotificationText(
+                                    'Successfully deleted the signal',
+                                  );
+                                })
+                                .catch(err => {
+                                  setButtonDisabled(false);
+                                  setSubmittingError(
+                                    `Error code ${err.response?.status}: ${
+                                      err.response?.data
+                                    }. ${
+                                      err.response?.status === 500
+                                        ? 'Please try again in some time'
+                                        : ''
+                                    }`,
+                                  );
+                                });
+                            }}
+                            okText='Yes'
+                            cancelText='No'
+                          >
+                            <button
+                              className='undp-button button-primary button-arrow'
+                              type='button'
+                            >
+                              Delete Signal
+                            </button>
+                          </Popconfirm>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                </AuthenticatedTemplate>
+                <button
+                  className='undp-button button-tertiary button-arrow'
+                  type='button'
+                  onClick={() => {
+                    const cardToPrintTemp = [...cardsToPrint];
+                    cardToPrintTemp.push({
+                      type: 'signal',
+                      id: `${data.id}`,
+                    });
+                    updateCardsToPrint(cardToPrintTemp);
+                  }}
+                >
+                  Add to print
+                </button>
+                {buttonDisabled ? <div className='undp-loader' /> : null}
+                {submittingError ? (
                   <p
-                    className='undp-typography'
+                    className='margin-top-00 margin-bottom-00'
                     style={{ color: 'var(--dark-red)' }}
                   >
-                    Admin or curator rights required to edit a signal
+                    {submittingError}
                   </p>
+                ) : null}
+                <UnauthenticatedTemplate>
+                  <SignInButton buttonText='Sign In to Edit Signal' />
+                </UnauthenticatedTemplate>
+              </div>
+            </div>
+            <div style={{ width: 'calc(66.67% - 2rem)' }}>
+              <div>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Relevance
+                </h6>
+                <p className='undp-typography'>{data.relevance}</p>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  SDGs
+                </h6>
+                <div className='flex-div'>
+                  {data.sdgs && data.sdgs.length > 0 ? (
+                    <>
+                      {data.sdgs.map((sdg, j) => (
+                        <div key={j}>{getSDGIcon(sdg.split(':')[0], 48)}</div>
+                      ))}
+                    </>
+                  ) : (
+                    'NA'
+                  )}
+                </div>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Source
+                </h6>
+                {isValidUrl(data.url) ? (
+                  <a
+                    href={data.url}
+                    target='_blank'
+                    rel='noreferrer'
+                    className='undp-style'
+                  >
+                    {data.url}
+                  </a>
                 ) : (
-                  <div className='flex-div'>
-                    <NavLink
-                      to={
-                        data.status === 'Archived'
-                          ? `/archived-signals/${id}/edit`
-                          : `/signals/${id}/edit`
-                      }
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <button
-                        className='undp-button button-secondary button-arrow'
-                        type='button'
-                      >
-                        Edit Signal
-                      </button>
-                    </NavLink>
-                    {data.status === 'Archived' ? (
-                      <Popconfirm
-                        title='Delete Signal'
-                        description='Are you sure to delete this signal?'
-                        onConfirm={() => {
-                          axios({
-                            method: 'delete',
-                            url: `https://signals-and-trends-api.azurewebsites.net/v1/signals/delete?ids=${id}`,
-                            data: {},
-                            headers: {
-                              'Content-Type': 'application/json',
-                              access_token: accessToken,
-                            },
-                          })
-                            .then(() => {
-                              setButtonDisabled(false);
-                              navigate('../../archived-signals');
-                              updateNotificationText(
-                                'Successfully deleted the signal',
-                              );
-                            })
-                            .catch(err => {
-                              setButtonDisabled(false);
-                              setSubmittingError(
-                                `Error code ${err.response?.status}: ${
-                                  err.response?.data
-                                }. ${
-                                  err.response?.status === 500
-                                    ? 'Please try again in some time'
-                                    : ''
-                                }`,
-                              );
-                            });
-                        }}
-                        okText='Yes'
-                        cancelText='No'
-                      >
-                        <button
-                          className='undp-button button-secondary button-arrow'
-                          type='button'
-                        >
-                          Delete Signal
-                        </button>
-                      </Popconfirm>
-                    ) : null}
+                  <p className='undp-typography'>{data.url}</p>
+                )}
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00'>
+                  Connected Trends
+                </h6>
+                {connectedTrends ? (
+                  <div className='flex-div flex-wrap connected'>
+                    {connectedTrends.filter(d => d.status === 'Approved')
+                      .length > 0 ? (
+                      <>
+                        {connectedTrends
+                          .filter(d => d.status === 'Approved')
+                          .map((d, i) => (
+                            <TrendCard key={i} data={d} />
+                          ))}
+                      </>
+                    ) : (
+                      <p className='undp-typography'>No connected trends</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className='undp-loader-container'>
+                    <div className='undp-loader' />
                   </div>
                 )}
-              </AuthenticatedTemplate>
-              <button
-                className='undp-button button-tertiary button-arrow'
-                type='button'
-                onClick={() => {
-                  const cardToPrintTemp = [...cardsToPrint];
-                  cardToPrintTemp.push({
-                    type: 'signal',
-                    id: `${data.id}`,
-                  });
-                  updateCardsToPrint(cardToPrintTemp);
-                }}
-              >
-                Add to print
-              </button>
-              {buttonDisabled ? <div className='undp-loader' /> : null}
-              {submittingError ? (
-                <p
-                  className='margin-top-00 margin-bottom-00'
-                  style={{ color: 'var(--dark-red)' }}
-                >
-                  {submittingError}
-                </p>
-              ) : null}
-              <UnauthenticatedTemplate>
-                <SignInButton buttonText='Sign In to Edit Signal' />
-              </UnauthenticatedTemplate>
+              </div>
             </div>
           </div>
         </div>
