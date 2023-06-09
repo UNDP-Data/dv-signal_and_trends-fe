@@ -3,6 +3,7 @@
 // import { useContext, useEffect, useState } from 'react';
 import { useEffect, useState } from 'react';
 import { Checkbox } from 'antd';
+import styled from 'styled-components';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 // import sortBy from 'lodash.sortby';
 import {
@@ -28,6 +29,30 @@ const visHeight = 650;
 const colorScale = ['#B5D5F5', '#4F95DD', '#1F5A95'];
 const sqrtScale = scaleSqrt().domain([0, 7]).range([5, 20]);
 
+interface DotHoveredProps {
+  title: string;
+  xPosition: number;
+  yPosition: number;
+}
+
+interface TooltipElProps {
+  x: number;
+  y: number;
+}
+
+const TooltipEl = styled.div<TooltipElProps>`
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  font-size: 1rem;
+  background-color: var(--gray-300);
+  word-wrap: break-word;
+  top: ${props => props.y - 17}px;
+  left: ${props => props.x}px;
+  transform: translate(-50%, -100%);
+  padding: 1rem;
+`;
+
 export function TrendsVis() {
   const [trendsList, setTrendsList] = useState<undefined | VisTrendDataType[]>(
     undefined,
@@ -36,6 +61,7 @@ export function TrendsVis() {
     undefined,
   );
   const [showGroups, setShowGroups] = useState<boolean>(false);
+  const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   // const { accessToken } = useContext(Context);
   const [error, setError] = useState<undefined | string>(undefined);
   const groupByImpact = (e: CheckboxChangeEvent) => {
@@ -207,6 +233,16 @@ export function TrendsVis() {
                       Number(d.impact_rating !== null ? d.impact_rating : 1) - 1
                     ]
                   }
+                  onMouseEnter={event => {
+                    setHoveredDot({
+                      title: d.headline,
+                      xPosition: event.clientX,
+                      yPosition: event.clientY,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredDot(null);
+                  }}
                 />
               ))}
             </g>
@@ -236,6 +272,13 @@ export function TrendsVis() {
           <div className='undp-loader' />
         </div>
       )}
+      {hoveredDot ? (
+        <TooltipEl x={hoveredDot.xPosition} y={hoveredDot.yPosition}>
+          <h6 className='undp-typography margin-bottom-01'>
+            {hoveredDot.title}
+          </h6>
+        </TooltipEl>
+      ) : null}
     </div>
   );
 }
