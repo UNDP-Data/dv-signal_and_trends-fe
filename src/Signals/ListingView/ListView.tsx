@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useContext } from 'react';
-import { SDGCOLOR, SSCOLOR, STEEPVCOLOR } from '../../Constants';
+import { SSCOLOR, STEEPVCOLOR } from '../../Constants';
 import { SignalDataType } from '../../Types';
 import Context from '../../Context/Context';
+import { ChipEl } from '../../Components/ChipEl';
+import { getSDGIcon } from '../../Utils/GetSDGIcons';
 
 interface Props {
   data: SignalDataType[];
@@ -105,7 +107,9 @@ export function ListView(props: Props) {
             className='undp-table-row-cell'
           >
             <CellDiv>
-              <h6 className='undp-typography margin-bottom-02'>{d.headline}</h6>
+              <p className='undp-typography margin-bottom-02 small-font bold'>
+                {d.headline}
+              </p>
               <DescriptionEl className='small-font'>
                 {d.description}
               </DescriptionEl>
@@ -133,19 +137,16 @@ export function ListView(props: Props) {
           >
             {d.steep ? (
               <CellDiv>
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
+                <ChipEl
+                  circleColor={
+                    !choices
                       ? 'var(--black)'
                       : STEEPVCOLOR[
                           choices.steepv.findIndex(el => el === d.steep)
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {d.steep?.split(' – ')[0]}
-                </div>
+                        ].textColor
+                  }
+                  text={d.steep.split(' – ')[0]}
+                />
               </CellDiv>
             ) : null}
           </div>
@@ -156,41 +157,34 @@ export function ListView(props: Props) {
             <CellDiv>
               <div className='flex-div flex-wrap'>
                 {d.signature_primary !== '' && d.signature_primary ? (
-                  <div
-                    className='undp-chip'
-                    style={{
-                      color: choices
+                  <ChipEl
+                    circleColor={
+                      choices
                         ? SSCOLOR[
                             choices.signatures.findIndex(
                               el => el === d.signature_primary,
                             )
                           ].textColor
-                        : 'var(--black)',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {d.signature_primary}
-                  </div>
+                        : 'var(--black)'
+                    }
+                    text={d.signature_primary}
+                  />
                 ) : null}
-                {d.signature_secondary !== '' &&
-                d.signature_secondary &&
-                d.signature_secondary !== d.signature_primary ? (
-                  <div
-                    className='undp-chip'
-                    style={{
-                      color: choices
-                        ? SSCOLOR[
-                            choices.signatures.findIndex(
-                              el => el === d.signature_secondary,
-                            )
-                          ].textColor
-                        : 'var(--black)',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {d.signature_secondary}
-                  </div>
-                ) : null}
+                {d.signature_secondary
+                  .filter(el => el !== d.signature_primary)
+                  .map((el, j) => (
+                    <ChipEl
+                      text={el}
+                      key={j}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : SSCOLOR[
+                              choices.signatures.findIndex(sig => sig === el)
+                            ].textColor
+                      }
+                    />
+                  ))}
               </div>
             </CellDiv>
           </div>
@@ -200,22 +194,10 @@ export function ListView(props: Props) {
           >
             <CellDiv>
               <div className='flex-div flex-wrap'>
-                {d.sdgs ? (
+                {d.sdgs && d.sdgs.length > 0 ? (
                   <>
                     {d.sdgs.map((sdg, j) => (
-                      <div
-                        key={j}
-                        className='undp-chip'
-                        style={{
-                          color: choices
-                            ? SDGCOLOR[choices.sdgs.findIndex(el => el === sdg)]
-                                .textColor
-                            : 'var(--black)',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {sdg}
-                      </div>
+                      <div key={j}>{getSDGIcon(sdg.split(':')[0], 48)}</div>
                     ))}
                   </>
                 ) : null}

@@ -4,6 +4,8 @@ import { useContext } from 'react';
 import { HORIZONVALUES } from '../../Constants';
 import { TrendDataType } from '../../Types';
 import Context from '../../Context/Context';
+import { ImpactCircleEl } from '../../Components/ImpactRatingEl';
+import { ChipEl } from '../../Components/ChipEl';
 
 interface Props {
   data: TrendDataType[];
@@ -98,7 +100,9 @@ export function ListView(props: Props) {
             className='undp-table-row-cell'
           >
             <CellDiv>
-              <h6 className='undp-typography margin-bottom-02'>{d.headline}</h6>
+              <p className='undp-typography margin-bottom-02 small-font bold'>
+                {d.headline}
+              </p>
               <DescriptionEl className='small-font'>
                 {d.description}
               </DescriptionEl>
@@ -110,21 +114,18 @@ export function ListView(props: Props) {
           >
             <CellDiv>
               {d.time_horizon ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
+                <ChipEl
+                  text={d.time_horizon}
+                  circleColor={
+                    !choices
                       ? 'var(--black)'
                       : HORIZONVALUES[
                           choices?.horizons.findIndex(
                             el => el === d.time_horizon,
                           )
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {d.time_horizon}
-                </div>
+                        ].textColor
+                  }
+                />
               ) : null}
             </CellDiv>
           </div>
@@ -132,7 +133,9 @@ export function ListView(props: Props) {
             style={{ width: '5%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
-            <CellDiv>{d.impact_rating}</CellDiv>
+            <CellDiv>
+              <ImpactCircleEl impact={d.impact_rating} />
+            </CellDiv>
           </div>
           <div
             style={{ width: '30%', minWidth: '20rem' }}

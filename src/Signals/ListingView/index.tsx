@@ -142,7 +142,7 @@ export function CardLayout(props: Props) {
       {signalList && totalCount !== undefined ? (
         <div>
           <div
-            className='margin-bottom-05 margin-top-07 bold'
+            className='margin-bottom-05 bold'
             style={{
               padding: '1rem',
               backgroundColor: 'var(--gray-200)',

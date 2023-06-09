@@ -13,6 +13,8 @@ import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../../Constants';
 import { SignalCard } from '../../Components/SignalCard';
 import { SignInButton } from '../../Components/SignInButton';
 import Context from '../../Context/Context';
+import { ChipEl } from '../../Components/ChipEl';
+import { ImpactCircleEl } from '../../Components/ImpactRatingEl';
 
 interface HeroImageProps {
   bgImage?: string;
@@ -182,194 +184,220 @@ export function TrendDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09'
+            className='margin-top-09 flex-div gap-09 max-width'
             style={{
-              maxWidth: '60rem',
               marginLeft: 'auto',
               marginRight: 'auto',
-              paddingLeft: '1rem',
-              paddingRight: '1rem',
+              paddingLeft: '2rem',
+              paddingRight: '2rem',
+              flexWrap: 'wrap-reverse',
             }}
           >
-            <h6 className='undp-typography margin-top-00'>Time Horizon</h6>
-            <div className='flex-div flex-wrap margin-bottom-07'>
-              <div
-                className='undp-chip'
-                style={{
-                  color: !choices
-                    ? 'var(--black)'
-                    : HORIZONVALUES[
-                        choices.horizons.findIndex(
-                          el => el === data.time_horizon,
-                        )
-                      ].textColor,
-                  fontWeight: 'bold',
-                }}
-              >
-                {data.time_horizon}
-              </div>
-            </div>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Impact</h6>
-            <p className='undp-typography'>
-              <span className='bold'>Impact Rating: {data.impact_rating}</span>
-              {data.impact_description ? (
-                <>
-                  <br />
-                  <br />
-                  {data.impact_description}
-                </>
-              ) : null}
-            </p>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='undp-typography margin-top-00'>Connected Signals</h6>
-            {connectedSignals ? (
-              <div className='flex-div flex-wrap connected'>
-                {connectedSignals.filter(d => d.status === 'Approved').length >
-                0 ? (
-                  <>
-                    {connectedSignals
-                      .filter(d => d.status === 'Approved')
-                      .map((d, i) => (
-                        <SignalCard key={i} data={d} />
-                      ))}
-                  </>
-                ) : (
-                  <p className='undp-typography'>No connected signals</p>
-                )}
-              </div>
-            ) : error ? (
-              <p
-                className='margin-top-00 margin-bottom-00 undp-typography'
-                style={{ color: 'var(--dark-red)' }}
-              >
-                {error}
-              </p>
-            ) : (
-              <div className='undp-loader-container'>
-                <div className='undp-loader' />
-              </div>
-            )}
-            {role === 'Admin' || role === 'Curator' ? (
+            <div
+              style={{
+                width: 'calc(33.33% - 2rem)',
+                minWidth: '20rem',
+                flexGrow: 1,
+              }}
+            >
               <div>
-                <div>
-                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00 margin-bottom-00'>
-                    Created by
-                  </h6>
-                  <p className='undp-typography margin-top-05'>
-                    {`${data.created_by} on ${new Date(
-                      data.created_at,
-                    ).getDate()}-${
-                      MONTHS[new Date(data.created_at).getMonth()]
-                    }-${new Date(data.created_at).getFullYear()}`}
-                  </p>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Time Horizon
+                </h6>
+                <div className='flex-div flex-wrap margin-bottom-07'>
+                  <ChipEl
+                    text={data.time_horizon}
+                    circleColor={
+                      !choices
+                        ? 'var(--black)'
+                        : HORIZONVALUES[
+                            choices.horizons.findIndex(
+                              el => el === data.time_horizon,
+                            )
+                          ].textColor
+                    }
+                  />
                 </div>
               </div>
-            ) : null}
-            <div
-              className='margin-top-09 flex-div flex-wrap'
-              style={{ justifyContent: 'space-between' }}
-            >
-              <AuthenticatedTemplate>
-                {role === 'User' ? (
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Impact Rating
+                </h6>
+                <div className='flex-div flex-wrap margin-bottom-07'>
+                  <ImpactCircleEl impact={data.impact_rating} />
+                </div>
+              </div>
+              {role === 'Admin' || role === 'Curator' ? (
+                <div className='margin-top-07'>
+                  <div>
+                    <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                      Created by
+                    </h6>
+                    <p className='undp-typography small-font'>
+                      {`${data.created_by} on ${new Date(
+                        data.created_at,
+                      ).getDate()}-${
+                        MONTHS[new Date(data.created_at).getMonth()]
+                      }-${new Date(data.created_at).getFullYear()}`}
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+              <hr className='undp-style light margin-top-07' />
+              <div className='margin-top-07'>
+                <AuthenticatedTemplate>
+                  <div
+                    className='flex-div margin-bottom-03'
+                    style={{ justifyContent: 'space-between' }}
+                  >
+                    {role === 'User' ? (
+                      <p
+                        className='undp-typography'
+                        style={{ color: 'var(--dark-red)' }}
+                      >
+                        Admin or curator rights required to edit a trend
+                      </p>
+                    ) : (
+                      <div
+                        className='flex-div gap-05'
+                        style={{
+                          justifyContent: 'space-between',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <NavLink
+                          to={
+                            data.status === 'Archived'
+                              ? `/archived-trends/${id}/edit`
+                              : `/trends/${id}/edit`
+                          }
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <button
+                            className='undp-button button-secondary button-arrow'
+                            type='button'
+                          >
+                            Edit Trend
+                          </button>
+                        </NavLink>
+                        {data.status === 'Archived' ? (
+                          <Popconfirm
+                            title='Delete Trend'
+                            description='Are you sure to delete this trend?'
+                            onConfirm={() => {
+                              axios({
+                                method: 'delete',
+                                url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
+                                data: {},
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  access_token: accessToken,
+                                },
+                              })
+                                .then(() => {
+                                  setButtonDisabled(false);
+                                  navigate('../../archived-trends');
+                                  updateNotificationText(
+                                    'Successfully deleted the trend',
+                                  );
+                                })
+                                .catch(err => {
+                                  setButtonDisabled(false);
+                                  setSubmittingError(
+                                    `Error code ${err.response?.status}: ${
+                                      err.response?.data
+                                    }. ${
+                                      err.response?.status === 500
+                                        ? 'Please try again in some time'
+                                        : ''
+                                    }`,
+                                  );
+                                });
+                            }}
+                            okText='Yes'
+                            cancelText='No'
+                          >
+                            <button
+                              className='undp-button button-primary button-arrow'
+                              type='button'
+                            >
+                              Delete Trend
+                            </button>
+                          </Popconfirm>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                </AuthenticatedTemplate>
+                <button
+                  className='undp-button button-tertiary button-arrow'
+                  type='button'
+                  onClick={() => {
+                    const cardToPrintTemp = [...cardsToPrint];
+                    cardToPrintTemp.push({
+                      type: 'trend',
+                      id: `${data.id}`,
+                    });
+                    updateCardsToPrint(cardToPrintTemp);
+                  }}
+                >
+                  Add to print
+                </button>
+                {buttonDisabled ? <div className='undp-loader' /> : null}
+                {submittingError ? (
                   <p
-                    className='undp-typography'
+                    className='margin-top-00 margin-bottom-00'
                     style={{ color: 'var(--dark-red)' }}
                   >
-                    Admin or curator rights required to edit a trend
+                    {submittingError}
+                  </p>
+                ) : null}
+                <UnauthenticatedTemplate>
+                  <SignInButton buttonText='Sign In to Edit Trends' />
+                </UnauthenticatedTemplate>
+              </div>
+            </div>
+            <div style={{ width: 'calc(66.67% - 2rem)', flexGrow: 1 }}>
+              <div>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Impact Description
+                </h6>
+                <p className='undp-typography'>{data.impact_description}</p>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Connected Signals
+                </h6>
+                {connectedSignals ? (
+                  <div className='flex-div flex-wrap connected'>
+                    {connectedSignals.filter(d => d.status === 'Approved')
+                      .length > 0 ? (
+                      <>
+                        {connectedSignals
+                          .filter(d => d.status === 'Approved')
+                          .map((d, i) => (
+                            <SignalCard key={i} data={d} />
+                          ))}
+                      </>
+                    ) : (
+                      <p className='undp-typography margin-bottom-00'>
+                        No connected signals
+                      </p>
+                    )}
+                  </div>
+                ) : error ? (
+                  <p
+                    className='margin-top-00 margin-bottom-00 undp-typography'
+                    style={{ color: 'var(--dark-red)' }}
+                  >
+                    {error}
                   </p>
                 ) : (
-                  <div className='flex-div'>
-                    <NavLink
-                      to={
-                        data.status === 'Archived'
-                          ? `/archived-trends/${id}/edit`
-                          : `/trends/${id}/edit`
-                      }
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <button
-                        className='undp-button button-secondary button-arrow'
-                        type='button'
-                      >
-                        Edit Trend
-                      </button>
-                    </NavLink>
-                    {data.status === 'Archived' ? (
-                      <Popconfirm
-                        title='Delete Trend'
-                        description='Are you sure to delete this trend?'
-                        onConfirm={() => {
-                          axios({
-                            method: 'delete',
-                            url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/delete?ids=${id}`,
-                            data: {},
-                            headers: {
-                              'Content-Type': 'application/json',
-                              access_token: accessToken,
-                            },
-                          })
-                            .then(() => {
-                              setButtonDisabled(false);
-                              navigate('../../archived-trends');
-                              updateNotificationText(
-                                'Successfully deleted the trend',
-                              );
-                            })
-                            .catch(err => {
-                              setButtonDisabled(false);
-                              setSubmittingError(
-                                `Error code ${err.response?.status}: ${
-                                  err.response?.data
-                                }. ${
-                                  err.response?.status === 500
-                                    ? 'Please try again in some time'
-                                    : ''
-                                }`,
-                              );
-                            });
-                        }}
-                        okText='Yes'
-                        cancelText='No'
-                      >
-                        <button
-                          className='undp-button button-secondary button-arrow'
-                          type='button'
-                        >
-                          Delete Trend
-                        </button>
-                      </Popconfirm>
-                    ) : null}
+                  <div className='undp-loader-container'>
+                    <div className='undp-loader' />
                   </div>
                 )}
-              </AuthenticatedTemplate>
-              <button
-                className='undp-button button-tertiary button-arrow'
-                type='button'
-                onClick={() => {
-                  const cardToPrintTemp = [...cardsToPrint];
-                  cardToPrintTemp.push({
-                    type: 'trend',
-                    id: `${data.id}`,
-                  });
-                  updateCardsToPrint(cardToPrintTemp);
-                }}
-              >
-                Add to print
-              </button>
-              {buttonDisabled ? <div className='undp-loader' /> : null}
-              {submittingError ? (
-                <p
-                  className='margin-top-00 margin-bottom-00'
-                  style={{ color: 'var(--dark-red)' }}
-                >
-                  {submittingError}
-                </p>
-              ) : null}
-              <UnauthenticatedTemplate>
-                <SignInButton buttonText='Sign In to Edit Trends' />
-              </UnauthenticatedTemplate>
+              </div>
             </div>
           </div>
         </div>

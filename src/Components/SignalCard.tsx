@@ -7,6 +7,7 @@ import { STEEPVCOLOR } from '../Constants';
 import Context from '../Context/Context';
 
 import '../styles.css';
+import { ChipEl } from './ChipEl';
 
 interface Props {
   data: SignalDataType;
@@ -23,7 +24,8 @@ const HeroImageEl = styled.div<HeroImageProps>`
     no-repeat center;
   background-size: cover;
   width: 100%;
-  height: 20rem;
+  height: 0;
+  padding-bottom: 55%;
 `;
 
 const CardEl = styled.div`
@@ -43,7 +45,6 @@ const DescriptionEl = styled.p`
   overflow: hidden;
   word-wrap: break-word;
   -webkit-box-orient: vertical;
-  padding: 0 1.5rem;
 `;
 
 export function SignalCard(props: Props) {
@@ -51,20 +52,7 @@ export function SignalCard(props: Props) {
   const { role, choices, updateCardsToPrint, cardsToPrint } =
     useContext(Context);
   return (
-    <div
-      className='signal-trend-card'
-      style={{
-        color: 'var(--black)',
-        textDecoration: 'none',
-        flexGrow: 1,
-        flexBasis: '26.25rem',
-        backgroundColor: 'var(--gray-200)',
-        border: '1px solid var(--gray-400)',
-        borderRadius: '0.5rem',
-        alignItems: 'stretch',
-        display: 'flex',
-      }}
-    >
+    <div className='signal-card'>
       <CardEl>
         <div>
           <HeroImageEl bgImage={data.attachment}>
@@ -86,55 +74,54 @@ export function SignalCard(props: Props) {
               </div>
             ) : null}
           </HeroImageEl>
-          <h5
-            className='bold undp-typography'
-            style={{ padding: '2rem 1.5rem 0 1.5rem' }}
-          >
-            {data.headline}{' '}
-            <span style={{ fontSize: '1rem', color: 'var(--gray-500)' }}>
-              (ID: {data.id})
-            </span>
-          </h5>
-          <DescriptionEl className='undp-typography small-font margin-bottom-05'>
-            {data.description}
-          </DescriptionEl>
-          <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
-            {data.keywords?.map((el, j) =>
-              el !== '' ? (
-                <div className='undp-chip' key={`chip-${j}`}>
-                  {el}
-                </div>
-              ) : null,
-            )}
+          <div style={{ padding: '1rem 1rem 0 1rem' }}>
+            <ChipEl
+              text={data.steep ? data.steep?.split(' – ')[0] : 'No tags'}
+              circleColor={
+                data.steep
+                  ? !choices
+                    ? 'var(--black)'
+                    : STEEPVCOLOR[
+                        choices?.steepv.findIndex(el => el === data.steep)
+                      ].textColor
+                  : 'var(--gray-600)'
+              }
+            />
+            <p className='bold undp-typography margin-top-05 margin-bottom-03'>
+              {data.headline}{' '}
+              <span
+                style={{
+                  fontSize: '1rem',
+                  color: 'var(--gray-600)',
+                  fontWeight: 'normal',
+                }}
+              >
+                (ID: {data.id})
+              </span>
+            </p>
+            <DescriptionEl className='undp-typography small-font margin-bottom-04'>
+              {data.description}
+            </DescriptionEl>
+            <p className='small-font undp-typography bold margin-bottom-03 margin-top-03'>
+              Keywords
+            </p>
+            <div className='flex-div flex-wrap margin-bottom-07'>
+              {data.keywords?.map((el, j) =>
+                el !== '' ? (
+                  <div className='undp-chip' key={`chip-${j}`}>
+                    {el}
+                  </div>
+                ) : null,
+              )}
+            </div>
           </div>
         </div>
         <div>
-          <div style={{ padding: '0 1.5rem' }}>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='margin-bottom-00 margin-top-00'>STEEP+V Category</h6>
-            <div className='flex-div flex-wrap margin-top-03'>
-              {data.steep ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: !choices
-                      ? 'var(--black)'
-                      : STEEPVCOLOR[
-                          choices?.steepv.findIndex(el => el === data.steep)
-                        ].textColor,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {data.steep?.split(' – ')[0]}
-                </div>
-              ) : null}
-            </div>
-          </div>
           <div
             className='flex-div'
             style={{
               justifyContent: 'space-between',
-              padding: '1rem 1.5rem 0 1.5rem',
+              padding: '1rem 1rem 0 1rem',
             }}
           >
             <NavLink

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import UNDPColorModule from 'undp-viz-colors';
 import { useContext } from 'react';
 import { TrendDataType } from '../Types';
 import Background from '../assets/UNDP-hero-image.png';
@@ -8,6 +7,8 @@ import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
 import '../styles.css';
+import { ChipEl } from './ChipEl';
+import { ImpactCircleEl } from './ImpactRatingEl';
 
 interface Props {
   data: TrendDataType;
@@ -21,8 +22,9 @@ const HeroImageEl = styled.div<HeroImageProps>`
       props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
     no-repeat center;
   background-size: cover;
-  width: 100%;
-  height: 20rem;
+  width: 33.33%;
+  height: 0;
+  padding-bottom: 45%;
 `;
 
 const CardEl = styled.div`
@@ -32,7 +34,6 @@ const CardEl = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-bottom: 1rem;
 `;
 
 const DescriptionEl = styled.p`
@@ -42,7 +43,6 @@ const DescriptionEl = styled.p`
   overflow: hidden;
   word-wrap: break-word;
   -webkit-box-orient: vertical;
-  padding: 0 1.5rem;
 `;
 
 export function TrendCard(props: Props) {
@@ -50,22 +50,12 @@ export function TrendCard(props: Props) {
   const { role, choices, cardsToPrint, updateCardsToPrint } =
     useContext(Context);
   return (
-    <div
-      className='signal-trend-card'
-      style={{
-        color: 'var(--black)',
-        textDecoration: 'none',
-        flexGrow: 1,
-        flexBasis: '26.25rem',
-        backgroundColor: 'var(--gray-200)',
-        border: '1px solid var(--gray-400)',
-        borderRadius: '0.5rem',
-        alignItems: 'stretch',
-        display: 'flex',
-      }}
-    >
+    <div className='trend-card'>
       <CardEl>
-        <div>
+        <div
+          className='flex-div'
+          style={{ alignItems: 'stretch', flexGrow: 1 }}
+        >
           <HeroImageEl bgImage={data.attachment}>
             {role === 'Admin' || role === 'Curator' ? (
               <div
@@ -85,110 +75,106 @@ export function TrendCard(props: Props) {
               </div>
             ) : null}
           </HeroImageEl>
-          <h5
-            className='bold undp-typography'
-            style={{ padding: '2rem 1.5rem 0 1.5rem' }}
+          <div
+            style={{
+              padding: '0 0 1rem 0',
+              width: 'calc(66.667% - 2rem)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
           >
-            {data.headline}{' '}
-            <span style={{ fontSize: '1rem', color: 'var(--gray-500)' }}>
-              (ID: {data.id})
-            </span>
-          </h5>
-          <DescriptionEl className='undp-typography small-font margin-bottom-05'>
-            {data.description}
-          </DescriptionEl>
-          {data.time_horizon ? (
-            <div className='flex-div flex-wrap' style={{ padding: '0 1.5rem' }}>
+            <div>
+              <p className='bold undp-typography margin-top-05 margin-bottom-03'>
+                {data.headline}{' '}
+                <span
+                  style={{
+                    fontSize: '1rem',
+                    color: 'var(--gray-600)',
+                    fontWeight: 'normal',
+                  }}
+                >
+                  (ID: {data.id})
+                </span>
+              </p>
+              <DescriptionEl className='undp-typography small-font margin-bottom-04'>
+                {data.description}
+              </DescriptionEl>
+            </div>
+            <div>
+              <div className='flex-div margin-bottom-03 gap-05 flex-wrap'>
+                {data.time_horizon ? (
+                  <div>
+                    <p className='bold small-font undp-typography margin-bottom-02'>
+                      Time Horizon
+                    </p>
+                    <ChipEl
+                      text={data.time_horizon}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : HORIZONVALUES[
+                              choices?.horizons.findIndex(
+                                el => el === data.time_horizon,
+                              )
+                            ].textColor
+                      }
+                    />
+                  </div>
+                ) : null}
+                {data.impact_rating ? (
+                  <div>
+                    <p className='bold small-font undp-typography margin-bottom-04'>
+                      Impact Rating
+                    </p>
+                    <ImpactCircleEl
+                      impact={data.impact_rating}
+                      showText={false}
+                    />
+                  </div>
+                ) : null}
+              </div>
               <div
-                className='undp-chip'
+                className='flex-div'
                 style={{
-                  color: !choices
-                    ? 'var(--black)'
-                    : HORIZONVALUES[
-                        choices?.horizons.findIndex(
-                          el => el === data.time_horizon,
-                        )
-                      ].textColor,
-                  fontWeight: 'bold',
+                  justifyContent: 'space-between',
+                  padding: '0 1.5rem 0 0',
                 }}
               >
-                {data.time_horizon}
+                <NavLink
+                  to={
+                    data.status === 'Archived'
+                      ? `/archived-trends/${data.id}`
+                      : `/trends/${data.id}`
+                  }
+                  style={{
+                    textDecoration: 'none',
+                  }}
+                >
+                  <button
+                    className='undp-button button-tertiary button-arrow padding-bottom-00'
+                    type='button'
+                  >
+                    Read More
+                  </button>
+                </NavLink>
+                <button
+                  className='undp-button button-tertiary button-arrow padding-bottom-00'
+                  type='button'
+                  onClick={e => {
+                    e.stopPropagation();
+                    const cardToPrintTemp = [...cardsToPrint];
+                    cardToPrintTemp.push({
+                      type: 'trend',
+                      id: `${data.id}`,
+                    });
+                    updateCardsToPrint(cardToPrintTemp);
+                  }}
+                >
+                  Add to print
+                </button>
               </div>
             </div>
-          ) : null}
-        </div>
-        <div>
-          <div className='margin-bottom-05' style={{ padding: '0 1.5rem' }}>
-            <hr className='undp-style light margin-top-07 margin-bottom-07' />
-            <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
-            <div className='margin-top-03'>
-              {data.impact_rating ? (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color:
-                      parseInt(data.impact_rating, 10) < 3
-                        ? 'var(--black)'
-                        : 'var(--white)',
-                    backgroundColor:
-                      UNDPColorModule.sequentialColors.neutralColorsx05[
-                        parseInt(data.impact_rating, 10) - 1
-                      ],
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {data.impact_rating}
-                </div>
-              ) : (
-                <div
-                  className='undp-chip'
-                  style={{
-                    color: 'var(--black)',
-                    backgroundColor: 'var(--gray-300)',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Not available
-                </div>
-              )}
-            </div>
-          </div>
-          <div
-            className='flex-div'
-            style={{ justifyContent: 'space-between', padding: '0 1.5rem' }}
-          >
-            <NavLink
-              to={
-                data.status === 'Archived'
-                  ? `/archived-trends/${data.id}`
-                  : `/trends/${data.id}`
-              }
-              style={{
-                textDecoration: 'none',
-              }}
-            >
-              <button
-                className='undp-button button-tertiary button-arrow'
-                type='button'
-              >
-                Read More
-              </button>
-            </NavLink>
-            <button
-              className='undp-button button-tertiary button-arrow'
-              type='button'
-              onClick={e => {
-                e.stopPropagation();
-                const cardToPrintTemp = [...cardsToPrint];
-                cardToPrintTemp.push({
-                  type: 'trend',
-                  id: `${data.id}`,
-                });
-                updateCardsToPrint(cardToPrintTemp);
-              }}
-            >
-              Add to print
-            </button>
           </div>
         </div>
       </CardEl>

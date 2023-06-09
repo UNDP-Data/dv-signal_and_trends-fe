@@ -56,10 +56,15 @@ export function TrendsListing() {
           justifyContent: 'space-between',
         }}
       >
-        <h4 className='undp-typography margin-bottom-00'>All Trends</h4>
+        <h4
+          className='undp-typography margin-bottom-00'
+          style={{ flexGrow: 1 }}
+        >
+          All Trends
+        </h4>
         <div
-          className='flex-div flex-vert-align-center'
-          style={{ flexGrow: 1, justifyContent: 'flex-end' }}
+          className='flex-div flex-vert-align-center flex-wrap'
+          style={{ flexGrow: 1 }}
         >
           <button
             type='button'
@@ -81,10 +86,7 @@ export function TrendsListing() {
             <Radio.Button value='cardView'>Card View</Radio.Button>
             <Radio.Button value='listView'>List View</Radio.Button>
           </Radio.Group>
-          <div
-            style={{ maxWidth: '25rem', width: '100%' }}
-            className='flex-div gap-00'
-          >
+          <div className='flex-div gap-00' style={{ flexGrow: 1 }}>
             <Input
               placeholder='Search for a trend'
               className='undp-input'

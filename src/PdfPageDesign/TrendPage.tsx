@@ -28,6 +28,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#000',
   },
+  subNote: {
+    fontSize: '10px',
+    textAlign: 'left',
+    fontFamily: font,
+    marginTop: 5,
+    marginBottom: 10,
+    color: '#999',
+  },
   listText: {
     fontSize: '10px',
     textAlign: 'left',
@@ -119,7 +127,9 @@ export function TrendsPage(props: Props) {
                 height: 10,
                 borderRadius: 10,
                 backgroundColor:
-                  parseInt(data.time_horizon, 10) > 1 ? '#006EB5' : '#AAA',
+                  parseInt(data.impact_rating.split(' — ')[0], 10) > 1
+                    ? '#006EB5'
+                    : '#AAA',
               }}
             />
             <View
@@ -128,27 +138,14 @@ export function TrendsPage(props: Props) {
                 height: 10,
                 borderRadius: 10,
                 backgroundColor:
-                  parseInt(data.time_horizon, 10) > 2 ? '#006EB5' : '#AAA',
+                  parseInt(data.impact_rating.split(' — ')[0], 10) > 2
+                    ? '#006EB5'
+                    : '#AAA',
               }}
             />
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 10,
-                backgroundColor:
-                  parseInt(data.time_horizon, 10) > 3 ? '#006EB5' : '#AAA',
-              }}
-            />
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 10,
-                backgroundColor:
-                  parseInt(data.time_horizon, 10) > 4 ? '#006EB5' : '#AAA',
-              }}
-            />
+            <Text style={styles.subNote}>
+              {data.impact_rating.split(' — ')[1]}
+            </Text>
           </View>
           <Text style={styles.title}>Horizon</Text>
           <Text style={styles.text}>{data.time_horizon}</Text>
