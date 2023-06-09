@@ -65,8 +65,6 @@ export function TrendsVis() {
   // const { accessToken } = useContext(Context);
   const [error, setError] = useState<undefined | string>(undefined);
   const groupByImpact = (e: CheckboxChangeEvent) => {
-    // eslint-disable-next-line no-console
-    console.log(`checked = ${e.target.checked}`);
     setShowGroups(e.target.checked);
   };
   useEffect(() => {
@@ -75,8 +73,6 @@ export function TrendsVis() {
     setError(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     json('../../public/testdata/response.json').then((response: any) => {
-      // eslint-disable-next-line no-console
-      console.log(response.data);
       setTrendsList(response.data);
     });
     /* axios
@@ -121,8 +117,6 @@ export function TrendsVis() {
         ),
       );
     if (showGroups) {
-      // eslint-disable-next-line no-console
-      console.log('in if showGroups', showGroups);
       // const simulation = forceSimulation(trendsList)
       simulation.force(
         'y',
@@ -133,8 +127,6 @@ export function TrendsVis() {
         ),
       );
     } else {
-      // eslint-disable-next-line no-console
-      console.log('in else showGroups', showGroups);
       simulation.force('y', forceY().y(visHeight / 2));
     }
     simulation
