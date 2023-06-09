@@ -192,8 +192,8 @@ export function SignalDetail() {
             style={{
               marginLeft: 'auto',
               marginRight: 'auto',
-              paddingLeft: '1rem',
-              paddingRight: '1rem',
+              paddingLeft: '2rem',
+              paddingRight: '2rem',
             }}
           >
             <div style={{ width: 'calc(33.33% - 2rem)' }}>
