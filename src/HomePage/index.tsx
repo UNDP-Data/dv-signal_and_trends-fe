@@ -202,7 +202,7 @@ export function HomePage() {
             <div className='undp-loader' />
           </div>
         )}
-        <h2 className='undp-typography margin-top-05 gap-07'>
+        <h2 className='undp-typography margin-top-10 margin-bottom-08 gap-07'>
           Trends visualized
         </h2>
         <TrendsVis />

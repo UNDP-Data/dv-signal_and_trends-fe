@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useContext, useEffect, useState } from 'react';
+// import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Checkbox } from 'antd';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 // import sortBy from 'lodash.sortby';
 import {
   forceCollide,
@@ -11,16 +14,18 @@ import {
 } from 'd3-force';
 import { scaleSqrt } from 'd3-scale';
 // import { max } from 'd3-array';
-import axios, { AxiosResponse } from 'axios';
+import { json } from 'd3-fetch';
+// import axios, { AxiosResponse } from 'axios';
 import { VisTrendDataType } from '../Types';
-import { API_ACCESS_TOKEN } from '../Constants';
-import Context from '../Context/Context';
+// import { API_ACCESS_TOKEN } from '../Constants';
+// import Context from '../Context/Context';
 
 const horizons = ['Horizon 1 (0-3Y)', 'Horizon 2 (4-6Y)', 'Horizon 3 (7+Y)'];
 const xCenter = [250, 750, 1250];
-const yCenter = [100, 200, 300, 400, 500];
-const visHeight = 600;
-const colorScale = ['#FAD285', '#E7752D', '#891002'];
+const yCenter = [500, 300, 100];
+const visHeight = 650;
+// const colorScale = ['#FAD285', '#E7752D', '#891002'];
+const colorScale = ['#B5D5F5', '#4F95DD', '#1F5A95'];
 const sqrtScale = scaleSqrt().domain([0, 7]).range([5, 20]);
 
 export function TrendsVis() {
@@ -30,13 +35,25 @@ export function TrendsVis() {
   const [nodesList, setNodesList] = useState<undefined | VisTrendDataType[]>(
     undefined,
   );
-  const { accessToken } = useContext(Context);
+  const [showGroups, setShowGroups] = useState<boolean>(false);
+  // const { accessToken } = useContext(Context);
   const [error, setError] = useState<undefined | string>(undefined);
-
+  const groupByImpact = (e: CheckboxChangeEvent) => {
+    // eslint-disable-next-line no-console
+    console.log(`checked = ${e.target.checked}`);
+    setShowGroups(e.target.checked);
+  };
   useEffect(() => {
+    setShowGroups(false);
     setTrendsList([]);
     setError(undefined);
-    axios
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    json('../../public/testdata/response.json').then((response: any) => {
+      // eslint-disable-next-line no-console
+      console.log(response.data);
+      setTrendsList(response.data);
+    });
+    /* axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?per_page=500`,
         {
@@ -46,25 +63,7 @@ export function TrendsVis() {
         },
       )
       .then((response: AxiosResponse) => {
-        const array = [];
-        // const responseData = [];
-        for (let i = 0; i < 3; i += 1) {
-          let responseData = [...response.data.data];
-          // eslint-disable-next-line no-console
-          console.log('i', i);
-          responseData.forEach(d => {
-            // eslint-disable-next-line no-param-reassign
-            d.id = i * 1000 + d.id;
-          });
-          array.push(...responseData);
-          responseData = [];
-        }
-        setTrendsList(array);
-        /* setTrendsList(
-          sortBy(response.data.data, d => Date.parse(d.created_at)).reverse(),
-        ); */
-        // eslint-disable-next-line no-console
-        console.log('trendsList', array);
+        setTrendsList(response.data.data);
       })
       .catch(err => {
         if (err.response?.status === 404) {
@@ -78,10 +77,10 @@ export function TrendsVis() {
             }`,
           );
         }
-      });
+      }); */
   }, []);
   useEffect(() => {
-    forceSimulation(trendsList)
+    const simulation = forceSimulation(trendsList)
       .force('charge', forceManyBody().strength(5))
       .force(
         'x',
@@ -94,15 +93,25 @@ export function TrendsVis() {
               )
             ],
         ),
-      )
-      .force(
+      );
+    if (showGroups) {
+      // eslint-disable-next-line no-console
+      console.log('in if showGroups', showGroups);
+      // const simulation = forceSimulation(trendsList)
+      simulation.force(
         'y',
         forceY().y(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (d: any) =>
             yCenter[Number(d.impact_rating !== null ? d.impact_rating : 1) - 1],
         ),
-      )
+      );
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('in else showGroups', showGroups);
+      simulation.force('y', forceY().y(visHeight / 2));
+    }
+    simulation
       .force(
         'collision',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,18 +121,19 @@ export function TrendsVis() {
           ),
         ),
       )
-      .tick(100)
-      .on('end', () => {
-        setNodesList(trendsList);
-      });
-    // eslint-disable-next-line no-console
-    console.log('nodesList', nodesList);
-  }, [trendsList]);
+      .tick(100);
+    simulation.on('tick', () => {
+      setNodesList([...simulation.nodes()]);
+    });
+    simulation.nodes([...simulation.nodes()]);
+    simulation.alpha(0.1).restart();
+    // return () => simulation.stop();
+  }, [showGroups, trendsList]);
   return (
-    <div style={{ padding: '0 1rem' }}>
+    <div>
       <div className='flex-div'>
         <div>
-          <h6 className='undp-typography margin-bottom-01'>Impact</h6>
+          <h6 className='undp-typography margin-bottom-02'>Impact</h6>
           <div className='legend-container'>
             <div
               style={{ backgroundColor: `${colorScale[0]}` }}
@@ -148,8 +158,8 @@ export function TrendsVis() {
             <div className='legend-label'>3: Significant</div>
           </div>
         </div>
-        <div>
-          <h6 className='undp-typography margin-bottom-01'>
+        <div className='margin-left-06'>
+          <h6 className='undp-typography margin-bottom-02'>
             Number of Signals connected to the Trend
           </h6>
           <div>
@@ -172,6 +182,11 @@ export function TrendsVis() {
           </div>
         </div>
       </div>
+      <Checkbox className='undp-checkbox' onChange={groupByImpact}>
+        <div className='undp-typography margin-bottom-06'>
+          Group Trends by Impact
+        </div>
+      </Checkbox>
       {nodesList ? (
         <div id='visContainer' style={{ backgroundColor: '#F7F7F7' }}>
           <svg width='calc(100% - 20px)' viewBox={`0 0 1500 ${visHeight}`}>
@@ -195,7 +210,7 @@ export function TrendsVis() {
                 />
               ))}
             </g>
-            <g transform='translate(10,40)'>
+            <g transform='translate(10,50)'>
               {horizons.map((d, i) => (
                 <text
                   key={i}
