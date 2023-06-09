@@ -20,6 +20,7 @@
     max-width: calc(20% - 1rem);
   }
 }
+
 .home .signal-trend-card {
   flex-basis: 21rem !important;
   flex-shrink: 1;

@@ -29,10 +29,10 @@ const CardEl = styled.div`
   flex-grow: 1;
   font-size: 1.4rem;
   word-wrap: break-word;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-bottom: 1rem;
 `;
 
 const DescriptionEl = styled.p`
@@ -47,15 +47,11 @@ const DescriptionEl = styled.p`
 
 export function TrendCard(props: Props) {
   const { data } = props;
-  const { role, choices } = useContext(Context);
+  const { role, choices, cardsToPrint, updateCardsToPrint } =
+    useContext(Context);
   return (
-    <NavLink
+    <div
       className='signal-trend-card'
-      to={
-        data.status === 'Archived'
-          ? `/archived-trends/${data.id}`
-          : `/trends/${data.id}`
-      }
       style={{
         color: 'var(--black)',
         textDecoration: 'none',
@@ -93,7 +89,10 @@ export function TrendCard(props: Props) {
             className='bold undp-typography'
             style={{ padding: '2rem 1.5rem 0 1.5rem' }}
           >
-            {data.headline}
+            {data.headline}{' '}
+            <span style={{ fontSize: '1rem', color: 'var(--gray-500)' }}>
+              (ID: {data.id})
+            </span>
           </h5>
           <DescriptionEl className='undp-typography small-font margin-bottom-05'>
             {data.description}
@@ -118,40 +117,81 @@ export function TrendCard(props: Props) {
             </div>
           ) : null}
         </div>
-        <div style={{ padding: '0 1.5rem 2rem 1.5rem' }}>
-          <hr className='undp-style light margin-top-07 margin-bottom-07' />
-          <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
-          <div className='margin-top-03'>
-            {data.impact_rating ? (
-              <div
-                className='undp-chip'
-                style={{
-                  color:
-                    data.impact_rating < 3 ? 'var(--black)' : 'var(--white)',
-                  backgroundColor:
-                    UNDPColorModule.sequentialColors.neutralColorsx05[
-                      data.impact_rating - 1
-                    ],
-                  fontWeight: 'bold',
-                }}
+        <div>
+          <div className='margin-bottom-05' style={{ padding: '0 1.5rem' }}>
+            <hr className='undp-style light margin-top-07 margin-bottom-07' />
+            <h6 className='margin-bottom-00 margin-top-00'>Impact Rating</h6>
+            <div className='margin-top-03'>
+              {data.impact_rating ? (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color:
+                      parseInt(data.impact_rating, 10) < 3
+                        ? 'var(--black)'
+                        : 'var(--white)',
+                    backgroundColor:
+                      UNDPColorModule.sequentialColors.neutralColorsx05[
+                        parseInt(data.impact_rating, 10) - 1
+                      ],
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {data.impact_rating}
+                </div>
+              ) : (
+                <div
+                  className='undp-chip'
+                  style={{
+                    color: 'var(--black)',
+                    backgroundColor: 'var(--gray-300)',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Not available
+                </div>
+              )}
+            </div>
+          </div>
+          <div
+            className='flex-div'
+            style={{ justifyContent: 'space-between', padding: '0 1.5rem' }}
+          >
+            <NavLink
+              to={
+                data.status === 'Archived'
+                  ? `/archived-trends/${data.id}`
+                  : `/trends/${data.id}`
+              }
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
               >
-                {data.impact_rating}
-              </div>
-            ) : (
-              <div
-                className='undp-chip'
-                style={{
-                  color: 'var(--black)',
-                  backgroundColor: 'var(--gray-300)',
-                  fontWeight: 'bold',
-                }}
-              >
-                Not available
-              </div>
-            )}
+                Read More
+              </button>
+            </NavLink>
+            <button
+              className='undp-button button-tertiary button-arrow'
+              type='button'
+              onClick={e => {
+                e.stopPropagation();
+                const cardToPrintTemp = [...cardsToPrint];
+                cardToPrintTemp.push({
+                  type: 'trend',
+                  id: `${data.id}`,
+                });
+                updateCardsToPrint(cardToPrintTemp);
+              }}
+            >
+              Add to print
+            </button>
           </div>
         </div>
       </CardEl>
-    </NavLink>
+    </div>
   );
 }

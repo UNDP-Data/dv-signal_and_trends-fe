@@ -33,8 +33,14 @@ export function TrendDetail() {
   >(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
   const { id } = useParams();
-  const { role, accessToken, updateNotificationText, choices } =
-    useContext(Context);
+  const {
+    role,
+    accessToken,
+    updateNotificationText,
+    choices,
+    updateCardsToPrint,
+    cardsToPrint,
+  } = useContext(Context);
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -155,6 +161,9 @@ export function TrendDetail() {
                 </div>
               </div>
               <h2 className='undp-typography'>{data.headline}</h2>
+              <h6 className='undp-typography margin-bottom-07'>
+                ID: {data.id}
+              </h6>
               {role === 'Admin' || role === 'Curator' ? (
                 <div
                   className={`undp-chip margin-bottom-07 ${
@@ -256,14 +265,12 @@ export function TrendDetail() {
                     }-${new Date(data.created_at).getFullYear()}`}
                   </p>
                 </div>
-                <div>
-                  <hr className='undp-style light margin-top-07 margin-bottom-07' />
-                  <h6 className='undp-typography margin-top-00'>Trend ID</h6>
-                  <p className='undp-typography'>{data.id}</p>
-                </div>
               </div>
             ) : null}
-            <div className='margin-top-09'>
+            <div
+              className='margin-top-09 flex-div flex-wrap'
+              style={{ justifyContent: 'space-between' }}
+            >
               <AuthenticatedTemplate>
                 {role === 'User' ? (
                   <p
@@ -337,6 +344,20 @@ export function TrendDetail() {
                   </div>
                 )}
               </AuthenticatedTemplate>
+              <button
+                className='undp-button button-tertiary button-arrow'
+                type='button'
+                onClick={() => {
+                  const cardToPrintTemp = [...cardsToPrint];
+                  cardToPrintTemp.push({
+                    type: 'trend',
+                    id: `${data.id}`,
+                  });
+                  updateCardsToPrint(cardToPrintTemp);
+                }}
+              >
+                Add to print
+              </button>
               {buttonDisabled ? <div className='undp-loader' /> : null}
               {submittingError ? (
                 <p

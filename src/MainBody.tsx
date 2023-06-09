@@ -2,10 +2,12 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { PublicClientApplication } from '@azure/msal-browser';
-import { notification } from 'antd';
+import { Modal, notification } from 'antd';
+import axios, { AxiosResponse } from 'axios';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { AddNewSignalEl, AddNewTrendEl } from './AddNew';
 import { AdminPanel } from './AdminPanel';
 import Context from './Context/Context';
@@ -19,6 +21,9 @@ import { ArchivedTrendsListing, TrendsListing } from './Trends';
 import { MyDrafts } from './MyDrafts';
 import { msalConfig } from './Config';
 import { Header } from './Components/HeaderEl';
+import { API_ACCESS_TOKEN } from './Constants';
+import { SignalDataType, TrendDataType } from './Types';
+import { PDFDocument } from './PDFGenerator';
 
 function signOutClickHandler() {
   const msalInstance = new PublicClientApplication(msalConfig);
@@ -29,8 +34,30 @@ function signOutClickHandler() {
 }
 
 function MainBody() {
-  const { name, notificationText, updateNotificationText } =
-    useContext(Context);
+  const {
+    name,
+    notificationText,
+    updateNotificationText,
+    cardsToPrint,
+    accessToken,
+    updateCardsToPrint,
+  } = useContext(Context);
+  const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState(false);
+  const [trendsForPrinting, setTrendsForPrinting] = useState<
+    TrendDataType[] | undefined
+  >(undefined);
+  const [
+    connectedSignalsForTrendsForPrinting,
+    setConnectedSignalsForTrendsForPrinting,
+  ] = useState<SignalDataType[] | undefined>(undefined);
+  const [signalsForPrinting, setSignalsForPrinting] = useState<
+    SignalDataType[] | undefined
+  >(undefined);
+  const [
+    connectedTrendsForSignalsForPrinting,
+    setConnectedTrendsForSignalsForPrinting,
+  ] = useState<TrendDataType[] | undefined>(undefined);
   const showNotification = (text: string) => {
     const handleNotificationClose = () => {
       updateNotificationText(undefined);
@@ -49,6 +76,121 @@ function MainBody() {
       showNotification(notificationText);
     }
   }, [notificationText]);
+  useEffect(() => {
+    setTrendsForPrinting(undefined);
+    setSignalsForPrinting(undefined);
+    setError(false);
+    if (cardsToPrint.filter(d => d.type === 'signal').length > 0) {
+      const signalIds = cardsToPrint
+        .filter(d => d.type === 'signal')
+        .map(d => d.id)
+        .toString()
+        .replaceAll(',', '&ids=');
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
+          {
+            headers: {
+              access_token: accessToken || API_ACCESS_TOKEN,
+            },
+          },
+        )
+        .then((res: AxiosResponse) => {
+          const sList: string[] = [];
+          res.data.forEach((d: SignalDataType) => {
+            const connectedTrends = d.connected_trends?.filter(
+              (_el, i) => i < 5,
+            );
+            connectedTrends?.forEach(el => {
+              if (sList.indexOf(`${el}`) === -1) sList.push(`${el}`);
+            });
+          });
+          if (sList.length > 0) {
+            const connectedTrends = sList.toString().replaceAll(',', '&ids=');
+            axios
+              .get(
+                `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${connectedTrends}`,
+                {
+                  headers: {
+                    access_token: accessToken || API_ACCESS_TOKEN,
+                  },
+                },
+              )
+              .then((trendRes: AxiosResponse) => {
+                setConnectedTrendsForSignalsForPrinting(trendRes.data);
+                setSignalsForPrinting(res.data);
+              })
+              .catch(_err => {
+                setError(true);
+              });
+          } else {
+            setConnectedTrendsForSignalsForPrinting([]);
+            setSignalsForPrinting(res.data);
+          }
+        })
+        .catch(_err => {
+          setError(true);
+        });
+    } else if (cardsToPrint.length !== 0) {
+      setSignalsForPrinting([]);
+      setConnectedTrendsForSignalsForPrinting([]);
+    }
+    if (cardsToPrint.filter(d => d.type === 'trend').length > 0) {
+      const signalIds = cardsToPrint
+        .filter(d => d.type === 'trend')
+        .map(d => d.id)
+        .toString()
+        .replaceAll(',', '&ids=');
+      axios
+        .get(
+          `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${signalIds}`,
+          {
+            headers: {
+              access_token: accessToken || API_ACCESS_TOKEN,
+            },
+          },
+        )
+        .then((res: AxiosResponse) => {
+          const sList: string[] = [];
+          res.data.forEach((d: TrendDataType) => {
+            const connectedSignals = d.connected_signals?.filter(
+              (_el, i) => i < 5,
+            );
+            connectedSignals?.forEach(el => {
+              if (sList.indexOf(`${el}`) === -1) sList.push(`${el}`);
+            });
+          });
+          if (sList.length > 0) {
+            const connectedSignals = sList.toString().replaceAll(',', '&ids=');
+            axios
+              .get(
+                `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${connectedSignals}`,
+                {
+                  headers: {
+                    access_token: accessToken || API_ACCESS_TOKEN,
+                  },
+                },
+              )
+              .then((trendRes: AxiosResponse) => {
+                setConnectedSignalsForTrendsForPrinting(trendRes.data);
+                setTrendsForPrinting(res.data);
+              })
+              .catch(_err => {
+                setError(true);
+              });
+          } else {
+            setConnectedSignalsForTrendsForPrinting([]);
+            setTrendsForPrinting(res.data);
+          }
+        })
+        .catch(_err => {
+          setError(true);
+        });
+    } else if (cardsToPrint.length !== 0) {
+      setTrendsForPrinting([]);
+      setConnectedSignalsForTrendsForPrinting([]);
+    }
+  }, [openModal]);
   return (
     <>
       <AuthenticatedTemplate>
@@ -108,6 +250,207 @@ function MainBody() {
           </Routes>
         </>
       </UnauthenticatedTemplate>
+      {cardsToPrint.length > 0 ? (
+        <div
+          style={{
+            backgroundColor: 'var(--gray-200)',
+            borderTop: '1px solid var(--gray-400)',
+            padding: '0 1rem',
+            bottom: 0,
+            width: '100%',
+            position: 'fixed',
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <button
+            type='button'
+            className='undp-button margin-bottom-00 margin-top-00 button-tertiary button-arrow'
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            Download selected
+            {cardsToPrint.filter(d => d.type === 'signal').length > 0
+              ? ` ${
+                  cardsToPrint.filter(d => d.type === 'signal').length
+                } signal${
+                  cardsToPrint.filter(d => d.type === 'signal').length === 1
+                    ? ''
+                    : 's'
+                }`
+              : ''}
+            {cardsToPrint.filter(d => d.type === 'signal').length > 0 &&
+            cardsToPrint.filter(d => d.type === 'trend').length > 0
+              ? ' and'
+              : ''}
+            {cardsToPrint.filter(d => d.type === 'trend').length > 0
+              ? ` ${cardsToPrint.filter(d => d.type === 'trend').length} trend${
+                  cardsToPrint.filter(d => d.type === 'trend').length === 1
+                    ? ''
+                    : 's'
+                }`
+              : ''}{' '}
+            as PDF
+          </button>
+        </div>
+      ) : null}
+      <Modal
+        className='undp-modal'
+        open={openModal}
+        onCancel={() => {
+          setOpenModal(false);
+        }}
+        onOk={() => {
+          setOpenModal(false);
+        }}
+      >
+        {error ? (
+          <h6 className='undp-typography' style={{ color: 'var(--dark-red)' }}>
+            Error loading signals and trends. Please check you don&apos;t have
+            more than 50 signals and trends for printing.
+          </h6>
+        ) : signalsForPrinting &&
+          trendsForPrinting &&
+          connectedTrendsForSignalsForPrinting &&
+          connectedSignalsForTrendsForPrinting ? (
+          <>
+            <div className='flex-div flex-wrap margin-bottom-09'>
+              {cardsToPrint.map((d, i) => {
+                if (d.type === 'signal') {
+                  const s =
+                    signalsForPrinting[
+                      signalsForPrinting.findIndex(el => `${el.id}` === d.id)
+                    ];
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        padding: '1rem',
+                        backgroundColor: 'var(--gray-200)',
+                        width: '100%',
+                      }}
+                    >
+                      <h6
+                        className='undp-typography undp-chip margin-top-00 margin-bottom-05 undp-chip-green'
+                        style={{ padding: '0.25rem 0.5rem' }}
+                      >
+                        Signal
+                      </h6>
+                      <h6 className='undp-typography'>{s.headline}</h6>
+                      <p
+                        className='undp-typography margin-bottom-00 small-font'
+                        style={{ textAlign: 'left' }}
+                      >
+                        {s.description}
+                      </p>
+                    </div>
+                  );
+                }
+                const s =
+                  trendsForPrinting[
+                    trendsForPrinting.findIndex(el => `${el.id}` === d.id)
+                  ];
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      padding: '1rem',
+                      backgroundColor: 'var(--gray-200)',
+                      width: '100%',
+                    }}
+                  >
+                    <h6
+                      className='undp-typography undp-chip margin-top-00 margin-bottom-05 undp-chip-blue'
+                      style={{ padding: '0.25rem 0.5rem' }}
+                    >
+                      Trend
+                    </h6>
+                    <h6 className='undp-typography'>{s.headline}</h6>
+                    <p
+                      className='undp-typography margin-bottom-00 small-font'
+                      style={{ textAlign: 'left' }}
+                    >
+                      {s.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <PDFDownloadLink
+              document={
+                <PDFDocument
+                  pages={cardsToPrint.map(d =>
+                    d.type === 'signal'
+                      ? {
+                          type: 'signal',
+                          data: signalsForPrinting[
+                            signalsForPrinting.findIndex(
+                              el => `${el.id}` === d.id,
+                            )
+                          ],
+                        }
+                      : {
+                          type: 'trend',
+                          data: trendsForPrinting[
+                            trendsForPrinting.findIndex(
+                              el => `${el.id}` === d.id,
+                            )
+                          ],
+                        },
+                  )}
+                  connectedSignalsForTrendsForPrinting={
+                    connectedSignalsForTrendsForPrinting
+                  }
+                  connectedTrendsForSignalsForPrinting={
+                    connectedTrendsForSignalsForPrinting
+                  }
+                />
+              }
+              fileName='Signals_And_trends.pdf'
+              style={{ textDecoration: 'none' }}
+              onClick={() => {
+                updateCardsToPrint([]);
+                setOpenModal(false);
+              }}
+            >
+              {({ url }) =>
+                !url ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      marginTop: 'var(--spacing-07)',
+                      height: '250px',
+                      backgroundColor: 'var(--gray-200)',
+                      paddingTop: '50px',
+                    }}
+                  >
+                    <div className='undp-loader' style={{ margin: 'auto' }} />
+                    <h6
+                      className='undp-typography margin-top-05'
+                      style={{ textAlign: 'center' }}
+                    >
+                      Loading PDF... Please wait it might take some time
+                    </h6>
+                  </div>
+                ) : (
+                  <button
+                    type='button'
+                    className='undp-button button-arrow button-primary'
+                  >
+                    Download PDF
+                  </button>
+                )
+              }
+            </PDFDownloadLink>
+          </>
+        ) : (
+          <div className='undp-loader-container'>
+            <div className='undp-loader' />
+          </div>
+        )}
+      </Modal>
     </>
   );
 }
