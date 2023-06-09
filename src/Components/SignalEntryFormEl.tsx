@@ -194,7 +194,7 @@ export function SignalEntryFormEl(props: Props) {
   return (
     <div className='undp-container max-width padding-top-00 padding-bottom-00'>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal Headline*</h5>
+        <p className='undp-typography margin-bottom-01'>Signal Headline*</p>
         <Input
           className='undp-input'
           placeholder='Enter signal headline (max 100 characters)'
@@ -204,17 +204,14 @@ export function SignalEntryFormEl(props: Props) {
             setHeadline(d.target.value);
           }}
         />
-        <p
-          className='undp-typography margin-top-02 margin-bottom-00'
-          style={{ color: 'var(--gray-500)' }}
-        >
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           Useful headlines are clear, concise and can stand alone as a simple
           description of the signal. {headline ? 100 - headline.length : 100}{' '}
           characters left
         </p>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal Description*</h5>
+        <p className='undp-typography margin-bottom-01'>Signal Description*</p>
         <Input.TextArea
           className='undp-input'
           placeholder='Enter signal description (max 200 characters)'
@@ -225,10 +222,7 @@ export function SignalEntryFormEl(props: Props) {
           }}
           value={description}
         />
-        <p
-          className='undp-typography margin-top-02 margin-bottom-00'
-          style={{ color: 'var(--gray-500)' }}
-        >
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           Keep this description concise and think about using commonly used
           terms and clear language. Min 30 characters required.{' '}
           {description ? 200 - description.length : 200} characters left
@@ -236,7 +230,7 @@ export function SignalEntryFormEl(props: Props) {
       </div>
       <div className='flex-div'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Signal Source*</h5>
+          <p className='undp-typography margin-bottom-01'>Signal Source*</p>
           <Input
             className='undp-input'
             placeholder='Enter signal source'
@@ -245,16 +239,15 @@ export function SignalEntryFormEl(props: Props) {
             }}
             value={sourceLink}
           />
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
+          <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
             If no URL is available, provide description of source - e.g., in a
             meeting with Minister X; or taxi in country X
           </p>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>Location of the signal*</h5>
+          <p className='undp-typography margin-bottom-01'>
+            Location of the signal*
+          </p>
           <Select
             className='undp-select'
             placeholder='Select location'
@@ -269,16 +262,13 @@ export function SignalEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
+          <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
             Region and/or country for which this signal has greatest relevance
           </p>
         </div>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Signal Relevance*</h5>
+        <p className='undp-typography margin-bottom-01'>Signal Relevance*</p>
         <Input.TextArea
           className='undp-input'
           placeholder='Enter signal relevance'
@@ -287,15 +277,12 @@ export function SignalEntryFormEl(props: Props) {
           }}
           value={relevance}
         />
-        <p
-          className='undp-typography margin-top-02 margin-bottom-00'
-          style={{ color: 'var(--gray-500)' }}
-        >
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           Consider both the near term and longer term futures of development.
         </p>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>STEEP+V*</h5>
+        <p className='undp-typography margin-bottom-01'>STEEP+V*</p>
         <Select
           className='undp-select'
           placeholder='Select STEEP+V'
@@ -310,16 +297,13 @@ export function SignalEntryFormEl(props: Props) {
             </Select.Option>
           ))}
         </Select>
-        <p
-          className='undp-typography margin-top-02 margin-bottom-00'
-          style={{ color: 'var(--gray-500)' }}
-        >
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           STEEP+V analysis methodology stands for Social, Technological,
           Economic, Environmental (or Ecological), Political and Values
         </p>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Attachment</h5>
+        <p className='undp-typography margin-bottom-01'>Cover Image</p>
         {selectedFile ? (
           <div className='flex-div padding-bottom-05'>
             <UploadedImgEl bgImage={selectedFile} />
@@ -340,14 +324,6 @@ export function SignalEntryFormEl(props: Props) {
             </button>
           </div>
         ) : null}
-        <p className='label'>
-          {selectedFile
-            ? 'Uploading file with replace the already uploaded image shown above. '
-            : ''}
-          Attach an image here to illustrate this Signal, if available. Use only
-          images that are non-copyright or license-free/Creative Commons. File
-          must be maximum 1 MBs. Compress larger images, if applicable.
-        </p>
         <UploadEl>
           <label htmlFor='file-upload-analyze' className='custom-file-upload'>
             <UploadButtonEl style={{ width: '177.55px' }}>
@@ -369,12 +345,17 @@ export function SignalEntryFormEl(props: Props) {
             onChange={handleFileSelect}
           />
         </UploadEl>
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+          {selectedFile
+            ? 'Uploading file with replace the already uploaded image shown above. '
+            : ''}
+          Attach an image here to illustrate this Signal, if available. Use only
+          images that are non-copyright or license-free/Creative Commons. File
+          must be maximum 1 MBs. Compress larger images, if applicable.
+        </p>
       </div>
       <div className='margin-bottom-07'>
-        <h5 className='undp-typography'>Keywords*</h5>
-        <p className='label'>
-          Add relevant keywords for this signal. Max 3 keywords allowed.
-        </p>
+        <p className='undp-typography margin-bottom-01'>Keywords*</p>
         <div className='flex-div'>
           <Input
             className='undp-input'
@@ -401,12 +382,15 @@ export function SignalEntryFormEl(props: Props) {
             value={keyword3 || undefined}
           />
         </div>
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+          Add relevant keywords for this signal. Max 3 keywords allowed.
+        </p>
       </div>
       <div className='flex-div flex-wrap'>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>
+          <p className='undp-typography margin-bottom-01'>
             Primary Signature Solution/Enabler*
-          </h5>
+          </p>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
@@ -423,9 +407,9 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
-          <h5 className='undp-typography'>
+          <p className='undp-typography margin-bottom-01'>
             Secondary Signature Solution/Enabler
-          </h5>
+          </p>
           <Select
             className='undp-select'
             placeholder='Select Signature Solution'
@@ -444,8 +428,7 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
-          <h5 className='undp-typography'>SDGs</h5>
-          <p className='label'>Select relevant SDGs. Max 2 SDGs allowed.</p>
+          <p className='undp-typography margin-bottom-01'>SDGs</p>
           <Select
             className='undp-select'
             mode='multiple'
@@ -469,17 +452,15 @@ export function SignalEntryFormEl(props: Props) {
               </Select.Option>
             ))}
           </Select>
-          <p
-            className='undp-typography margin-top-02 margin-bottom-00'
-            style={{ color: 'var(--gray-500)' }}
-          >
-            Which SDG is it most closely connected to?
+          <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+            Which SDG is it most closely connected to? Select relevant SDGs. Max
+            2 SDGs allowed.
           </p>
         </div>
       </div>
       {role === 'Curator' || role === 'Admin' ? (
         <div className='margin-bottom-07'>
-          <h5 className='undp-typography'>Link signal to trend(s)</h5>
+          <p className='undp-typography bold'>Link signal to trend(s)</p>
           {trendsList ? (
             <>
               {trendsList?.map((d, i) => (
@@ -539,7 +520,9 @@ export function SignalEntryFormEl(props: Props) {
       ) : null}
       {updateSignal && !draft ? (
         <div className='margin-bottom-07'>
-          <h5 className='undp-typography'>Status of the signal</h5>
+          <p className='undp-typography margin-bottom-01'>
+            Status of the signal
+          </p>
           <Select
             className='undp-select'
             placeholder='Select Status'
@@ -556,7 +539,7 @@ export function SignalEntryFormEl(props: Props) {
           </Select>
         </div>
       ) : null}
-      <div className='flex-div flex-vert-align-center margin-top-05'>
+      <div className='flex-div flex-vert-align-center margin-top-09'>
         {updateSignal ? (
           updateSignal.status === 'Draft' ? (
             <div className='flex-div'>
