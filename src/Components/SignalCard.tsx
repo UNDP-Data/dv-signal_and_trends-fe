@@ -26,6 +26,11 @@ const HeroImageEl = styled.div<HeroImageProps>`
   width: 100%;
   height: 0;
   padding-bottom: 55%;
+  filter: brightness(100%);
+  &:hover {
+    filter: brightness(80%);
+    transition: filter 0.2s;
+  }
 `;
 
 const CardEl = styled.div`
@@ -47,6 +52,13 @@ const DescriptionEl = styled.p`
   -webkit-box-orient: vertical;
 `;
 
+const LinkP = styled.p`
+  color: var(--gray-700);
+  &:hover {
+    color: var(--red);
+  }
+`;
+
 export function SignalCard(props: Props) {
   const { data, isDraft } = props;
   const { role, choices, updateCardsToPrint, cardsToPrint } =
@@ -55,25 +67,39 @@ export function SignalCard(props: Props) {
     <div className='signal-card'>
       <CardEl>
         <div>
-          <HeroImageEl bgImage={data.attachment}>
-            {role === 'Admin' || role === 'Curator' ? (
-              <div
-                className={`undp-chip margin-bottom-05 ${
-                  data.status === 'Approved'
-                    ? 'undp-chip-green'
-                    : data.status === 'New'
-                    ? 'undp-chip-yellow'
-                    : 'undp-chip-red'
-                }`}
-                style={{
-                  borderRadius: '0 0.5rem 0.5rem 0',
-                  marginTop: '1.5rem',
-                }}
-              >
-                {data.status === 'New' ? 'Awaiting Approval' : data.status}
-              </div>
-            ) : null}
-          </HeroImageEl>
+          <NavLink
+            to={
+              isDraft
+                ? `/signals/${data.id}/edit`
+                : data.status === 'Archived'
+                ? `/archived-signals/${data.id}`
+                : `/signals/${data.id}`
+            }
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <HeroImageEl bgImage={data.attachment}>
+              {role === 'Admin' || role === 'Curator' ? (
+                <div
+                  className={`undp-chip margin-bottom-05 ${
+                    data.status === 'Approved'
+                      ? 'undp-chip-green'
+                      : data.status === 'New'
+                      ? 'undp-chip-yellow'
+                      : 'undp-chip-red'
+                  }`}
+                  style={{
+                    borderRadius: '0 0.5rem 0.5rem 0',
+                    marginTop: '1.5rem',
+                    color: 'var(--black)',
+                  }}
+                >
+                  {data.status === 'New' ? 'Awaiting Approval' : data.status}
+                </div>
+              ) : null}
+            </HeroImageEl>
+          </NavLink>
           <div style={{ padding: '1rem 1rem 0 1rem' }}>
             <ChipEl
               text={data.steep ? data.steep?.split(' – ')[0] : 'No tags'}
@@ -87,18 +113,31 @@ export function SignalCard(props: Props) {
                   : 'var(--gray-600)'
               }
             />
-            <p className='bold undp-typography margin-top-05 margin-bottom-03'>
-              {data.headline}{' '}
-              <span
-                style={{
-                  fontSize: '1rem',
-                  color: 'var(--gray-600)',
-                  fontWeight: 'normal',
-                }}
-              >
-                (ID: {data.id})
-              </span>
-            </p>
+            <NavLink
+              to={
+                isDraft
+                  ? `/signals/${data.id}/edit`
+                  : data.status === 'Archived'
+                  ? `/archived-signals/${data.id}`
+                  : `/signals/${data.id}`
+              }
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <LinkP className='bold undp-typography margin-top-05 margin-bottom-03'>
+                {data.headline}{' '}
+                <span
+                  style={{
+                    fontSize: '1rem',
+                    color: 'var(--gray-600)',
+                    fontWeight: 'normal',
+                  }}
+                >
+                  (ID: {data.id})
+                </span>
+              </LinkP>
+            </NavLink>
             <DescriptionEl className='undp-typography small-font margin-bottom-04'>
               {data.description}
             </DescriptionEl>

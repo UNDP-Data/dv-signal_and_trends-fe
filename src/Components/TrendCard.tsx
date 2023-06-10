@@ -17,14 +17,24 @@ interface HeroImageProps {
   bgImage?: string;
 }
 
+const ImageContainerEl = styled.div<HeroImageProps>`
+  width: 100%;
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
 const HeroImageEl = styled.div<HeroImageProps>`
   background: ${props =>
       props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
     no-repeat center;
   background-size: cover;
-  width: 33.33%;
   height: 0;
-  padding-bottom: 45%;
+  padding-bottom: 150%;
+  filter: brightness(100%);
+  &:hover {
+    filter: brightness(80%);
+    transition: filter 0.2s;
+  }
   @media (max-width: 600px) {
     display: none;
   }
@@ -42,7 +52,7 @@ const CardEl = styled.div`
 const DescriptionEl = styled.p`
   display: -webkit-box;
   max-width: 100%;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   word-wrap: break-word;
   -webkit-box-orient: vertical;
@@ -56,10 +66,18 @@ const ChipElForStatus = styled.div`
   }
 `;
 
+const LinkP = styled.p`
+  color: var(--gray-700);
+  &:hover {
+    color: var(--red);
+  }
+`;
+
 export function TrendCard(props: Props) {
   const { data } = props;
   const { role, choices, cardsToPrint, updateCardsToPrint } =
     useContext(Context);
+
   return (
     <div className='trend-card'>
       <CardEl>
@@ -67,28 +85,40 @@ export function TrendCard(props: Props) {
           className='flex-div gap-00'
           style={{ alignItems: 'stretch', flexGrow: 1 }}
         >
-          <HeroImageEl bgImage={data.attachment}>
-            {role === 'Admin' || role === 'Curator' ? (
-              <div
-                className={`undp-chip margin-bottom-07 ${
-                  data.status === 'Approved'
-                    ? 'undp-chip-green'
-                    : data.status === 'New'
-                    ? 'undp-chip-yellow'
-                    : 'undp-chip-red'
-                }`}
-                style={{
-                  borderRadius: '0 0.5rem 0.5rem 0',
-                  marginTop: '1.5rem',
-                }}
-              >
-                {data.status === 'New' ? 'Awaiting Approval' : data.status}
-              </div>
-            ) : null}
-          </HeroImageEl>
+          <NavLink
+            className='trend-image'
+            to={
+              data.status === 'Archived'
+                ? `/archived-trends/${data.id}`
+                : `/trends/${data.id}`
+            }
+          >
+            <ImageContainerEl>
+              <HeroImageEl bgImage={data.attachment}>
+                {role === 'Admin' || role === 'Curator' ? (
+                  <div
+                    className={`undp-chip margin-bottom-07 ${
+                      data.status === 'Approved'
+                        ? 'undp-chip-green'
+                        : data.status === 'New'
+                        ? 'undp-chip-yellow'
+                        : 'undp-chip-red'
+                    }`}
+                    style={{
+                      borderRadius: '0 0.5rem 0.5rem 0',
+                      marginTop: '1.5rem',
+                      color: 'var(--black)',
+                    }}
+                  >
+                    {data.status === 'New' ? 'Awaiting Approval' : data.status}
+                  </div>
+                ) : null}
+              </HeroImageEl>
+            </ImageContainerEl>
+          </NavLink>
           <div
             style={{
-              padding: '0 0 1rem 1rem',
+              padding: '0 1rem 1rem 1rem',
               width: 'calc(66.667% - 1rem)',
               display: 'flex',
               flexDirection: 'column',
@@ -97,18 +127,27 @@ export function TrendCard(props: Props) {
             }}
           >
             <div>
-              <p className='bold undp-typography margin-top-05 margin-bottom-03'>
-                {data.headline}{' '}
-                <span
-                  style={{
-                    fontSize: '1rem',
-                    color: 'var(--gray-600)',
-                    fontWeight: 'normal',
-                  }}
-                >
-                  (ID: {data.id})
-                </span>
-              </p>
+              <NavLink
+                className='trend-image'
+                to={
+                  data.status === 'Archived'
+                    ? `/archived-trends/${data.id}`
+                    : `/trends/${data.id}`
+                }
+              >
+                <LinkP className='bold undp-typography margin-top-05 margin-bottom-03'>
+                  {data.headline}{' '}
+                  <span
+                    style={{
+                      fontSize: '1rem',
+                      color: 'var(--gray-600)',
+                      fontWeight: 'normal',
+                    }}
+                  >
+                    (ID: {data.id})
+                  </span>
+                </LinkP>
+              </NavLink>
               {role === 'Admin' || role === 'Curator' ? (
                 <ChipElForStatus
                   className={`undp-chip margin-bottom-07 ${
@@ -163,7 +202,6 @@ export function TrendCard(props: Props) {
                 className='flex-div'
                 style={{
                   justifyContent: 'space-between',
-                  padding: '0 1.5rem 0 0',
                 }}
               >
                 <NavLink

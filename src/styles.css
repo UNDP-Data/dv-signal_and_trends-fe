@@ -1,9 +1,3 @@
-
-.home .signal-trend-card {
-  flex-basis: 21rem;
-  flex-shrink: 1;
-}
-
 .trend-card{
   width: calc(33.33% - 0.67rem);
   min-width: min(100%, 580px);
@@ -17,7 +11,6 @@
 .signal-card{
   width: calc(25% - 0.75rem);
   min-width: min(100%, 320px);
-  flex-grow: 1;
   color: var(--black);
   text-decoration: none;
   background-color: var(--gray-300);
@@ -33,6 +26,14 @@
 @media(min-width: 320px){
   .trend-card{
     width: 100%;
+  }
+  .signal-card{
+    width: 100%;
+  }
+}
+@media(min-width: 704px){
+  .signal-card{
+    width: calc(50% - 0.5rem);
   }
 }
 @media(min-width: 1224px){
@@ -51,7 +52,7 @@
   }
 }
 
-@media(min-width: 1760px){
+@media(min-width: 1440px){
   .signal-card{
     width: calc(25% - 0.75rem);
   }
@@ -67,6 +68,13 @@
   }
 }
 
+.trend-image {
+  text-decoration: none;
+  width: 33.33%;
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
 
 .idCode{
   display: none;
@@ -76,6 +84,7 @@
   font-weight: normal;
   font-size: 1.2rem;
 }
+
 /* color legend styles for charts */
 .legend-container{
   display: flex;

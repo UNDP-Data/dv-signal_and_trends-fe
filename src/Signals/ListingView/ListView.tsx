@@ -171,7 +171,7 @@ export function ListView(props: Props) {
                   />
                 ) : null}
                 {d.signature_secondary
-                  .filter(el => el !== d.signature_primary)
+                  ?.filter(el => el !== d.signature_primary)
                   .map((el, j) => (
                     <ChipEl
                       text={el}

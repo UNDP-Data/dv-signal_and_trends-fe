@@ -18,11 +18,15 @@ const HeroImageEl = styled.div`
 
 const CardEl = styled.div`
   background-color: var(--gray-300);
-  color: var(--black);
-  padding: var(--spacing-07);
+  color: var(--gray-700);
   flex-grow: 1;
-  width: calc(20% - 5.8rem);
-  min-width: 20rem;
+`;
+
+const LinkH6 = styled.h6`
+  color: var(--gray-700);
+  &:hover {
+    color: var(--red);
+  }
 `;
 
 export function HomePage() {
@@ -107,29 +111,36 @@ export function HomePage() {
             </div>
             <div className='flex-div flex-wrap margin-bottom-05'>
               {signalListing.map((d, i) => (
-                <CardEl key={i}>
-                  <h6
-                    className='undp-typography margin-bottom-00'
-                    style={{ color: 'var(--blue-600)' }}
-                  >
-                    {d.headline}
-                  </h6>
-                  <NavLink
-                    to={`/signals/${d.id}`}
-                    style={{ textDecoration: 'auto' }}
-                  >
-                    <button
-                      type='button'
-                      className='undp-button button-tertiary button-arrow padding-bottom-00'
-                    >
-                      Read More
-                    </button>
-                  </NavLink>
-                </CardEl>
+                <NavLink
+                  to={`/signals/${d.id}`}
+                  key={i}
+                  style={{
+                    textDecoration: 'none',
+                    backgroundColor: 'var(--gray-300)',
+                    color: 'var(-gray-700)',
+                    padding: 'var(--spacing-07)',
+                    flexGrow: '1',
+                    width: 'calc(20% - 5.8rem)',
+                    minWidth: '20rem',
+                  }}
+                >
+                  <CardEl>
+                    <LinkH6 className='undp-typography margin-bottom-00'>
+                      {d.headline}
+                    </LinkH6>
+                  </CardEl>
+                </NavLink>
               ))}
             </div>
-            <NavLink to='./signals' style={{ textDecoration: 'auto' }}>
-              <div className='flex-div margin-bottom-05'>
+            <NavLink
+              to='./signals'
+              style={{
+                textDecoration: 'auto',
+                display: 'inline-block',
+                width: 'fit-content',
+              }}
+            >
+              <div className='flex-div'>
                 <button
                   type='button'
                   className='undp-button button-primary button-arrow'
@@ -156,8 +167,15 @@ export function HomePage() {
                 <TrendCard key={i} data={d} />
               ))}
             </div>
-            <NavLink to='./trends' style={{ textDecoration: 'auto' }}>
-              <div className='flex-div margin-bottom-05'>
+            <NavLink
+              to='./trends'
+              style={{
+                textDecoration: 'auto',
+                display: 'inline-block',
+                width: 'fit-content',
+              }}
+            >
+              <div className='flex-div'>
                 <button
                   type='button'
                   className='undp-button button-primary button-arrow'
