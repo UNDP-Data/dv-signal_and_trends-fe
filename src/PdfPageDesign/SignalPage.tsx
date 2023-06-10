@@ -109,7 +109,13 @@ export function SignalPage(props: Props) {
           <Text style={styles.text}>{data.steep}</Text>
           <Text style={styles.title}>Signature Solutions</Text>
           <Text style={styles.listTextWOLink}>{data.signature_primary}</Text>
-          <Text style={styles.text}>{data.signature_secondary}</Text>
+          {data?.signature_secondary
+            ?.filter(d => d !== data.signature_primary)
+            .map((d, i) => (
+              <Text style={styles.text} key={i}>
+                {d}
+              </Text>
+            ))}
           {data.connected_trends?.length === 0 ||
           data.connected_trends === null ? (
             <Text style={styles.title}>No trends attached to this signals</Text>

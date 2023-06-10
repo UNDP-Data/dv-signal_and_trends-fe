@@ -261,7 +261,7 @@ export function SignalDetail() {
                     />
                   ) : null}
                   {data.signature_secondary
-                    .filter(d => d !== data.signature_primary)
+                    ?.filter(d => d !== data.signature_primary)
                     .map((d, i) => (
                       <ChipEl
                         text={d}

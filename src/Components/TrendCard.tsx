@@ -25,6 +25,9 @@ const HeroImageEl = styled.div<HeroImageProps>`
   width: 33.33%;
   height: 0;
   padding-bottom: 45%;
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const CardEl = styled.div`
@@ -45,6 +48,14 @@ const DescriptionEl = styled.p`
   -webkit-box-orient: vertical;
 `;
 
+const ChipElForStatus = styled.div`
+  border-radius: '0 0.5rem 0.5rem 0';
+  display: none;
+  @media (max-width: 600px) {
+    display: inline-block;
+  }
+`;
+
 export function TrendCard(props: Props) {
   const { data } = props;
   const { role, choices, cardsToPrint, updateCardsToPrint } =
@@ -53,7 +64,7 @@ export function TrendCard(props: Props) {
     <div className='trend-card'>
       <CardEl>
         <div
-          className='flex-div'
+          className='flex-div gap-00'
           style={{ alignItems: 'stretch', flexGrow: 1 }}
         >
           <HeroImageEl bgImage={data.attachment}>
@@ -77,11 +88,12 @@ export function TrendCard(props: Props) {
           </HeroImageEl>
           <div
             style={{
-              padding: '0 0 1rem 0',
-              width: 'calc(66.667% - 2rem)',
+              padding: '0 0 1rem 1rem',
+              width: 'calc(66.667% - 1rem)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
+              flexGrow: 1,
             }}
           >
             <div>
@@ -97,6 +109,19 @@ export function TrendCard(props: Props) {
                   (ID: {data.id})
                 </span>
               </p>
+              {role === 'Admin' || role === 'Curator' ? (
+                <ChipElForStatus
+                  className={`undp-chip margin-bottom-07 ${
+                    data.status === 'Approved'
+                      ? 'undp-chip-green'
+                      : data.status === 'New'
+                      ? 'undp-chip-yellow'
+                      : 'undp-chip-red'
+                  }`}
+                >
+                  {data.status === 'New' ? 'Awaiting Approval' : data.status}
+                </ChipElForStatus>
+              ) : null}
               <DescriptionEl className='undp-typography small-font margin-bottom-04'>
                 {data.description}
               </DescriptionEl>

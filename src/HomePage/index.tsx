@@ -22,6 +22,7 @@ const CardEl = styled.div`
   padding: var(--spacing-07);
   flex-grow: 1;
   width: calc(20% - 5.8rem);
+  min-width: 20rem;
 `;
 
 export function HomePage() {
