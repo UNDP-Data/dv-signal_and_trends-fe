@@ -43,6 +43,7 @@ export function AddTrendsModal(props: Props) {
   const { setTrendModal, selectedTrendsList, setSelectedTrendsList } = props;
   const { accessToken, choices } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
+  const [activeTab, setActiveTab] = useState('1');
   const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState<undefined | string>(undefined);
   const [totalNoOfPages, setTotalNoOfPages] = useState(0);
@@ -64,6 +65,8 @@ export function AddTrendsModal(props: Props) {
   };
   const fetchIds = (ids: string[]) => {
     if (ids?.length > 0 && ids[0] !== '') {
+      setLoading(true);
+      setError(undefined);
       const trendsIds = ids.toString().replaceAll(',', '&ids=');
       axios
         .get(
@@ -225,7 +228,7 @@ export function AddTrendsModal(props: Props) {
       <Tabs
         defaultActiveKey='1'
         className='undp-tabs'
-        onChange={() => {
+        onChange={e => {
           setFilters({
             impact: 'All Ratings',
             horizon: 'All Horizons',
@@ -233,6 +236,7 @@ export function AddTrendsModal(props: Props) {
             search: undefined,
           });
           setIdsList([]);
+          setActiveTab(e);
         }}
         items={[
           {
@@ -456,20 +460,22 @@ export function AddTrendsModal(props: Props) {
               ))}
             </Collapse>
           </div>
-          <div className='flex-div flex-hor-align-center margin-bottom-07'>
-            <Pagination
-              className='undp-pagination'
-              onChange={e => {
-                setPaginationValue(e);
-              }}
-              defaultCurrent={1}
-              current={paginationValue}
-              total={pageSize * totalNoOfPages}
-              pageSize={pageSize}
-              showSizeChanger
-              onShowSizeChange={onShowSizeChange}
-            />
-          </div>
+          {activeTab === '1' ? (
+            <div className='flex-div flex-hor-align-center margin-bottom-07'>
+              <Pagination
+                className='undp-pagination'
+                onChange={e => {
+                  setPaginationValue(e);
+                }}
+                defaultCurrent={1}
+                current={paginationValue}
+                total={pageSize * totalNoOfPages}
+                pageSize={pageSize}
+                showSizeChanger
+                onShowSizeChange={onShowSizeChange}
+              />
+            </div>
+          ) : null}
         </div>
       ) : (
         <h5

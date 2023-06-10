@@ -45,6 +45,7 @@ const RadioOutline = styled.div`
 export function AddSignalsModal(props: Props) {
   const { setSignalModal, trendsSignal, setTrendsSignal } = props;
   const { accessToken, choices } = useContext(Context);
+  const [activeTab, setActiveTab] = useState('1');
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState<undefined | string>(undefined);
@@ -69,6 +70,8 @@ export function AddSignalsModal(props: Props) {
   };
   const fetchIds = (ids: string[]) => {
     if (ids?.length > 0 && ids[0] !== '') {
+      setLoading(true);
+      setError(undefined);
       const signalIds = ids.toString().replaceAll(',', '&ids=');
       axios
         .get(
@@ -244,7 +247,8 @@ export function AddSignalsModal(props: Props) {
       <Tabs
         defaultActiveKey='1'
         className='undp-tabs'
-        onChange={() => {
+        onChange={e => {
+          setActiveTab(e);
           setFilters({
             steep: 'All STEEP+V',
             sdg: 'All SDGs',
@@ -539,20 +543,22 @@ export function AddSignalsModal(props: Props) {
               ))}
             </Collapse>
           </div>
-          <div className='flex-div flex-hor-align-center margin-bottom-07'>
-            <Pagination
-              className='undp-pagination'
-              onChange={e => {
-                setPaginationValue(e);
-              }}
-              defaultCurrent={1}
-              current={paginationValue}
-              total={totalNoOfPages * pageSize}
-              pageSize={pageSize}
-              showSizeChanger
-              onShowSizeChange={onShowSizeChange}
-            />
-          </div>
+          {activeTab === '1' ? (
+            <div className='flex-div flex-hor-align-center margin-bottom-07'>
+              <Pagination
+                className='undp-pagination'
+                onChange={e => {
+                  setPaginationValue(e);
+                }}
+                defaultCurrent={1}
+                current={paginationValue}
+                total={totalNoOfPages * pageSize}
+                pageSize={pageSize}
+                showSizeChanger
+                onShowSizeChange={onShowSizeChange}
+              />
+            </div>
+          ) : null}
         </div>
       ) : (
         <h5
