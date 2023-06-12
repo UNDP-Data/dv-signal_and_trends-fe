@@ -253,7 +253,7 @@ export function Header(props: Props) {
                   setShowMenu(false);
                 }}
               >
-                Add new signal
+                Add new trend
               </NavLink>
             </div>
           )}
