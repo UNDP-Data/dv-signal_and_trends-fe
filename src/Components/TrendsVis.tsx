@@ -1,7 +1,5 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-// import { useContext, useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Checkbox } from 'antd';
 import styled from 'styled-components';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -13,21 +11,13 @@ import {
   forceX,
   forceY,
 } from 'd3-force';
-import { scaleSqrt } from 'd3-scale';
-// import { max } from 'd3-array';
+import { scaleSqrt, scaleOrdinal } from 'd3-scale';
+import { max } from 'd3-array';
 import { json } from 'd3-fetch';
+import Context from '../Context/Context';
 // import axios, { AxiosResponse } from 'axios';
-import { VisTrendDataType } from '../Types';
+import { VisTrendDataType, HorizonList, RatingList } from '../Types';
 // import { API_ACCESS_TOKEN } from '../Constants';
-// import Context from '../Context/Context';
-
-const horizons = ['Horizon 1 (0-3Y)', 'Horizon 2 (4-6Y)', 'Horizon 3 (7+Y)'];
-const xCenter = [250, 750, 1250];
-const yCenter = [500, 300, 100];
-const visHeight = 650;
-// const colorScale = ['#FAD285', '#E7752D', '#891002'];
-const colorScale = ['#B5D5F5', '#4F95DD', '#1F5A95'];
-const sqrtScale = scaleSqrt().domain([0, 7]).range([5, 20]);
 
 interface DotHoveredProps {
   title: string;
@@ -62,18 +52,48 @@ export function TrendsVis() {
   );
   const [showGroups, setShowGroups] = useState<boolean>(false);
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
-  // const { accessToken } = useContext(Context);
   const [error, setError] = useState<undefined | string>(undefined);
   const groupByImpact = (e: CheckboxChangeEvent) => {
     setShowGroups(e.target.checked);
   };
+  const { choices } = useContext(Context);
+  const { maxSignals, setMaxSignals } = useState(0);
+  /* const ratings = [
+    '1 — Notable but not significant impact within the assigned Horizon',
+    '2 — Moderate impact within the assigned Horizon',
+    '3 — Significant impact within the assigned Horizon',
+  ]; 
+  const horizons = [
+    'Horizon 1 (0-3 years)',
+    'Horizon 2 (3-7 years)',
+    'Horizon 3 (7-10 years)',
+  ]; */
+
+  const visHeight = 650;
+  const colorScale = scaleOrdinal()
+    .domain(choices?.horizons as unknown as HorizonList)
+    .range(['#B5D5F5', '#4F95DD', '#1F5A95']);
+  const sqrtScale = scaleSqrt().range([4, 8]);
+  const xCenter = scaleOrdinal()
+    .domain(choices?.horizons as unknown as HorizonList)
+    .range([250, 750, 1250]);
+  const yCenter = scaleOrdinal()
+    .domain(choices?.ratings as unknown as RatingList)
+    .range([500, 300, 100]);
+
   useEffect(() => {
     setShowGroups(false);
     setTrendsList([]);
     setError(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    json('/testData/response.json').then((response: any) => {
+    json('/testData/response_new.json').then((response: any) => {
       setTrendsList(response.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const maxConnected = max(response.data, (d: any) =>
+        d.connected_signals !== null ? d.connected_signals.length : 0,
+      );
+      setMaxSignals(maxConnected);
+      sqrtScale.domain([0, maxSignals]);
     });
     /* axios
       .get(
@@ -106,25 +126,13 @@ export function TrendsVis() {
       .force('charge', forceManyBody().strength(5))
       .force(
         'x',
-        forceX().x(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (d: any) =>
-            xCenter[
-              horizons.indexOf(
-                d.time_horizon !== null ? d.time_horizon : 'Horizon 1 (0-3Y)',
-              )
-            ],
-        ),
+        forceX().x(d => xCenter(d.time_horizon)),
       );
     if (showGroups) {
       // const simulation = forceSimulation(trendsList)
       simulation.force(
         'y',
-        forceY().y(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (d: any) =>
-            yCenter[Number(d.impact_rating !== null ? d.impact_rating : 1) - 1],
-        ),
+        forceY().y(d => yCenter(d.impact_rating)),
       );
     } else {
       simulation.force('y', forceY().y(visHeight / 2));
@@ -143,9 +151,8 @@ export function TrendsVis() {
     simulation.on('tick', () => {
       setNodesList([...simulation.nodes()]);
     });
-    simulation.nodes([...simulation.nodes()]);
+    // simulation.nodes([...simulation.nodes()]);
     simulation.alpha(0.1).restart();
-    // return () => simulation.stop();
   }, [showGroups, trendsList]);
   return (
     <div>
@@ -154,21 +161,21 @@ export function TrendsVis() {
           <h6 className='undp-typography margin-bottom-02'>Impact</h6>
           <div className='legend-container'>
             <div
-              style={{ backgroundColor: `${colorScale[0]}` }}
+              style={{ backgroundColor: `${colorScale(choices?.ratings[0])}` }}
               className='legend-circle'
             >
               &nbsp;
             </div>
             <div className='legend-label'>1: Not significant</div>
             <div
-              style={{ backgroundColor: `${colorScale[1]}` }}
+              style={{ backgroundColor: `${colorScale(choices?.ratings[1])}` }}
               className='legend-circle'
             >
               &nbsp;
             </div>
             <div className='legend-label'>2: Moderate</div>
             <div
-              style={{ backgroundColor: `${colorScale[2]}` }}
+              style={{ backgroundColor: `${colorScale(choices?.ratings[2])}` }}
               className='legend-circle'
             >
               &nbsp;
@@ -183,15 +190,23 @@ export function TrendsVis() {
           <div>
             <div className='legend-container'>
               <div
-                style={{ backgroundColor: '#CCC' }}
-                className='legend-circle-small'
+                style={{
+                  backgroundColor: '#CCC',
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '4px',
+                }}
               >
                 &nbsp;
               </div>
               <div className='legend-label'>1 signal</div>
               <div
-                style={{ backgroundColor: '#CCC' }}
-                className='legend-circle-big'
+                style={{
+                  backgroundColor: '#CCC',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '8px',
+                }}
               >
                 &nbsp;
               </div>
@@ -220,11 +235,7 @@ export function TrendsVis() {
                   )}
                   cx={d.x}
                   cy={d.y}
-                  fill={
-                    colorScale[
-                      Number(d.impact_rating !== null ? d.impact_rating : 1) - 1
-                    ]
-                  }
+                  fill={colorScale(d.impact_rating)}
                   onMouseEnter={event => {
                     setHoveredDot({
                       title: d.headline,
@@ -239,10 +250,10 @@ export function TrendsVis() {
               ))}
             </g>
             <g transform='translate(10,50)'>
-              {horizons.map((d, i) => (
+              {choices?.horizons.map((d, i) => (
                 <text
                   key={i}
-                  x={xCenter[i]}
+                  x={xCenter(d)}
                   textAnchor='middle'
                   style={{ textTransform: 'uppercase' }}
                 >

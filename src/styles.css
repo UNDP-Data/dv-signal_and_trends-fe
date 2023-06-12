@@ -96,22 +96,9 @@
 .legend-circle{
   width: 16px;
   height: 16px;
-  margin-top: 5px;
   border-radius: 9px;
 }
 .legend-label{
   font-size: 1rem;
   padding: 0px 16px 0 8px;
-}
-.legend-circle-small{
-  width: 10px;
-  height: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-}
-.legend-circle-big{
-  width: 40px;
-  height: 40px;
-  margin-top: 5px;
-  border-radius: 20px;
 }
