@@ -43,12 +43,16 @@ export function CardLayout(props: Props) {
       filters.location === 'All Locations'
         ? ''
         : `&location=${filters.location}`;
+    const scoreQueryParameter =
+      filters.score === 'All Scores'
+        ? ''
+        : `&score=${filters.score.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -96,12 +100,16 @@ export function CardLayout(props: Props) {
         : `&location=${filters.location}`;
     const sdgQueryParameter =
       filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+    const scoreQueryParameter =
+      filters.score === 'All Scores'
+        ? ''
+        : `&score=${filters.score.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

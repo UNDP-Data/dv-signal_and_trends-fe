@@ -134,7 +134,7 @@ export function SignalCard(props: Props) {
                     fontWeight: 'normal',
                   }}
                 >
-                  (ID: {data.id})
+                  (ID:{data.id})
                 </span>
               </LinkP>
             </NavLink>

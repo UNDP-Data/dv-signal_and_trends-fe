@@ -278,20 +278,28 @@ export function SignalDetail() {
                 </div>
               </div>
               {role === 'Admin' || role === 'Curator' ? (
-                <div className='margin-top-07'>
-                  <div>
+                <>
+                  <div className='margin-top-07'>
                     <h6 className='undp-typography margin-top-00 margin-bottom-03'>
-                      Created by
+                      Score
                     </h6>
-                    <p className='undp-typography small-font'>
-                      {`${data.created_by} on ${new Date(
-                        data.created_at,
-                      ).getDate()}-${
-                        MONTHS[new Date(data.created_at).getMonth()]
-                      }-${new Date(data.created_at).getFullYear()}`}
-                    </p>
+                    <div className='small-font'>{data.score || 'NA'}</div>
                   </div>
-                </div>
+                  <div className='margin-top-07'>
+                    <div>
+                      <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                        Created by
+                      </h6>
+                      <p className='undp-typography small-font'>
+                        {`${data.created_by} on ${new Date(
+                          data.created_at,
+                        ).getDate()}-${
+                          MONTHS[new Date(data.created_at).getMonth()]
+                        }-${new Date(data.created_at).getFullYear()}`}
+                      </p>
+                    </div>
+                  </div>
+                </>
               ) : null}
               <hr className='undp-style light margin-top-07' />
               <div className='margin-top-07'>

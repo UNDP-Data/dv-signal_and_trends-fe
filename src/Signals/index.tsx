@@ -15,6 +15,7 @@ import {
   StatusList,
   STEEPVList,
   LocationList,
+  ScoreList,
 } from '../Types';
 import { SignInButton } from '../Components/SignInButton';
 
@@ -36,6 +37,7 @@ export function SignalsListing() {
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
+    score: 'All Scores',
     search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<SignalFiltersDataType>({
@@ -44,6 +46,7 @@ export function SignalsListing() {
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
+    score: 'All Scores',
     search: undefined,
   });
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -125,7 +128,7 @@ export function SignalsListing() {
       </div>
       {noOfFilter > 0 ? (
         <div
-          className='flex-div flex-wrap margin-top-02 margin-bottom-02'
+          className='flex-div flex-wrap margin-top-02 margin-bottom-05'
           style={{
             paddingLeft: '1rem',
             paddingRight: '1rem',
@@ -152,6 +155,9 @@ export function SignalsListing() {
               {filters.status === 'New' ? 'Awaiting Approval' : filters.status}
             </div>
           ) : null}
+          {filters.score !== 'All Scores' ? (
+            <div className='undp-chip undp-chip-blue'>{filters.score}</div>
+          ) : null}
           <button
             type='button'
             className='undp-chip'
@@ -164,6 +170,7 @@ export function SignalsListing() {
                 ss: 'All Signature Solutions/Enabler',
                 status: 'All Status',
                 location: 'All Locations',
+                score: 'All Scores',
                 search: undefined,
               });
             }}
@@ -310,38 +317,78 @@ export function SignalsListing() {
             </Select>
           </div>
           {role === 'Admin' || role === 'Curator' ? (
-            <div className='margin-top-07'>
-              <p className='undp-typography label'>Filter by Status</p>
-              <Select
-                className='undp-select'
-                style={{
-                  width: '100%',
-                  flexGrow: 1,
-                  minWidth: '15rem',
-                }}
-                placeholder='Please select'
-                defaultValue='All Status'
-                value={tempFilters.status}
-                showSearch
-                allowClear
-                onChange={values => {
-                  setTempFilters({
-                    ...tempFilters,
-                    status: (values as StatusList) || 'All Status',
-                  });
-                }}
-                clearIcon={<div className='clearIcon' />}
-              >
-                <Select.Option className='undp-select-option' key='All Status'>
-                  All Status
-                </Select.Option>
-                {['New', 'Approved'].map(d => (
-                  <Select.Option className='undp-select-option' key={d}>
-                    {d === 'New' ? 'Awaiting Approval' : d}
+            <>
+              <div className='margin-top-07'>
+                <p className='undp-typography label'>Filter by Score</p>
+                <Select
+                  className='undp-select'
+                  style={{
+                    width: '100%',
+                    flexGrow: 1,
+                    minWidth: '15rem',
+                  }}
+                  placeholder='Please select'
+                  defaultValue='All Scores'
+                  value={tempFilters.score}
+                  showSearch
+                  allowClear
+                  onChange={values => {
+                    setTempFilters({
+                      ...tempFilters,
+                      score: (values as ScoreList) || 'All Scores',
+                    });
+                  }}
+                  clearIcon={<div className='clearIcon' />}
+                >
+                  <Select.Option
+                    className='undp-select-option'
+                    key='All Scores'
+                  >
+                    All Scores
                   </Select.Option>
-                ))}
-              </Select>
-            </div>
+                  {choices?.scores.map(d => (
+                    <Select.Option className='undp-select-option' key={d}>
+                      {d}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+              <div className='margin-top-07'>
+                <p className='undp-typography label'>Filter by Status</p>
+                <Select
+                  className='undp-select'
+                  style={{
+                    width: '100%',
+                    flexGrow: 1,
+                    minWidth: '15rem',
+                  }}
+                  placeholder='Please select'
+                  defaultValue='All Status'
+                  value={tempFilters.status}
+                  showSearch
+                  allowClear
+                  onChange={values => {
+                    setTempFilters({
+                      ...tempFilters,
+                      status: (values as StatusList) || 'All Status',
+                    });
+                  }}
+                  clearIcon={<div className='clearIcon' />}
+                >
+                  <Select.Option
+                    className='undp-select-option'
+                    key='All Status'
+                  >
+                    All Status
+                  </Select.Option>
+                  {['New', 'Approved'].map(d => (
+                    <Select.Option className='undp-select-option' key={d}>
+                      {d === 'New' ? 'Awaiting Approval' : d}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+            </>
           ) : null}
         </div>
         <button
@@ -362,6 +409,9 @@ export function SignalsListing() {
               i += 1;
             }
             if (tempFilters.location !== 'All Locations') {
+              i += 1;
+            }
+            if (tempFilters.score !== 'All Scores') {
               i += 1;
             }
             setFilters(tempFilters);
@@ -425,6 +475,7 @@ export function ArchivedSignalsListing() {
               sdg: 'All SDGs',
               ss: 'All Signature Solutions/Enabler',
               location: 'All Locations',
+              score: 'All Scores',
               status: 'Archived',
             }}
             view={viewType}

@@ -20,6 +20,7 @@ import {
   SSList,
   STEEPVList,
   LocationList,
+  ScoreList,
 } from '../Types';
 import Context from '../Context/Context';
 
@@ -59,6 +60,7 @@ export function AddSignalsModal(props: Props) {
     ss: 'All Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
+    score: 'All Scores',
     search: undefined,
   });
   const [loading, setLoading] = useState(true);
@@ -119,6 +121,7 @@ export function AddSignalsModal(props: Props) {
         ss: 'All Signature Solutions/Enabler',
         status: 'All Status',
         location: 'All Locations',
+        score: 'All Scores',
         search: undefined,
       });
     }
@@ -140,12 +143,16 @@ export function AddSignalsModal(props: Props) {
       filters.location === 'All Locations'
         ? ''
         : `&location=${filters.location}`;
+    const scoreQueryParameter =
+      filters.score === 'All Scores'
+        ? ''
+        : `&score=${filters.score.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -191,12 +198,16 @@ export function AddSignalsModal(props: Props) {
       filters.location === 'All Locations'
         ? ''
         : `&location=${filters.location}`;
+    const scoreQueryParameter =
+      filters.score === 'All Scores'
+        ? ''
+        : `&score=${filters.score.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -255,6 +266,7 @@ export function AddSignalsModal(props: Props) {
             ss: 'All Signature Solutions/Enabler',
             status: 'All Status',
             location: 'All Locations',
+            score: 'All Scores',
             search: undefined,
           });
           setIdsList([]);
@@ -268,7 +280,7 @@ export function AddSignalsModal(props: Props) {
                 <div className='flex-div margin-bottom-05 margin-top-00 flex-wrap'>
                   <Select
                     className='undp-select'
-                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
                     defaultValue='All STEEP+V'
                     value={filters.steep}
@@ -300,7 +312,7 @@ export function AddSignalsModal(props: Props) {
                   </Select>
                   <Select
                     className='undp-select'
-                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
                     defaultValue='All Signature Solutions/Enabler'
                     value={filters.ss}
@@ -332,7 +344,7 @@ export function AddSignalsModal(props: Props) {
                   </Select>
                   <Select
                     className='undp-select'
-                    style={{ width: 'calc(33.33% - 0.667rem)' }}
+                    style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
                     defaultValue='All SDGs'
                     value={filters.sdg}
@@ -357,6 +369,38 @@ export function AddSignalsModal(props: Props) {
                       All SDGs
                     </Select.Option>
                     {choices?.sdgs.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Scores'
+                    value={filters.sdg}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? (`${values}` as ScoreList)
+                        : 'All Scores';
+                      setFilters({
+                        ...filters,
+                        score: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Scores'
+                    >
+                      All Scores
+                    </Select.Option>
+                    {choices?.scores.map(d => (
                       <Select.Option className='undp-select-option' key={d}>
                         {d}
                       </Select.Option>
@@ -500,7 +544,7 @@ export function AddSignalsModal(props: Props) {
               {signalList.map((d, i) => (
                 <Collapse.Panel
                   key={i}
-                  header={`${d.headline} (ID: ${d.id})`}
+                  header={`${d.headline} (ID:${d.id})`}
                   className='undp-accordion-with-bg-item'
                   extra={
                     <RadioOutline

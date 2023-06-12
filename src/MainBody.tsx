@@ -340,11 +340,34 @@ function MainBody() {
                       </h6>
                       <h6 className='undp-typography'>{s.headline}</h6>
                       <p
-                        className='undp-typography margin-bottom-00 small-font'
+                        className='undp-typography margin-bottom-07 small-font'
                         style={{ textAlign: 'left' }}
                       >
                         {s.description}
                       </p>
+                      <button
+                        type='button'
+                        className='undp-button button-tertiary button-arrow'
+                        onClick={() => {
+                          updateCardsToPrint(
+                            cardsToPrint.filter(
+                              c =>
+                                (c.type === 'signal' && c.id !== d.id) ||
+                                c.type === 'trend',
+                            ),
+                          );
+                          if (
+                            cardsToPrint.filter(
+                              c =>
+                                (c.type === 'signal' && c.id !== d.id) ||
+                                c.type === 'trend',
+                            ).length === 0
+                          )
+                            setOpenModal(false);
+                        }}
+                      >
+                        Remove from PDF
+                      </button>
                     </div>
                   );
                 }
@@ -369,11 +392,34 @@ function MainBody() {
                     </h6>
                     <h6 className='undp-typography'>{s.headline}</h6>
                     <p
-                      className='undp-typography margin-bottom-00 small-font'
+                      className='undp-typography margin-bottom-07 small-font'
                       style={{ textAlign: 'left' }}
                     >
                       {s.description}
                     </p>
+                    <button
+                      type='button'
+                      className='undp-button button-tertiary button-arrow'
+                      onClick={() => {
+                        updateCardsToPrint(
+                          cardsToPrint.filter(
+                            c =>
+                              (c.type === 'trend' && c.id !== d.id) ||
+                              c.type === 'signal',
+                          ),
+                        );
+                        if (
+                          cardsToPrint.filter(
+                            c =>
+                              (c.type === 'trend' && c.id !== d.id) ||
+                              c.type === 'signal',
+                          ).length === 0
+                        )
+                          setOpenModal(false);
+                      }}
+                    >
+                      Remove from PDF
+                    </button>
                   </div>
                 );
               })}

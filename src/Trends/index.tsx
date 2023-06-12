@@ -113,7 +113,7 @@ export function TrendsListing() {
       </div>
       {noOfFilter > 0 ? (
         <div
-          className='flex-div flex-wrap margin-top-02 margin-bottom-02'
+          className='flex-div flex-wrap margin-top-02 margin-bottom-05'
           style={{
             paddingLeft: '1rem',
             paddingRight: '1rem',
@@ -146,7 +146,7 @@ export function TrendsListing() {
               });
             }}
           >
-            Clear Filter
+            Clear Filter(s)
           </button>
         </div>
       ) : null}

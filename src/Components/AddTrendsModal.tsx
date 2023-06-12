@@ -414,7 +414,7 @@ export function AddTrendsModal(props: Props) {
               {trendsList.map((d, i) => (
                 <Collapse.Panel
                   key={i}
-                  header={`${d.headline} (ID: ${d.id})`}
+                  header={`${d.headline} (ID:${d.id})`}
                   className='undp-accordion-with-bg-item'
                   extra={
                     <RadioOutline

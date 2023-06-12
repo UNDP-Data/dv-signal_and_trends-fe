@@ -125,6 +125,9 @@ export function SignalEntryFormEl(props: Props) {
   const [signalStatus, setSignalStatus] = useState<string>(
     updateSignal?.status || 'New',
   );
+  const [score, setScore] = useState<string | undefined>(
+    updateSignal?.score || undefined,
+  );
   const confirmDelete = (id: number, navigatePath: string) => {
     axios({
       method: 'delete',
@@ -395,8 +398,8 @@ export function SignalEntryFormEl(props: Props) {
           Use clear, simple keywords for ease of searchability.
         </p>
       </div>
-      <div className='flex-div flex-wrap'>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+      <div className='flex-div flex-wrap margin-bottom-07'>
+        <div style={{ width: 'calc(50% - 1rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Primary Signature Solution/Enabler*
           </p>
@@ -415,7 +418,7 @@ export function SignalEntryFormEl(props: Props) {
             ))}
           </Select>
         </div>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+        <div style={{ width: 'calc(50% - 1rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Secondary Signature Solution/Enabler
           </p>
@@ -440,37 +443,55 @@ export function SignalEntryFormEl(props: Props) {
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           Use clear, simple keywords for ease of searchability.
         </p>
+      </div>
+      <div className='margin-bottom-07' style={{ width: '100%' }}>
+        <p className='undp-typography margin-bottom-01'>SDGs</p>
+        <Select
+          className='undp-select'
+          mode='multiple'
+          placeholder='Select SDG'
+          maxTagCount='responsive'
+          onChange={e => {
+            if (e.length > 1) setSdg([sdg[0], e[e.length - 1]]);
+            else setSdg(e.length === 0 || !e ? [] : e);
+          }}
+          clearIcon={<div className='clearIcon' />}
+          allowClear
+          value={sdg}
+        >
+          {choices?.sdgs.map((d, i) => (
+            <Select.Option className='undp-select-option' key={i} value={d}>
+              {d}
+            </Select.Option>
+          ))}
+        </Select>
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+          Which SDG is it most closely connected to? Select relevant SDGs. Max 2
+          SDGs allowed.
+        </p>
+      </div>
+      {role === 'Curator' || role === 'Admin' ? (
         <div className='margin-bottom-07' style={{ width: '100%' }}>
-          <p className='undp-typography margin-bottom-01'>SDGs</p>
+          <p className='undp-typography margin-bottom-01'>Signal Score</p>
           <Select
             className='undp-select'
-            mode='multiple'
-            placeholder='Select SDG'
-            maxTagCount='responsive'
+            placeholder='Select Score'
             onChange={e => {
-              setSdg(e.length === 0 || !e ? [] : e);
+              setScore(e);
             }}
-            clearIcon={<div className='clearIcon' />}
-            allowClear
-            value={sdg}
+            value={score}
           >
-            {choices?.sdgs.map((d, i) => (
-              <Select.Option
-                className='undp-select-option'
-                key={i}
-                value={d}
-                disabled={sdg.length > 1}
-              >
+            {choices?.scores.map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
             ))}
           </Select>
           <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-            Which SDG is it most closely connected to? Select relevant SDGs. Max
-            2 SDGs allowed.
+            Signal score can only be seen by the curators and admins
           </p>
         </div>
-      </div>
+      ) : null}
       {role === 'Curator' || role === 'Admin' ? (
         <div className='margin-bottom-07'>
           <p className='undp-typography bold'>Link signal to trend(s)</p>
@@ -606,10 +627,15 @@ export function SignalEntryFormEl(props: Props) {
                       relevance,
                       sdgs: sdg || [],
                       signature_primary: primarySS,
-                      signature_secondary: secondarySS,
+                      signature_secondary: secondarySS
+                        ? secondarySS.length === 0
+                          ? null
+                          : secondarySS
+                        : null,
                       steep,
                       url: sourceLink,
                       id: updateSignal.id,
+                      score,
                       connected_trends: selectedTrendsList,
                     },
                     headers: {
@@ -663,9 +689,14 @@ export function SignalEntryFormEl(props: Props) {
                       relevance,
                       sdgs: sdg || [],
                       signature_primary: primarySS,
-                      signature_secondary: secondarySS,
+                      signature_secondary: secondarySS
+                        ? secondarySS.length === 0
+                          ? null
+                          : secondarySS
+                        : null,
                       steep,
                       url: sourceLink,
+                      score,
                       connected_trends: selectedTrendsList,
                       id: updateSignal.id,
                     },
@@ -784,6 +815,7 @@ export function SignalEntryFormEl(props: Props) {
                     signature_secondary: secondarySS,
                     steep,
                     url: sourceLink,
+                    score,
                     connected_trends: selectedTrendsList,
                     id: updateSignal.id,
                   },
@@ -880,10 +912,15 @@ export function SignalEntryFormEl(props: Props) {
                     relevance,
                     sdgs: sdg || [],
                     signature_primary: primarySS,
-                    signature_secondary: secondarySS,
+                    signature_secondary: secondarySS
+                      ? secondarySS.length === 0
+                        ? null
+                        : secondarySS
+                      : null,
                     steep,
                     url: sourceLink,
                     connected_trends: selectedTrendsList,
+                    score,
                   },
                   headers: {
                     'Content-Type': 'application/json',
@@ -935,9 +972,14 @@ export function SignalEntryFormEl(props: Props) {
                     relevance,
                     sdgs: sdg || [],
                     signature_primary: primarySS,
-                    signature_secondary: secondarySS,
+                    signature_secondary: secondarySS
+                      ? secondarySS.length === 0
+                        ? null
+                        : secondarySS
+                      : null,
                     steep,
                     url: sourceLink,
+                    score,
                     connected_trends: selectedTrendsList,
                   },
                   headers: {

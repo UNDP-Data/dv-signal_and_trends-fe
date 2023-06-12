@@ -110,7 +110,7 @@ export function TrendsPage(props: Props) {
               display: 'flex',
               flexDirection: 'row',
               gap: '2',
-              marginBottom: 10,
+              marginBottom: 5,
             }}
           >
             <View
@@ -143,10 +143,10 @@ export function TrendsPage(props: Props) {
                     : '#AAA',
               }}
             />
-            <Text style={styles.subNote}>
-              {data.impact_rating.split(' — ')[1]}
-            </Text>
           </View>
+          <Text style={styles.subNote}>
+            {data.impact_rating.split(' — ')[1]}
+          </Text>
           <Text style={styles.title}>Horizon</Text>
           <Text style={styles.text}>{data.time_horizon}</Text>
           {data.connected_signals?.length === 0 ||

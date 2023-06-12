@@ -49,6 +49,13 @@ export type RatingList =
 
 export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
+export type ScoreList =
+  | '1 — Non-novel (known, but potentially notable in particular context)'
+  | '2'
+  | '3 — Potentially novel or uncertain, but not clear in its potential impact'
+  | '4'
+  | '5 — Something that introduces or points to a potentially interesting or consequential change in direction of trends';
+
 export type LocationList =
   | 'Global'
   | 'Region: Asia Pacific'
@@ -73,11 +80,12 @@ export interface SignalDataType {
   relevance: string;
   sdgs: SDGList[];
   signature_primary: SSList | '';
-  signature_secondary: SSList[];
+  signature_secondary: SSList[] | null;
   steep: STEEPVList;
   url: string;
   id: number;
   connected_trends: number[] | null;
+  score: string | null;
 }
 
 export interface TrendDataType {
@@ -117,6 +125,7 @@ export interface SignalFiltersDataType {
   sdg: 'All SDGs' | SDGList;
   ss: 'All Signature Solutions/Enabler' | SSList;
   status: 'All Status' | StatusList;
+  score: 'All Scores' | ScoreList;
   location: string;
   search?: string;
 }
@@ -137,6 +146,7 @@ export interface ChoicesDataType {
   signatures: string[];
   steepv: string[];
   units: string[];
+  scores: string[];
 }
 
 export interface CardsToPrintDataType {
