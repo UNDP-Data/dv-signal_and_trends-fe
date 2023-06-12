@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Background from '../assets/UNDP-hero-image.png';
@@ -9,6 +9,7 @@ import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { TrendCard } from '../Components/TrendCard';
 import { TrendsVis } from '../Components/TrendsVis';
+import Context from '../Context/Context';
 
 const HeroImageEl = styled.div`
   background: url(${Background}) no-repeat center;
@@ -36,6 +37,7 @@ export function HomePage() {
   const [trendListing, setTrendList] = useState<undefined | TrendDataType[]>(
     undefined,
   );
+  const { choices } = useContext(Context);
   useEffect(() => {
     axios
       .get(
@@ -193,7 +195,13 @@ export function HomePage() {
         <h2 className='undp-typography margin-top-10 margin-bottom-08 gap-07'>
           Trends visualized
         </h2>
-        <TrendsVis />
+        {choices ? (
+          <TrendsVis />
+        ) : (
+          <div className='undp-loader-container'>
+            <div className='undp-loader' />
+          </div>
+        )}
       </div>
     </>
   );
