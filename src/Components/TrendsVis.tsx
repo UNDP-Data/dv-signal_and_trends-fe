@@ -164,7 +164,9 @@ export function TrendsVis() {
                 >
                   &nbsp;
                 </div>
-                <div className='legend-label'>1: Not significant</div>
+                <div className='legend-label'>
+                  1: Notable but not significant
+                </div>
                 <div
                   style={{
                     backgroundColor: `${colorScale(choices.ratings[1])}`,
@@ -212,7 +214,7 @@ export function TrendsVis() {
                   >
                     &nbsp;
                   </div>
-                  <div className='legend-label'>7 signals</div>
+                  <div className='legend-label'>`${maxSignals} signals`</div>
                 </div>
               </div>
             </div>
