@@ -16,7 +16,12 @@ import { max } from 'd3-array';
 import { json } from 'd3-fetch';
 import Context from '../Context/Context';
 // import axios, { AxiosResponse } from 'axios';
-import { VisTrendDataType, HorizonList, RatingList } from '../Types';
+import {
+  VisTrendDataType,
+  HorizonList,
+  RatingList,
+  TrendDataType,
+} from '../Types';
 // import { API_ACCESS_TOKEN } from '../Constants';
 
 interface DotHoveredProps {
@@ -53,11 +58,11 @@ export function TrendsVis() {
   const [showGroups, setShowGroups] = useState<boolean>(false);
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   const [error, setError] = useState<undefined | string>(undefined);
+  const { maxSignals, setMaxSignals } = useState<number>(0);
+  const { choices } = useContext(Context);
   const groupByImpact = (e: CheckboxChangeEvent) => {
     setShowGroups(e.target.checked);
   };
-  const { choices } = useContext(Context);
-  const { maxSignals, setMaxSignals } = useState(0);
   /* const ratings = [
     '1 — Notable but not significant impact within the assigned Horizon',
     '2 — Moderate impact within the assigned Horizon',
@@ -84,12 +89,12 @@ export function TrendsVis() {
   useEffect(() => {
     setShowGroups(false);
     setTrendsList([]);
+    setMaxSignals(0);
     setError(undefined);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     json('/testData/response_new.json').then((response: any) => {
       setTrendsList(response.data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const maxConnected = max(response.data, (d: any) =>
+      const maxConnected = max(response.data, (d: TrendDataType) =>
         d.connected_signals !== null ? d.connected_signals.length : 0,
       );
       setMaxSignals(maxConnected);
