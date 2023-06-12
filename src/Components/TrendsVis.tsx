@@ -58,7 +58,7 @@ export function TrendsVis() {
   const [showGroups, setShowGroups] = useState<boolean>(false);
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   const [error, setError] = useState<undefined | string>(undefined);
-  const { maxSignals, setMaxSignals } = useState<number>(0);
+  const [maxSignals, setMaxSignals] = useState<number>(0);
   const { choices } = useContext(Context);
   const groupByImpact = (e: CheckboxChangeEvent) => {
     setShowGroups(e.target.checked);
@@ -95,7 +95,9 @@ export function TrendsVis() {
     json('/testData/response_new.json').then((response: any) => {
       setTrendsList(response.data);
       const maxConnected = max(response.data, (d: TrendDataType) =>
-        d.connected_signals !== null ? d.connected_signals.length : 0,
+        d.connected_signals !== undefined && d.connected_signals !== null
+          ? d.connected_signals.length
+          : 0,
       );
       setMaxSignals(maxConnected);
       sqrtScale.domain([0, maxSignals]);
