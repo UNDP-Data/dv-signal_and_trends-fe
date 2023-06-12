@@ -214,7 +214,7 @@ export function TrendsVis() {
                   >
                     &nbsp;
                   </div>
-                  <div className='legend-label'>`${maxSignals} signals`</div>
+                  <div className='legend-label'>{`${maxSignals} signals`}</div>
                 </div>
               </div>
             </div>
