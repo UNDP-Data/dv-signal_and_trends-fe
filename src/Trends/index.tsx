@@ -185,7 +185,7 @@ export function TrendsListing() {
               <Select.Option className='undp-select-option' key='All Ratings'>
                 All Ratings
               </Select.Option>
-              {[1, 2, 3, 4, 5].map(d => (
+              {choices?.ratings.map(d => (
                 <Select.Option className='undp-select-option' key={d}>
                   {d}
                 </Select.Option>

@@ -134,7 +134,9 @@ export function ListView(props: Props) {
             className='undp-table-row-cell'
           >
             <CellDiv>
-              <ImpactCircleEl impact={d.impact_rating} />
+              {d.impact_rating ? (
+                <ImpactCircleEl impact={d.impact_rating} />
+              ) : null}
             </CellDiv>
           </div>
           <div
