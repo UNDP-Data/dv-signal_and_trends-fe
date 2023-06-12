@@ -96,6 +96,13 @@ function App() {
     });
   };
   const { accounts, instance } = useMsal();
+
+  // eslint-disable-next-line no-console
+  console.log(
+    'hello',
+    import.meta.env.VITE_ACCESS_CODE,
+    import.meta.env.VITE_REDIRECT_URL,
+  );
   useEffect(() => {
     axios
       .get(`https://signals-and-trends-api.azurewebsites.net/v1/choices/list`, {
