@@ -3,7 +3,7 @@
   min-width: min(100%, 580px);
   color: var(--black);
   text-decoration: none;
-  background-color: var(--gray-300);
+  background-color: var(--gray-200);
   align-items: stretch;
   display: flex;
 }
@@ -13,7 +13,7 @@
   min-width: min(100%, 320px);
   color: var(--black);
   text-decoration: none;
-  background-color: var(--gray-300);
+  background-color: var(--gray-200);
   align-items: stretch;
   display: flex;
 }

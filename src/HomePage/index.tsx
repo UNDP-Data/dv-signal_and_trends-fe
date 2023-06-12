@@ -17,7 +17,7 @@ const HeroImageEl = styled.div`
 `;
 
 const CardEl = styled.div`
-  background-color: var(--gray-300);
+  background-color: var(--gray-200);
   color: var(--gray-700);
   flex-grow: 1;
 `;
@@ -113,10 +113,11 @@ export function HomePage() {
               {signalListing.map((d, i) => (
                 <NavLink
                   to={`/signals/${d.id}`}
+                  className='simplified-cards'
                   key={i}
                   style={{
                     textDecoration: 'none',
-                    backgroundColor: 'var(--gray-300)',
+                    backgroundColor: 'var(--gray-200)',
                     color: 'var(-gray-700)',
                     padding: 'var(--spacing-07)',
                     flexGrow: '1',

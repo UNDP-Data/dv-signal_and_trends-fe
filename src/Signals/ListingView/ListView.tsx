@@ -52,19 +52,19 @@ export function ListView(props: Props) {
           <CellDiv>Signal</CellDiv>
         </div>
         <div
-          style={{ width: '15%', minWidth: '15rem' }}
+          style={{ width: '12.5%', minWidth: '15rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Keywords</CellDiv>
         </div>
         <div
-          style={{ width: '15%', minWidth: '10rem' }}
+          style={{ width: '12.5%', minWidth: '10rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>STEEP+V</CellDiv>
         </div>
         <div
-          style={{ width: '15%', minWidth: '12rem' }}
+          style={{ width: '20%', minWidth: '12rem' }}
           className='undp-table-head-cell'
         >
           <CellDiv>Signature solutions</CellDiv>
@@ -116,7 +116,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ width: '15%', minWidth: '15rem' }}
+            style={{ width: '12.5%', minWidth: '15rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -132,7 +132,7 @@ export function ListView(props: Props) {
             </CellDiv>
           </div>
           <div
-            style={{ width: '15%', minWidth: '10rem' }}
+            style={{ width: '12.5%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
             {d.steep ? (
@@ -151,7 +151,7 @@ export function ListView(props: Props) {
             ) : null}
           </div>
           <div
-            style={{ width: '15%', minWidth: '12rem' }}
+            style={{ width: '20%', minWidth: '12rem' }}
             className='undp-table-row-cell'
           >
             <CellDiv>
@@ -193,7 +193,7 @@ export function ListView(props: Props) {
             className='undp-table-row-cell'
           >
             <CellDiv>
-              <div className='flex-div flex-wrap'>
+              <div className='flex-div flex-wrap gap-03'>
                 {d.sdgs && d.sdgs.length > 0 ? (
                   <>
                     {d.sdgs.map((sdg, j) => (

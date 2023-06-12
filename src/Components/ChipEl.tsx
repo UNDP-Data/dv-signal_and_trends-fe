@@ -13,6 +13,7 @@ export function ChipEl(props: Props) {
           height: '0.825rem',
           borderRadius: '0.825rem',
           backgroundColor: circleColor,
+          flexShrink: 0,
         }}
       />
       {text}

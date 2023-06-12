@@ -437,11 +437,8 @@ export function SignalEntryFormEl(props: Props) {
             ))}
           </Select>
         </div>
-        <p
-          className='undp-typography margin-top-00 margin-bottom-05'
-          style={{ color: 'var(--gray-500)' }}
-        >
-          Which Signature Solutions/Enablers does this Signal most align with?
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+          Use clear, simple keywords for ease of searchability.
         </p>
         <div className='margin-bottom-07' style={{ width: '100%' }}>
           <p className='undp-typography margin-bottom-01'>SDGs</p>

@@ -144,7 +144,7 @@ export function SignalCard(props: Props) {
             <p className='small-font undp-typography bold margin-bottom-03 margin-top-03'>
               Keywords
             </p>
-            <div className='flex-div flex-wrap margin-bottom-07'>
+            <div className='flex-div flex-wrap margin-bottom-07 gap-03'>
               {data.keywords?.map((el, j) =>
                 el !== '' ? (
                   <div className='undp-chip' key={`chip-${j}`}>
@@ -157,10 +157,12 @@ export function SignalCard(props: Props) {
         </div>
         <div>
           <div
-            className='flex-div'
+            className='flex-div gap-00'
             style={{
               justifyContent: 'space-between',
-              padding: '1rem 1rem 0 1rem',
+              borderTop: '1px solid var(--gray-400)',
+              margin: '1.5rem 0 0 0',
+              padding: '0',
             }}
           >
             <NavLink
@@ -173,6 +175,12 @@ export function SignalCard(props: Props) {
               }
               style={{
                 textDecoration: 'none',
+                borderRight: '1px solid var(--gray-400)',
+                flexGrow: 1,
+                marginBottom: '-1rem',
+                paddingBottom: 0,
+                justifyContent: 'center',
+                display: 'flex',
               }}
             >
               <button
@@ -193,6 +201,11 @@ export function SignalCard(props: Props) {
                   id: `${data.id}`,
                 });
                 updateCardsToPrint(cardToPrintTemp);
+              }}
+              style={{
+                flexGrow: 1,
+                marginBottom: '-1rem',
+                paddingBottom: 0,
               }}
             >
               Add to print

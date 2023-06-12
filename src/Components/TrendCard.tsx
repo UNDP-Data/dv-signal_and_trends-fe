@@ -144,7 +144,7 @@ export function TrendCard(props: Props) {
                       fontWeight: 'normal',
                     }}
                   >
-                    (ID: {data.id})
+                    (ID:{data.id})
                   </span>
                 </LinkP>
               </NavLink>
@@ -199,9 +199,12 @@ export function TrendCard(props: Props) {
                 ) : null}
               </div>
               <div
-                className='flex-div'
+                className='flex-div gap-00'
                 style={{
                   justifyContent: 'space-between',
+                  borderTop: '1px solid var(--gray-400)',
+                  margin: '1.5rem -1rem 0 -1rem',
+                  padding: '0',
                 }}
               >
                 <NavLink
@@ -212,6 +215,12 @@ export function TrendCard(props: Props) {
                   }
                   style={{
                     textDecoration: 'none',
+                    borderRight: '1px solid var(--gray-400)',
+                    flexGrow: 1,
+                    marginBottom: '-1rem',
+                    paddingBottom: '1rem',
+                    justifyContent: 'center',
+                    display: 'flex',
                   }}
                 >
                   <button
@@ -232,6 +241,11 @@ export function TrendCard(props: Props) {
                       id: `${data.id}`,
                     });
                     updateCardsToPrint(cardToPrintTemp);
+                  }}
+                  style={{
+                    flexGrow: 1,
+                    marginBottom: '-1rem',
+                    paddingBottom: '1rem',
                   }}
                 >
                   Add to print
