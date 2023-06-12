@@ -95,11 +95,11 @@ export function TrendsVis() {
     json('/testData/response_new.json').then((response: any) => {
       setTrendsList(response.data);
       const maxConnected = max(response.data, (d: TrendDataType) =>
-        d.connected_signals !== undefined && d.connected_signals !== null
-          ? d.connected_signals.length
-          : 0,
+        d.connected_signals === undefined || d.connected_signals === null
+          ? 0
+          : d.connected_signals.length,
       );
-      setMaxSignals(maxConnected);
+      setMaxSignals(maxConnected || 0);
       sqrtScale.domain([0, maxSignals]);
     });
     /* axios
@@ -217,7 +217,7 @@ export function TrendsVis() {
               >
                 &nbsp;
               </div>
-              <div className='legend-label'>7 signals</div>
+              <div className='legend-label'>{`${maxSignals} signals`} </div>
             </div>
           </div>
         </div>
@@ -242,7 +242,7 @@ export function TrendsVis() {
                   )}
                   cx={d.x}
                   cy={d.y}
-                  fill={colorScale(d.impact_rating)}
+                  style={{ fill: `${colorScale(d.impact_rating)}` }}
                   onMouseEnter={event => {
                     setHoveredDot({
                       title: d.headline,
@@ -260,7 +260,7 @@ export function TrendsVis() {
               {choices?.horizons.map((d, i) => (
                 <text
                   key={i}
-                  x={xCenter(d)}
+                  x={xCenter(d as HorizonList)}
                   textAnchor='middle'
                   style={{ textTransform: 'uppercase' }}
                 >
