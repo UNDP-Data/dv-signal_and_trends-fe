@@ -13,7 +13,7 @@ import { CardsToPrintDataType, ChoicesDataType } from './Types';
 
 function App() {
   // eslint-disable-next-line no-console
-  console.log('hello', import.meta.env);
+  console.log('hello', process.env);
   const isAuthenticated = useIsAuthenticated();
   const [openModal, setOpenModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<string | undefined>(
