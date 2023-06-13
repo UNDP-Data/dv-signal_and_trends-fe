@@ -1,7 +1,5 @@
 import UNDPColorModule from 'undp-viz-colors';
 
-export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
-
 export const HORIZONVALUES = [
   {
     value: 'Horizon 1 (0-3 years)',
@@ -632,4 +630,10 @@ export const CHOICES = {
   ],
 };
 
-export const WEB_ADDRESS = 'https://undp-signal-and-trends.netlify.app/';
+export const WEB_ADDRESS =
+  'https://thankful-forest-05a90a303.3.azurestaticapps.net';
+
+export const API_ACCESS_TOKEN = '1efbc9d89db9054b686589c75a571fd5';
+
+export const REDIRECT_URL =
+  'https://thankful-forest-05a90a303.3.azurestaticapps.net';
