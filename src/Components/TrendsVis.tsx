@@ -85,7 +85,7 @@ export function TrendsVis() {
       )
       .then((response: AxiosResponse) => {
         setTrendsList(response.data.data);
-        const maxConnected = max(response.data, (d: TrendDataType) =>
+        const maxConnected = max(response.data.data, (d: TrendDataType) =>
           d.connected_signals === undefined || d.connected_signals === null
             ? 0
             : d.connected_signals.length,
@@ -149,35 +149,41 @@ export function TrendsVis() {
             <div>
               <h6 className='undp-typography margin-bottom-02'>Impact</h6>
               <div className='legend-container'>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[0])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[0])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>
+                    1: Notable but not significant
+                  </div>
                 </div>
-                <div className='legend-label'>
-                  1: Notable but not significant
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[1])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>2: Moderate</div>
                 </div>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[1])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[2])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>3: Significant</div>
                 </div>
-                <div className='legend-label'>2: Moderate</div>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[2])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
-                </div>
-                <div className='legend-label'>3: Significant</div>
               </div>
             </div>
             <div className='margin-left-06'>
@@ -186,28 +192,32 @@ export function TrendsVis() {
               </h6>
               <div>
                 <div className='legend-container'>
-                  <div
-                    style={{
-                      backgroundColor: '#CCC',
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    &nbsp;
+                  <div className='flex-div legend-item'>
+                    <div
+                      style={{
+                        backgroundColor: '#CCC',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      &nbsp;
+                    </div>
+                    <div className='legend-label'>1 signal</div>
                   </div>
-                  <div className='legend-label'>1 signal</div>
-                  <div
-                    style={{
-                      backgroundColor: '#CCC',
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    &nbsp;
+                  <div className='flex-div legend-item'>
+                    <div
+                      style={{
+                        backgroundColor: '#CCC',
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      &nbsp;
+                    </div>
+                    <div className='legend-label'>{`${maxSignals} signals`}</div>
                   </div>
-                  <div className='legend-label'>{`${maxSignals} signals`}</div>
                 </div>
               </div>
             </div>

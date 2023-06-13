@@ -93,12 +93,18 @@
   padding-bottom: 10px;
   align-items: center;
 }
+.legend-item{
+  flex-wrap: no-wrap;
+  align-items: center;
+  gap: 8px;
+}
 .legend-circle{
   width: 16px;
   height: 16px;
   border-radius: 9px;
+  margin: 0;
 }
 .legend-label{
   font-size: 1rem;
-  padding: 0px 16px 0 8px;
+  padding: 0px 20px 0 0px;
 }
