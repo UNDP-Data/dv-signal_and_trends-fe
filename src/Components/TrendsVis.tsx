@@ -12,12 +12,10 @@ import {
 } from 'd3-force';
 import { scaleSqrt, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
-import { json } from 'd3-fetch';
+import axios, { AxiosResponse } from 'axios';
 import Context from '../Context/Context';
-// import axios, { AxiosResponse } from 'axios';
 import { VisTrendDataType, TrendDataType } from '../Types';
-import { CHOICES } from '../Constants';
-// import { API_ACCESS_TOKEN } from '../Constants';
+import { CHOICES, API_ACCESS_TOKEN } from '../Constants';
 
 interface DotHoveredProps {
   title: string;
@@ -54,7 +52,7 @@ export function TrendsVis() {
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   const [error, setError] = useState<undefined | string>(undefined);
   const [maxSignals, setMaxSignals] = useState(0);
-  const { choices } = useContext(Context);
+  const { choices, accessToken } = useContext(Context);
   const groupByImpact = (e: CheckboxChangeEvent) => {
     setShowGroups(e.target.checked);
   };
@@ -76,19 +74,7 @@ export function TrendsVis() {
     setTrendsList([]);
     setMaxSignals(0);
     setError(undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    json('/testData/response_new.json').then((response: any) => {
-      setTrendsList(response.data);
-      const maxConnected = max(response.data, (d: TrendDataType) =>
-        d.connected_signals === undefined || d.connected_signals === null
-          ? 0
-          : d.connected_signals.length,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setMaxSignals(maxConnected as any);
-      sqrtScale.domain([0, maxSignals]);
-    });
-    /* axios
+    axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?per_page=500`,
         {
@@ -99,6 +85,14 @@ export function TrendsVis() {
       )
       .then((response: AxiosResponse) => {
         setTrendsList(response.data.data);
+        const maxConnected = max(response.data, (d: TrendDataType) =>
+          d.connected_signals === undefined || d.connected_signals === null
+            ? 0
+            : d.connected_signals.length,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setMaxSignals(maxConnected as any);
+        sqrtScale.domain([0, maxSignals]);
       })
       .catch(err => {
         if (err.response?.status === 404) {
@@ -112,7 +106,7 @@ export function TrendsVis() {
             }`,
           );
         }
-      }); */
+      });
   }, []);
   useEffect(() => {
     const simulation = forceSimulation(trendsList)
@@ -145,8 +139,7 @@ export function TrendsVis() {
     simulation.on('tick', () => {
       setNodesList([...simulation.nodes()]);
     });
-    // simulation.nodes([...simulation.nodes()]);
-    simulation.alpha(0.1).restart();
+    simulation.alpha(0.5);
   }, [showGroups, trendsList]);
   return (
     <div>
@@ -230,7 +223,6 @@ export function TrendsVis() {
                 <g transform={`translate(10,${40})`}>
                   {nodesList.map((d, i) => (
                     <circle
-                      className={`circle-${i}`}
                       key={i}
                       r={sqrtScale(
                         d.connected_signals !== null
