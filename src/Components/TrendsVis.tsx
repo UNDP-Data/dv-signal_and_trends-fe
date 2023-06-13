@@ -12,12 +12,10 @@ import {
 } from 'd3-force';
 import { scaleSqrt, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
-import { json } from 'd3-fetch';
+import axios, { AxiosResponse } from 'axios';
 import Context from '../Context/Context';
-// import axios, { AxiosResponse } from 'axios';
 import { VisTrendDataType, TrendDataType } from '../Types';
-import { CHOICES } from '../Constants';
-// import { API_ACCESS_TOKEN } from '../Constants';
+import { CHOICES, API_ACCESS_TOKEN } from '../Constants';
 
 interface DotHoveredProps {
   title: string;
@@ -54,7 +52,7 @@ export function TrendsVis() {
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   const [error, setError] = useState<undefined | string>(undefined);
   const [maxSignals, setMaxSignals] = useState(0);
-  const { choices } = useContext(Context);
+  const { choices, accessToken } = useContext(Context);
   const groupByImpact = (e: CheckboxChangeEvent) => {
     setShowGroups(e.target.checked);
   };
@@ -76,19 +74,7 @@ export function TrendsVis() {
     setTrendsList([]);
     setMaxSignals(0);
     setError(undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    json('/testData/response_new.json').then((response: any) => {
-      setTrendsList(response.data);
-      const maxConnected = max(response.data, (d: TrendDataType) =>
-        d.connected_signals === undefined || d.connected_signals === null
-          ? 0
-          : d.connected_signals.length,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setMaxSignals(maxConnected as any);
-      sqrtScale.domain([0, maxSignals]);
-    });
-    /* axios
+    axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?per_page=500`,
         {
@@ -99,6 +85,14 @@ export function TrendsVis() {
       )
       .then((response: AxiosResponse) => {
         setTrendsList(response.data.data);
+        const maxConnected = max(response.data.data, (d: TrendDataType) =>
+          d.connected_signals === undefined || d.connected_signals === null
+            ? 0
+            : d.connected_signals.length,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setMaxSignals(maxConnected as any);
+        sqrtScale.domain([0, maxSignals]);
       })
       .catch(err => {
         if (err.response?.status === 404) {
@@ -112,7 +106,7 @@ export function TrendsVis() {
             }`,
           );
         }
-      }); */
+      });
   }, []);
   useEffect(() => {
     const simulation = forceSimulation(trendsList)
@@ -145,8 +139,7 @@ export function TrendsVis() {
     simulation.on('tick', () => {
       setNodesList([...simulation.nodes()]);
     });
-    // simulation.nodes([...simulation.nodes()]);
-    simulation.alpha(0.1).restart();
+    simulation.alpha(0.5);
   }, [showGroups, trendsList]);
   return (
     <div>
@@ -156,35 +149,41 @@ export function TrendsVis() {
             <div>
               <h6 className='undp-typography margin-bottom-02'>Impact</h6>
               <div className='legend-container'>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[0])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[0])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>
+                    1: Notable but not significant
+                  </div>
                 </div>
-                <div className='legend-label'>
-                  1: Notable but not significant
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[1])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>2: Moderate</div>
                 </div>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[1])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
+                <div className='flex-div legend-item'>
+                  <div
+                    style={{
+                      backgroundColor: `${colorScale(choices.ratings[2])}`,
+                    }}
+                    className='legend-circle'
+                  >
+                    &nbsp;
+                  </div>
+                  <div className='legend-label'>3: Significant</div>
                 </div>
-                <div className='legend-label'>2: Moderate</div>
-                <div
-                  style={{
-                    backgroundColor: `${colorScale(choices.ratings[2])}`,
-                  }}
-                  className='legend-circle'
-                >
-                  &nbsp;
-                </div>
-                <div className='legend-label'>3: Significant</div>
               </div>
             </div>
             <div className='margin-left-06'>
@@ -193,28 +192,32 @@ export function TrendsVis() {
               </h6>
               <div>
                 <div className='legend-container'>
-                  <div
-                    style={{
-                      backgroundColor: '#CCC',
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    &nbsp;
+                  <div className='flex-div legend-item'>
+                    <div
+                      style={{
+                        backgroundColor: '#CCC',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      &nbsp;
+                    </div>
+                    <div className='legend-label'>1 signal</div>
                   </div>
-                  <div className='legend-label'>1 signal</div>
-                  <div
-                    style={{
-                      backgroundColor: '#CCC',
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    &nbsp;
+                  <div className='flex-div legend-item'>
+                    <div
+                      style={{
+                        backgroundColor: '#CCC',
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      &nbsp;
+                    </div>
+                    <div className='legend-label'>{`${maxSignals} signals`}</div>
                   </div>
-                  <div className='legend-label'>{`${maxSignals} signals`}</div>
                 </div>
               </div>
             </div>
@@ -230,7 +233,6 @@ export function TrendsVis() {
                 <g transform={`translate(10,${40})`}>
                   {nodesList.map((d, i) => (
                     <circle
-                      className={`circle-${i}`}
                       key={i}
                       r={sqrtScale(
                         d.connected_signals !== null
