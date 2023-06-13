@@ -633,7 +633,6 @@ export const CHOICES = {
 export const WEB_ADDRESS =
   'https://thankful-forest-05a90a303.3.azurestaticapps.net';
 
-export const API_ACCESS_TOKEN = '1efbc9d89db9054b686589c75a571fd5';
+export const API_ACCESS_TOKEN = process.env.INPUT_ACCESS_TOKEN_FOR_API;
 
-export const REDIRECT_URL =
-  'https://thankful-forest-05a90a303.3.azurestaticapps.net';
+export const REDIRECT_URL = process.env.INPUT_REDIRECT_URI_FOR_MSAL;
