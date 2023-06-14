@@ -33,7 +33,7 @@ const Card02ImageEl = styled.div`
     url(${Background}) no-repeat center;
   background-size: cover;
   flex-grow: 1;
-  width: calc(50% - 1px);
+  width: calc(50% - 2px);
   min-width: 20rem;
 `;
 
@@ -221,12 +221,15 @@ export function HomePage() {
           </div>
         )}
         <div
-          className='flex-div margin-top-09'
+          className='flex-div margin-top-09 flex-wrap'
           style={{ alignItems: 'stretch', gap: '4px' }}
         >
           <Card01ImageEl>
             <div
-              style={{ padding: 'var(--spacing-13)', color: 'var(--white)' }}
+              style={{
+                padding: 'var(--spacing-13) var(--spacing-07)',
+                color: 'var(--white)',
+              }}
             >
               <h2 className='undp-typography margin-bottom-03'>
                 Signals Spotlight
@@ -259,7 +262,10 @@ export function HomePage() {
           </Card01ImageEl>
           <Card02ImageEl>
             <div
-              style={{ padding: 'var(--spacing-13)', color: 'var(--white)' }}
+              style={{
+                padding: 'var(--spacing-13) var(--spacing-07)',
+                color: 'var(--white)',
+              }}
             >
               <h2 className='undp-typography margin-bottom-03'>
                 Future of Development
