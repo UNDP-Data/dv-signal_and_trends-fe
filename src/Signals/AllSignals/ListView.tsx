@@ -52,12 +52,6 @@ export function ListView(props: Props) {
           <CellDiv>Signal</CellDiv>
         </div>
         <div
-          style={{ width: '12.5%', minWidth: '15rem' }}
-          className='undp-table-head-cell'
-        >
-          <CellDiv>Keywords</CellDiv>
-        </div>
-        <div
           style={{ width: '12.5%', minWidth: '10rem' }}
           className='undp-table-head-cell'
         >
@@ -73,7 +67,13 @@ export function ListView(props: Props) {
           style={{ width: '15%', minWidth: '15rem' }}
           className='undp-table-head-cell'
         >
-          <CellDiv>SDG</CellDiv>
+          <CellDiv>SDGs</CellDiv>
+        </div>
+        <div
+          style={{ width: '12.5%', minWidth: '15rem' }}
+          className='undp-table-head-cell'
+        >
+          <CellDiv>Keywords</CellDiv>
         </div>
         <div
           style={{ width: '10%', minWidth: '6rem' }}
@@ -113,22 +113,6 @@ export function ListView(props: Props) {
               <DescriptionEl className='small-font'>
                 {d.description}
               </DescriptionEl>
-            </CellDiv>
-          </div>
-          <div
-            style={{ width: '12.5%', minWidth: '15rem' }}
-            className='undp-table-row-cell'
-          >
-            <CellDiv>
-              <div className='flex-div flex-wrap'>
-                {d.keywords?.map((el, j) =>
-                  el !== '' ? (
-                    <div className='undp-chip' key={`chip-${j}`}>
-                      {el}
-                    </div>
-                  ) : null,
-                )}
-              </div>
             </CellDiv>
           </div>
           <div
@@ -201,6 +185,22 @@ export function ListView(props: Props) {
                     ))}
                   </>
                 ) : null}
+              </div>
+            </CellDiv>
+          </div>
+          <div
+            style={{ width: '12.5%', minWidth: '15rem' }}
+            className='undp-table-row-cell'
+          >
+            <CellDiv>
+              <div className='flex-div flex-wrap'>
+                {d.keywords?.map((el, j) =>
+                  el !== '' ? (
+                    <div className='undp-chip' key={`chip-${j}`}>
+                      {el}
+                    </div>
+                  ) : null,
+                )}
               </div>
             </CellDiv>
           </div>

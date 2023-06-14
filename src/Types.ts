@@ -105,12 +105,7 @@ export interface TrendDataType {
   id: number;
   connected_signals: number[] | null;
 }
-export interface VisTrendDataType extends TrendDataType {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-}
+
 export interface UserDataType {
   created_at: string;
   email: string;

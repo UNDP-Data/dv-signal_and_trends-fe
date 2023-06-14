@@ -9,7 +9,7 @@ import {
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { SignalDataType } from '../Types';
-import { CardList } from '../Signals/ListingView/CardsList';
+import { CardList } from '../Signals/AllSignals/GridView';
 
 export function MyDrafts() {
   const { accessToken, userName } = useContext(Context);

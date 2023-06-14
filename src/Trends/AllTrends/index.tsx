@@ -3,7 +3,7 @@ import { Pagination, PaginationProps } from 'antd';
 import sortBy from 'lodash.sortby';
 import axios, { AxiosResponse } from 'axios';
 import { TrendDataType, TrendFiltersDataType } from '../../Types';
-import { CardList } from './CardsList';
+import { CardList } from './GridView';
 import { ListView } from './ListView';
 import { API_ACCESS_TOKEN } from '../../Constants';
 import Context from '../../Context/Context';
@@ -11,10 +11,11 @@ import Context from '../../Context/Context';
 interface Props {
   filters: TrendFiltersDataType;
   view: 'cardView' | 'listView';
+  trendsOrderBy: string;
 }
 
-export function CardLayout(props: Props) {
-  const { filters, view } = props;
+export function AllTrends(props: Props) {
+  const { filters, view, trendsOrderBy } = props;
   const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -49,9 +50,14 @@ export function CardLayout(props: Props) {
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const orderByQueryParameter = `&order_by_field=${trendsOrderBy}&order_by_direction=${
+      trendsOrderBy === 'created_at' || trendsOrderBy === 'modified_at'
+        ? 'desc'
+        : 'asc'
+    }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -98,9 +104,14 @@ export function CardLayout(props: Props) {
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const orderByQueryParameter = `&order_by_field=${trendsOrderBy}&order_by_direction=${
+      trendsOrderBy === 'created_at' || trendsOrderBy === 'modified_at'
+        ? 'desc'
+        : 'asc'
+    }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -128,7 +139,7 @@ export function CardLayout(props: Props) {
           );
         }
       });
-  }, [filters, pageSize]);
+  }, [filters, pageSize, trendsOrderBy]);
   return (
     <div style={{ padding: '0 1rem' }}>
       {trendsList && totalCount ? (

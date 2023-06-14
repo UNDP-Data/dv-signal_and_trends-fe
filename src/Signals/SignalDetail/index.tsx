@@ -7,7 +7,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import styled from 'styled-components';
-import Background from '../../assets/UNDP-hero-image.png';
+import Background from '../../assets/UNDP-hero-image.jpg';
 import { SignalDataType, TrendDataType } from '../../Types';
 import {
   API_ACCESS_TOKEN,
@@ -278,29 +278,29 @@ export function SignalDetail() {
                 </div>
               </div>
               {role === 'Admin' || role === 'Curator' ? (
-                <>
-                  <div className='margin-top-07'>
-                    <h6 className='undp-typography margin-top-00 margin-bottom-03'>
-                      Score
-                    </h6>
-                    <div className='small-font'>{data.score || 'NA'}</div>
-                  </div>
-                  <div className='margin-top-07'>
-                    <div>
-                      <h6 className='undp-typography margin-top-00 margin-bottom-03'>
-                        Created by
-                      </h6>
-                      <p className='undp-typography small-font'>
-                        {`${data.created_by} on ${new Date(
-                          data.created_at,
-                        ).getDate()}-${
-                          MONTHS[new Date(data.created_at).getMonth()]
-                        }-${new Date(data.created_at).getFullYear()}`}
-                      </p>
-                    </div>
-                  </div>
-                </>
+                <div className='margin-top-07'>
+                  <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                    Score
+                  </h6>
+                  <div className='small-font'>{data.score || 'NA'}</div>
+                </div>
               ) : null}
+              <AuthenticatedTemplate>
+                <div className='margin-top-07'>
+                  <div>
+                    <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                      Created by
+                    </h6>
+                    <p className='undp-typography small-font'>
+                      {`${data.created_by} on ${new Date(
+                        data.created_at,
+                      ).getDate()}-${
+                        MONTHS[new Date(data.created_at).getMonth()]
+                      }-${new Date(data.created_at).getFullYear()}`}
+                    </p>
+                  </div>
+                </div>
+              </AuthenticatedTemplate>
               <hr className='undp-style light margin-top-07' />
               <div className='margin-top-07'>
                 <AuthenticatedTemplate>

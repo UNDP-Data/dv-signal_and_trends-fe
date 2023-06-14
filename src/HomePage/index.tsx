@@ -4,17 +4,37 @@ import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import Background from '../assets/UNDP-hero-image.png';
+import Background from '../assets/UNDP-hero-image.jpg';
+import CardImage from '../assets/card-image.jpg';
 import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { TrendCard } from '../Components/TrendCard';
-import { TrendsVis } from '../Components/TrendsVis';
+import { TrendsVis } from './TrendsVis';
 import Context from '../Context/Context';
 
 const HeroImageEl = styled.div`
-  background: url(${Background}) no-repeat center;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url(${Background}) no-repeat center;
   background-size: cover;
   margin-top: 7.1875rem;
+`;
+
+const Card01ImageEl = styled.div`
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url(${CardImage}) no-repeat center;
+  background-size: cover;
+  flex-grow: 1;
+  width: calc(50% - 2px);
+  min-width: 20rem;
+`;
+
+const Card02ImageEl = styled.div`
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url(${Background}) no-repeat center;
+  background-size: cover;
+  flex-grow: 1;
+  width: calc(50% - 1px);
+  min-width: 20rem;
 `;
 
 const CardEl = styled.div`
@@ -158,13 +178,13 @@ export function HomePage() {
             <div className='undp-loader' />
           </div>
         )}
+        <div className='margin-top-11'>
+          <h2 className='undp-typography margin-top-07 margin-bottom-05'>
+            Most Recent Trends
+          </h2>
+        </div>
         {trendListing ? (
           <>
-            <div className='margin-top-11'>
-              <h2 className='undp-typography margin-top-07 margin-bottom-05'>
-                Most Recent Trends
-              </h2>
-            </div>
             <div className='flex-div flex-wrap margin-bottom-05'>
               {trendListing.map((d, i) => (
                 <TrendCard key={i} data={d} />
@@ -193,9 +213,6 @@ export function HomePage() {
             <div className='undp-loader' />
           </div>
         )}
-        <h2 className='undp-typography margin-top-10 margin-bottom-08 gap-07'>
-          Trends visualized
-        </h2>
         {choices ? (
           <TrendsVis />
         ) : (
@@ -203,6 +220,76 @@ export function HomePage() {
             <div className='undp-loader' />
           </div>
         )}
+        <div
+          className='flex-div margin-top-09'
+          style={{ alignItems: 'stretch', gap: '4px' }}
+        >
+          <Card01ImageEl>
+            <div
+              style={{ padding: 'var(--spacing-13)', color: 'var(--white)' }}
+            >
+              <h2 className='undp-typography margin-bottom-03'>
+                Signals Spotlight
+              </h2>
+              <h5 className='undp-typography margin-bottom-07'>
+                This Signals Spotlight – is part of our effort to become more
+                agile and anticipatory. The Spotlight highlights some of their
+                most interesting observations, sketches connections and
+                patterns, and asks what these might mean for the future of
+                development.
+              </h5>
+              <a
+                href='https://www.undp.org/future-development/signals-spotlight'
+                target='_blank'
+                style={{
+                  textDecoration: 'auto',
+                  display: 'inline-block',
+                  width: 'fit-content',
+                }}
+                rel='noreferrer'
+              >
+                <button
+                  type='button'
+                  className='undp-button button-primary button-arrow'
+                >
+                  See Full Report
+                </button>
+              </a>
+            </div>
+          </Card01ImageEl>
+          <Card02ImageEl>
+            <div
+              style={{ padding: 'var(--spacing-13)', color: 'var(--white)' }}
+            >
+              <h2 className='undp-typography margin-bottom-03'>
+                Future of Development
+              </h2>
+              <h5 className='undp-typography margin-bottom-07'>
+                Explore our vision for a brighter future. Learn how we are
+                imagining the future of development and sharing our ideas for
+                progress towards a more sustainable and equitable
+                tomorrow.Insights from UNDP&apos;s Future Network
+              </h5>
+              <a
+                href='https://www.undp.org/future-development'
+                target='_blank'
+                style={{
+                  textDecoration: 'auto',
+                  display: 'inline-block',
+                  width: 'fit-content',
+                }}
+                rel='noreferrer'
+              >
+                <button
+                  type='button'
+                  className='undp-button button-primary button-arrow'
+                >
+                  Explore More
+                </button>
+              </a>
+            </div>
+          </Card02ImageEl>
+        </div>
       </div>
     </>
   );

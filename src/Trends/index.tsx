@@ -5,14 +5,16 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import Background from '../assets/UNDP-hero-image.png';
+import Background from '../assets/UNDP-hero-image.jpg';
 import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
-import { CardLayout } from './ListingView';
+import { AllTrends } from './AllTrends';
 import Context from '../Context/Context';
 import { SignInButton } from '../Components/SignInButton';
+import { TREND_ORDER_BY_OPTIONS } from '../Constants';
 
 const HeroImageEl = styled.div`
-  background: url(${Background}) no-repeat center;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url(${Background}) no-repeat center;
   background-size: cover;
   margin-top: 7.1875rem;
 `;
@@ -22,6 +24,7 @@ export function TrendsListing() {
   const [noOfFilter, setNoOfFilter] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
+  const [trendSortBy, setTrendSortBy] = useState('created_at');
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
@@ -66,6 +69,23 @@ export function TrendsListing() {
           className='flex-div flex-vert-align-center flex-wrap'
           style={{ flexGrow: 1 }}
         >
+          <Select
+            className='undp-select'
+            style={{
+              width: '15rem',
+            }}
+            placeholder='Sort by'
+            value={trendSortBy}
+            onChange={value => {
+              setTrendSortBy(value);
+            }}
+          >
+            {TREND_ORDER_BY_OPTIONS.map(d => (
+              <Select.Option className='undp-select-option' key={d.key}>
+                Sort by: {d.value}
+              </Select.Option>
+            ))}
+          </Select>
           <button
             type='button'
             className='undp-button button-secondary'
@@ -150,7 +170,11 @@ export function TrendsListing() {
           </button>
         </div>
       ) : null}
-      <CardLayout filters={filters} view={viewType} />
+      <AllTrends
+        filters={filters}
+        view={viewType}
+        trendsOrderBy={trendSortBy}
+      />
       <Modal
         className='undp-modal'
         open={showFilterModal}
@@ -328,13 +352,14 @@ export function ArchivedTrendsListing() {
       </div>
       <AuthenticatedTemplate>
         {role === 'Admin' || role === 'Curator' ? (
-          <CardLayout
+          <AllTrends
             filters={{
               impact: 'All Ratings',
               horizon: 'All Horizons',
               status: 'Archived',
             }}
             view={viewType}
+            trendsOrderBy='modified_at'
           />
         ) : (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>

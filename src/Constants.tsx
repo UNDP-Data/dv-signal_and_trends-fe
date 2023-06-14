@@ -633,3 +633,41 @@ export const CHOICES = {
 };
 
 export const WEB_ADDRESS = 'https://undp-signal-and-trends.netlify.app/';
+
+export const SIGNAL_ORDER_BY_OPTIONS = [
+  {
+    key: 'created_at',
+    value: 'Created On',
+  },
+  {
+    key: 'modified_at',
+    value: 'Modified On',
+  },
+  {
+    key: 'steep',
+    value: 'STEEP+V',
+  },
+  {
+    key: 'signature_primary',
+    value: 'Primary Signature Solution',
+  },
+];
+
+export const TREND_ORDER_BY_OPTIONS = [
+  {
+    key: 'created_at',
+    value: 'Created On',
+  },
+  {
+    key: 'modified_at',
+    value: 'Modified On',
+  },
+  {
+    key: 'time_horizon',
+    value: 'Time Horizon',
+  },
+  {
+    key: 'impact_rating',
+    value: 'Impact Rating',
+  },
+];

@@ -3,7 +3,7 @@ import { Pagination, PaginationProps } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { SignalDataType, SignalFiltersDataType } from '../../Types';
-import { CardList } from './CardsList';
+import { CardList } from './GridView';
 import { ListView } from './ListView';
 import { API_ACCESS_TOKEN } from '../../Constants';
 import Context from '../../Context/Context';
@@ -11,10 +11,11 @@ import Context from '../../Context/Context';
 interface Props {
   filters: SignalFiltersDataType;
   view: 'cardView' | 'listView';
+  signalOrderBy: string;
 }
 
-export function CardLayout(props: Props) {
-  const { filters, view } = props;
+export function AllSignals(props: Props) {
+  const { filters, view, signalOrderBy } = props;
   const [paginationValue, setPaginationValue] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [totalCount, setTotalCount] = useState<number | undefined>(undefined);
@@ -50,9 +51,14 @@ export function CardLayout(props: Props) {
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
+      signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
+        ? 'desc'
+        : 'asc'
+    }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -107,9 +113,14 @@ export function CardLayout(props: Props) {
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
+      signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
+        ? 'desc'
+        : 'asc'
+    }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -137,7 +148,7 @@ export function CardLayout(props: Props) {
           );
         }
       });
-  }, [role, filters, accessToken, pageSize]);
+  }, [role, filters, accessToken, pageSize, signalOrderBy]);
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     size,

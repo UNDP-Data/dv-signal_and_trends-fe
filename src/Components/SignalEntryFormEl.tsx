@@ -544,7 +544,7 @@ export function SignalEntryFormEl(props: Props) {
                   padding: 'var(--spacing-05)',
                 }}
               >
-                Add trends
+                Select trends
               </button>
             </>
           ) : (

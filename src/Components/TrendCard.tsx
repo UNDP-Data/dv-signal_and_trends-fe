@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { TrendDataType } from '../Types';
-import Background from '../assets/UNDP-hero-image.png';
+import Background from '../assets/UNDP-hero-image.jpg';
 import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
