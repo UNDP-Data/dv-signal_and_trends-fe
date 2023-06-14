@@ -95,22 +95,24 @@ export function Header(props: Props) {
             className='flex-div gap-09'
             style={{ flexGrow: 1, justifyContent: 'center' }}
           >
-            <NavLink
-              to='./signals'
-              className={({ isActive }) =>
-                isActive ? 'header-link-active' : 'header-link'
-              }
-            >
-              All Signals
-            </NavLink>
-            <NavLink
-              to='./trends'
-              className={({ isActive }) =>
-                isActive ? 'header-link-active' : 'header-link'
-              }
-            >
-              All Trends
-            </NavLink>
+            <AuthenticatedTemplate>
+              <NavLink
+                to='./signals'
+                className={({ isActive }) =>
+                  isActive ? 'header-link-active' : 'header-link'
+                }
+              >
+                All Signals
+              </NavLink>
+              <NavLink
+                to='./trends'
+                className={({ isActive }) =>
+                  isActive ? 'header-link-active' : 'header-link'
+                }
+              >
+                All Trends
+              </NavLink>
+            </AuthenticatedTemplate>
             {role === 'Admin' || role === 'Curator' ? (
               <>
                 <NavLink
