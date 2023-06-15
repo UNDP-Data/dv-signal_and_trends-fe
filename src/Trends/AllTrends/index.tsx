@@ -142,7 +142,7 @@ export function AllTrends(props: Props) {
   }, [filters, pageSize, trendsOrderBy]);
   return (
     <div style={{ padding: '0 1rem' }}>
-      {trendsList && totalCount ? (
+      {trendsList && totalCount !== undefined ? (
         <div>
           <div
             className='margin-bottom-05 bold'
