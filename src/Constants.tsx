@@ -671,4 +671,4 @@ export const WEB_ADDRESS = 'https://undp-signal-and-trends.netlify.app/';
 
 export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
 
-export const REDIRECT_URL = import.meta.env.INPUT_REDIRECT_URI_FOR_MSAL;
+export const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
