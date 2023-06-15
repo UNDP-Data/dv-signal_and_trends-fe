@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { TrendDataType } from '../Types';
-import Background from '../assets/UNDP-hero-image.png';
+import Background from '../assets/UNDP-hero-image.jpg';
 import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
@@ -12,6 +12,7 @@ import { ImpactCircleEl } from './ImpactRatingEl';
 
 interface Props {
   data: TrendDataType;
+  forHomePage?: boolean;
 }
 interface HeroImageProps {
   bgImage?: string;
@@ -74,12 +75,12 @@ const LinkP = styled.p`
 `;
 
 export function TrendCard(props: Props) {
-  const { data } = props;
+  const { data, forHomePage } = props;
   const { role, choices, cardsToPrint, updateCardsToPrint } =
     useContext(Context);
 
   return (
-    <div className='trend-card'>
+    <div className={forHomePage ? 'trend-card-for-homepage' : 'trend-card'}>
       <CardEl>
         <div
           className='flex-div gap-00'
@@ -128,7 +129,7 @@ export function TrendCard(props: Props) {
           >
             <div>
               <NavLink
-                className='trend-image'
+                style={{ textDecoration: 'none' }}
                 to={
                   data.status === 'Archived'
                     ? `/archived-trends/${data.id}`

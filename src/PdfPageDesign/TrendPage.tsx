@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Page, View, StyleSheet, Text, Link } from '@react-pdf/renderer';
+import { Page, View, StyleSheet, Text, Link, Image } from '@react-pdf/renderer';
 import { WEB_ADDRESS } from '../Constants';
 import { TrendDataType, SignalDataType } from '../Types';
 
@@ -8,10 +8,18 @@ const font = 'Helvetica';
 const styles = StyleSheet.create({
   page: {
     backgroundColor: '#fff',
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 20,
+    paddingBottom: 20,
     paddingLeft: 50,
     paddingRight: 50,
+  },
+  titleFirst: {
+    fontSize: '12px',
+    fontWeight: 'bold',
+    fontFamily: `${font}-Bold`,
+    color: '#006EB5',
+    marginTop: 0,
+    marginBottom: 5,
   },
   title: {
     fontSize: '12px',
@@ -104,51 +112,104 @@ export function TrendsPage(props: Props) {
             width: 'calc(33.33% - 10px)',
           }}
         >
+          {data.attachment ? (
+            <View
+              style={{
+                width: '100%',
+                height: '150px',
+              }}
+            >
+              <Image
+                src={`data:${data.attachment}`}
+                style={{
+                  width: '100%',
+                  maxHeight: '200px',
+                  margin: '0',
+                }}
+              />
+            </View>
+          ) : null}
           <Text style={styles.title}>Impact Rating</Text>
+          {data.impact_rating ? (
+            <>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '2',
+                  marginBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 10,
+                    backgroundColor: '#006EB5',
+                  }}
+                />
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 10,
+                    backgroundColor:
+                      parseInt(data.impact_rating?.split(' — ')[0], 10) > 1
+                        ? '#006EB5'
+                        : '#AAA',
+                  }}
+                />
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 10,
+                    backgroundColor:
+                      parseInt(data.impact_rating?.split(' — ')[0], 10) > 2
+                        ? '#006EB5'
+                        : '#AAA',
+                  }}
+                />
+              </View>
+              <Text style={styles.subNote}>
+                {data.impact_rating?.split(' — ')[1]}
+              </Text>
+            </>
+          ) : (
+            <Text style={styles.subNote}>Not Available</Text>
+          )}
+          <Text style={styles.title}>Horizon</Text>
+          <Text style={styles.text}>{data.time_horizon}</Text>
           <View
             style={{
               display: 'flex',
+              justifyContent: 'space-between',
               flexDirection: 'row',
-              gap: '2',
-              marginBottom: 5,
             }}
           >
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 10,
-                backgroundColor: '#006EB5',
-              }}
-            />
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 10,
-                backgroundColor:
-                  parseInt(data.impact_rating.split(' — ')[0], 10) > 1
-                    ? '#006EB5'
-                    : '#AAA',
-              }}
-            />
-            <View
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 10,
-                backgroundColor:
-                  parseInt(data.impact_rating.split(' — ')[0], 10) > 2
-                    ? '#006EB5'
-                    : '#AAA',
-              }}
-            />
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Trend ID</Text>
+              <Text style={styles.text}>{data.id}</Text>
+            </View>
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Last Updated</Text>
+              <Text style={styles.text}>
+                {data.modified_at
+                  ? data.modified_at.split('T')[0]
+                  : data.created_at.split('T')[0]}
+              </Text>
+            </View>
           </View>
-          <Text style={styles.subNote}>
-            {data.impact_rating.split(' — ')[1]}
-          </Text>
-          <Text style={styles.title}>Horizon</Text>
-          <Text style={styles.text}>{data.time_horizon}</Text>
+        </View>
+        <View
+          style={{
+            width: 'calc(66.66% - 10px)',
+          }}
+        >
+          <Text style={styles.titleFirst}>Description</Text>
+          <Text style={styles.text}>{data.description}</Text>
+          <Text style={styles.title}>Impact on Development</Text>
+          <Text style={styles.text}>{data.impact_description}</Text>
           {data.connected_signals?.length === 0 ||
           data.connected_signals === null ? (
             <Text style={styles.title}>No signals in this trend</Text>
@@ -176,24 +237,6 @@ export function TrendsPage(props: Props) {
               </View>
             </>
           )}
-          <Text style={styles.title}>Last Updated</Text>
-          <Text style={styles.text}>
-            {data.modified_at
-              ? data.modified_at.split('T')[0]
-              : data.created_at.split('T')[0]}
-          </Text>
-          <Text style={styles.title}>Trend ID</Text>
-          <Text style={styles.text}>{data.id}</Text>
-        </View>
-        <View
-          style={{
-            width: 'calc(66.66% - 10px)',
-          }}
-        >
-          <Text style={styles.title}>Description</Text>
-          <Text style={styles.text}>{data.description}</Text>
-          <Text style={styles.title}>Impact on Development</Text>
-          <Text style={styles.text}>{data.impact_description}</Text>
           <Link src={`${WEB_ADDRESS}trends/${data.id}`} style={styles.linkText}>
             View Details
           </Link>

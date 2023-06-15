@@ -5,8 +5,8 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import Background from '../assets/UNDP-hero-image.png';
-import { CardLayout } from './ListingView';
+import Background from '../assets/UNDP-hero-image.jpg';
+import { AllSignals } from './AllSignals';
 import Context from '../Context/Context';
 import {
   SDGList,
@@ -18,9 +18,11 @@ import {
   ScoreList,
 } from '../Types';
 import { SignInButton } from '../Components/SignInButton';
+import { SIGNAL_ORDER_BY_OPTIONS } from '../Constants';
 
 const HeroImageEl = styled.div`
-  background: url(${Background}) no-repeat center;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url(${Background}) no-repeat center;
   background-size: cover;
   margin-top: 7.1875rem;
 `;
@@ -29,6 +31,7 @@ export function SignalsListing() {
   const { role, choices } = useContext(Context);
   const [viewType, setViewType] = useState<'cardView' | 'listView'>('cardView');
   const [noOfFilter, setNoOfFilter] = useState(0);
+  const [signalSortBy, setSignalSortBy] = useState('created_at');
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
 
   const [filters, setFilters] = useState<SignalFiltersDataType>({
@@ -65,7 +68,7 @@ export function SignalsListing() {
         </div>
       </HeroImageEl>
       <div
-        className='flex-div margin-top-07 margin-bottom-05 flex-wrap flex-vert-align-center'
+        className='flex-div margin-top-07 margin-bottom-09 flex-wrap flex-vert-align-center'
         style={{
           paddingLeft: '1rem',
           paddingRight: '1rem',
@@ -81,6 +84,23 @@ export function SignalsListing() {
           className='flex-div flex-vert-align-center flex-wrap'
           style={{ flexGrow: 1 }}
         >
+          <Select
+            className='undp-select'
+            style={{
+              width: '15rem',
+            }}
+            placeholder='Sort by'
+            value={signalSortBy}
+            onChange={value => {
+              setSignalSortBy(value);
+            }}
+          >
+            {SIGNAL_ORDER_BY_OPTIONS.map(d => (
+              <Select.Option className='undp-select-option' key={d.key}>
+                Sort by: {d.value}
+              </Select.Option>
+            ))}
+          </Select>
           <button
             type='button'
             className='undp-button button-secondary'
@@ -179,7 +199,11 @@ export function SignalsListing() {
           </button>
         </div>
       ) : null}
-      <CardLayout filters={filters} view={viewType} />
+      <AllSignals
+        filters={filters}
+        view={viewType}
+        signalOrderBy={signalSortBy}
+      />
       <Modal
         className='undp-modal'
         open={showFilterModal}
@@ -444,7 +468,7 @@ export function ArchivedSignalsListing() {
         </div>
       </HeroImageEl>
       <div
-        className='flex-div margin-top-07 margin-bottom-05 flex-wrap flex-vert-align-center'
+        className='flex-div margin-top-07 margin-bottom-09 flex-wrap flex-vert-align-center'
         style={{
           paddingLeft: '1rem',
           paddingRight: '1rem',
@@ -469,7 +493,7 @@ export function ArchivedSignalsListing() {
       </div>
       <AuthenticatedTemplate>
         {role === 'Admin' || role === 'Curator' ? (
-          <CardLayout
+          <AllSignals
             filters={{
               steep: 'All STEEP+V',
               sdg: 'All SDGs',
@@ -479,6 +503,7 @@ export function ArchivedSignalsListing() {
               status: 'Archived',
             }}
             view={viewType}
+            signalOrderBy='modified_at'
           />
         ) : (
           <p className='undp-typography' style={{ color: 'var(--dark-red)' }}>

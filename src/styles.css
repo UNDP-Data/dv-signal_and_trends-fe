@@ -8,6 +8,16 @@
   display: flex;
 }
 
+.trend-card-for-homepage{
+  width: calc(33.33% - 0.67rem);
+  min-width: min(100%, 580px);
+  color: var(--black);
+  text-decoration: none;
+  background-color: var(--gray-200);
+  align-items: stretch;
+  display: flex;
+}
+
 .signal-card{
   width: calc(25% - 0.75rem);
   min-width: min(100%, 320px);
@@ -27,6 +37,9 @@
   .trend-card{
     width: 100%;
   }
+  .trend-card-for-homepage{
+    width: 100%;
+  }
   .signal-card{
     width: 100%;
   }
@@ -40,6 +53,9 @@
   .trend-card{
     width: calc(50% - 0.5rem);
   }
+  .trend-card-for-homepage{
+    width: calc(50% - 0.5rem);
+  }
 }
 @media(min-width: 1312px){
   .signal-card{
@@ -49,6 +65,9 @@
 @media(min-width: 1820px){  
   .trend-card{
     width: calc(33.3% - 0.67rem);
+  }
+  .trend-card-for-homepage{
+    width: calc(33.33% - 0.67rem);
   }
 }
 
@@ -66,6 +85,9 @@
   .trend-card{
     width: calc(25% - 0.75rem);
   }
+  .trend-card-for-homepage{
+    width: calc(33.33% - 0.67rem);
+  }
 }
 
 .trend-image {
@@ -74,31 +96,4 @@
   @media (max-width: 600px) {
     display: none;
   }
-}
-
-.idCode{
-  display: none;
-}
-.connected .idCode{
-  display: inline;
-  font-weight: normal;
-  font-size: 1.2rem;
-}
-
-/* color legend styles for charts */
-.legend-container{
-  display: flex;
-  flex-wrap: wrap;
-  height: 40px;
-  padding-bottom: 10px;
-  align-items: center;
-}
-.legend-circle{
-  width: 16px;
-  height: 16px;
-  border-radius: 9px;
-}
-.legend-label{
-  font-size: 1rem;
-  padding: 0px 16px 0 8px;
 }

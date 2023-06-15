@@ -13,7 +13,7 @@ export function AddNewSignalEl() {
   const navigate = useNavigate();
   return (
     <div
-      className='undp-container flex-wrap margin-bottom-13'
+      className='undp-container flex-wrap margin-bottom-09'
       style={{ maxWidth: '64rem', padding: '0 2rem', marginTop: '10rem' }}
     >
       <AuthenticatedTemplate>
@@ -49,7 +49,7 @@ export function AddNewTrendEl() {
   const { role } = useContext(Context);
   return (
     <div
-      className='undp-container flex-wrap margin-bottom-13'
+      className='undp-container flex-wrap margin-bottom-09'
       style={{ maxWidth: '64rem', padding: '0 2rem', marginTop: '10rem' }}
     >
       <AuthenticatedTemplate>

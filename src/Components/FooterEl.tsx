@@ -2,7 +2,7 @@ import UNDPLogo from '../assets/logo.png';
 
 export function Footer() {
   return (
-    <div className='margin-top-07'>
+    <div>
       <footer>
         <div className='undp-footer'>
           <div

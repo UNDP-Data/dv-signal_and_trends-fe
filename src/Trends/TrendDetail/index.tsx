@@ -7,7 +7,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import styled from 'styled-components';
-import Background from '../../assets/UNDP-hero-image.png';
+import Background from '../../assets/UNDP-hero-image.jpg';
 import { SignalDataType, TrendDataType } from '../../Types';
 import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../../Constants';
 import { SignalCard } from '../../Components/SignalCard';
@@ -184,7 +184,7 @@ export function TrendDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09 flex-div gap-09 max-width'
+            className='margin-top-09 margin-bottom-09 flex-div gap-09 max-width'
             style={{
               marginLeft: 'auto',
               marginRight: 'auto',

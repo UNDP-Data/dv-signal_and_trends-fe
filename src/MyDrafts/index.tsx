@@ -9,7 +9,7 @@ import {
 import { SignInButton } from '../Components/SignInButton';
 import Context from '../Context/Context';
 import { SignalDataType } from '../Types';
-import { CardList } from '../Signals/ListingView/CardsList';
+import { CardList } from '../Signals/AllSignals/GridView';
 
 export function MyDrafts() {
   const { accessToken, userName } = useContext(Context);
@@ -93,7 +93,7 @@ export function MyDrafts() {
 
   return (
     <div
-      className='margin-top-13 padding-top-09'
+      className='margin-top-13 padding-top-09 margin-bottom-09'
       style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
     >
       <AuthenticatedTemplate>

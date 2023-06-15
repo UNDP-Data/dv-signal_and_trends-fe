@@ -233,7 +233,7 @@ export function TrendEntryFormEl(props: Props) {
             }}
             value={impactRating || undefined}
           >
-            {[1, 2, 3, 4, 5].map((d, i) => (
+            {choices?.ratings.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
                 {d}
               </Select.Option>
@@ -368,7 +368,7 @@ export function TrendEntryFormEl(props: Props) {
                 padding: 'var(--spacing-05)',
               }}
             >
-              Add signals
+              Select signals
             </button>
           </>
         ) : (

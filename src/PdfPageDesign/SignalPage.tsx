@@ -8,10 +8,18 @@ const font = 'Helvetica';
 const styles = StyleSheet.create({
   page: {
     backgroundColor: '#fff',
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 20,
+    paddingBottom: 20,
     paddingLeft: 50,
     paddingRight: 50,
+  },
+  titleFirst: {
+    fontSize: '12px',
+    fontWeight: 'bold',
+    fontFamily: `${font}-Bold`,
+    color: '#59BA47',
+    marginTop: 0,
+    marginBottom: 5,
   },
   title: {
     fontSize: '12px',
@@ -69,6 +77,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 0,
+    marginBottom: 10,
     backgroundColor: '#EAEAEA',
     width: 'calc(100% - 20px)',
   },
@@ -103,10 +112,14 @@ export function SignalPage(props: Props) {
             width: 'calc(33.33% - 10px)',
           }}
         >
-          <Text style={styles.title}>Location</Text>
+          <Text style={styles.titleFirst}>Location</Text>
           <Text style={styles.text}>{data.location}</Text>
           <Text style={styles.title}>STEEP+V</Text>
-          <Text style={styles.text}>{data.steep}</Text>
+          {data.steep ? (
+            <Text style={styles.text}>{data.steep.split(' – ')[0]}</Text>
+          ) : (
+            <Text style={styles.text}>Not Available</Text>
+          )}
           <Text style={styles.title}>Signature Solutions</Text>
           <Text style={styles.listTextWOLink}>{data.signature_primary}</Text>
           {data?.signature_secondary
@@ -143,21 +156,33 @@ export function SignalPage(props: Props) {
               </View>
             </>
           )}
-          <Text style={styles.title}>Last Updated</Text>
-          <Text style={styles.text}>
-            {data.modified_at
-              ? data.modified_at.split('T')[0]
-              : data.created_at.split('T')[0]}
-          </Text>
-          <Text style={styles.title}>Signal ID</Text>
-          <Text style={styles.text}>{data.id}</Text>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}
+          >
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Trend ID</Text>
+              <Text style={styles.text}>{data.id}</Text>
+            </View>
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Last Updated</Text>
+              <Text style={styles.text}>
+                {data.modified_at
+                  ? data.modified_at.split('T')[0]
+                  : data.created_at.split('T')[0]}
+              </Text>
+            </View>
+          </View>
         </View>
         <View
           style={{
             width: 'calc(66.66% - 10px)',
           }}
         >
-          <Text style={styles.title}>Description</Text>
+          <Text style={styles.titleFirst}>Description</Text>
           <Text style={styles.text}>{data.description}</Text>
           <Text style={styles.title}>Relevance</Text>
           <Text style={styles.text}>{data.relevance}</Text>

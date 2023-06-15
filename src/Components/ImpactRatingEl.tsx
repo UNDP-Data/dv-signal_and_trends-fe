@@ -18,6 +18,12 @@ const ImpactCircle = styled.div<ImpactCircleProps>`
 
 export function ImpactCircleEl(props: Props) {
   const { impact, showText } = props;
+  const color =
+    parseInt(impact.split(' — ')[0], 10) === 1
+      ? 'var(--blue-200)'
+      : parseInt(impact.split(' — ')[0], 10) === 2
+      ? 'var(--blue-500)'
+      : 'var(--blue-700)';
   return (
     <div>
       <div className='flex-div gap-03 flex-vert-align-center'>
@@ -26,7 +32,7 @@ export function ImpactCircleEl(props: Props) {
             key={d - 1}
             fill={
               d < parseInt(impact.split(' — ')[0], 10)
-                ? 'var(--blue-600)'
+                ? color
                 : 'var(--gray-300)'
             }
           />
