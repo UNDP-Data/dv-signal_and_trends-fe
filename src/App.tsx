@@ -12,6 +12,12 @@ import MainBody from './MainBody';
 import { CardsToPrintDataType, ChoicesDataType } from './Types';
 
 function App() {
+  // eslint-disable-next-line no-console
+  console.log(
+    'hello',
+    process.env.INPUT_ACCESS_TOKEN_FOR_API,
+    process.env.INPUT_REDIRECT_URI_FOR_MSAL,
+  );
   const isAuthenticated = useIsAuthenticated();
   const [openModal, setOpenModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<string | undefined>(
