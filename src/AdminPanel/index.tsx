@@ -88,10 +88,10 @@ export function AdminPanel() {
   const navigate = useNavigate();
   return (
     <div
-      className='margin-top-13 padding-top-09'
+      className='margin-top-13 padding-top-09 margin-bottom-09'
       style={{
         width: '100%',
-        maxWidth: '60rem',
+        maxWidth: '64rem',
         marginLeft: 'auto',
         marginRight: 'auto',
         paddingLeft: '1rem',

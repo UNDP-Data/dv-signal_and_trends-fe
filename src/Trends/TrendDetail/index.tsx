@@ -184,7 +184,7 @@ export function TrendDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09 flex-div gap-09 max-width'
+            className='margin-top-09 margin-bottom-09 flex-div gap-09 max-width'
             style={{
               marginLeft: 'auto',
               marginRight: 'auto',

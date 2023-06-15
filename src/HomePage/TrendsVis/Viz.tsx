@@ -11,6 +11,7 @@ import {
 import { scaleSqrt, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
 import axios, { AxiosResponse } from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Context from '../../Context/Context';
 import { TrendDataType } from '../../Types';
 import { CHOICES, API_ACCESS_TOKEN } from '../../Constants';
@@ -23,6 +24,7 @@ interface Props {
 
 interface DotHoveredProps {
   title: string;
+  noOfSignals: number;
   xPosition: number;
   yPosition: number;
 }
@@ -43,12 +45,12 @@ const TooltipEl = styled.div<TooltipElProps>`
   display: block;
   position: fixed;
   z-index: 1000;
-  background-color: var(--gray-300);
+  background-color: var(--gray-200);
   word-wrap: break-word;
   top: ${props => props.y - 17}px;
   left: ${props => props.x}px;
   transform: translate(-50%, -100%);
-  padding: 1rem;
+  padding: 0.5rem;
 `;
 
 export function Viz(props: Props) {
@@ -73,6 +75,8 @@ export function Viz(props: Props) {
     width: (svgWidth - margin.left - margin.right) / 3,
     height: (svgHeight - margin.top - margin.bottom) / 3,
   };
+
+  const navigate = useNavigate();
   const colorScale = scaleOrdinal()
     .domain(choices?.ratings || CHOICES.ratings)
     .range(['var(--blue-200)', 'var(--blue-500)', 'var(--blue-700)']);
@@ -181,16 +185,23 @@ export function Viz(props: Props) {
                     )}
                     cx={d.x}
                     cy={d.y}
-                    style={{ fill: colorScale(d.impact_rating) as string }}
+                    style={{
+                      fill: colorScale(d.impact_rating) as string,
+                      cursor: 'pointer',
+                    }}
                     onMouseEnter={event => {
                       setHoveredDot({
                         title: d.headline,
+                        noOfSignals: d.connected_signals?.length || 0,
                         xPosition: event.clientX,
                         yPosition: event.clientY,
                       });
                     }}
                     onMouseLeave={() => {
                       setHoveredDot(null);
+                    }}
+                    onClick={() => {
+                      navigate(`/trends/${d.id}`);
                     }}
                     opacity={
                       hoveredDot
@@ -253,8 +264,11 @@ export function Viz(props: Props) {
           )}
           {hoveredDot ? (
             <TooltipEl x={hoveredDot.xPosition} y={hoveredDot.yPosition}>
-              <p className='undp-typography margin-bottom-00 margin-top-00 small-font'>
-                {hoveredDot.title}
+              <p
+                className='undp-typography margin-bottom-00 margin-top-00'
+                style={{ fontSize: '1rem' }}
+              >
+                {hoveredDot.title} ({hoveredDot.noOfSignals} signals)
               </p>
             </TooltipEl>
           ) : null}

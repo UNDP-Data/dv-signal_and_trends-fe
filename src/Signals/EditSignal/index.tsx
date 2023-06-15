@@ -41,7 +41,7 @@ export function EditSignal() {
   }, [id, isAuthenticated, accessToken]);
   return (
     <div
-      className='undp-container flex-wrap margin-bottom-13'
+      className='undp-container flex-wrap margin-bottom-09'
       style={{ maxWidth: '64rem', padding: '0 1rem', marginTop: '10rem' }}
     >
       <AuthenticatedTemplate>

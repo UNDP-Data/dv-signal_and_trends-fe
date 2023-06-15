@@ -29,19 +29,19 @@ export function TrendsVis() {
     <div>
       {choices ? (
         <div
-          className='margin-top-13'
+          className='margin-top-13 margin-bottom-00'
           style={{
             margin: '0 -1rem',
-            backgroundColor: 'var(--gray-200)',
+            backgroundColor: 'var(--gray-300)',
             padding: 'var(--spacing-13) var(--spacing-07)',
           }}
         >
           <div className='max-width'>
-            <h2 className='undp-typography' style={{ textAlign: 'center' }}>
+            <h1 className='undp-typography margin-bottom-00'>
               Trends Visualized
-            </h2>
+            </h1>
             <div
-              className='flex-div flex-space-between flex-wrap margin-top-13 margin-bottom-07'
+              className='flex-div flex-space-between flex-wrap margin-top-07 margin-bottom-04'
               style={{ alignItems: 'flex-end' }}
             >
               <div>
@@ -98,6 +98,13 @@ export function TrendsVis() {
                 <div className='label'>Group Trends by Impact</div>
               </Checkbox>
             </div>
+            <p
+              className='undp-typography italics'
+              style={{ color: 'var(--gray-600)', fontSize: '1rem' }}
+            >
+              Size of the circle represents the number of signals connected to
+              each trend
+            </p>
             <div
               style={{
                 flexGrow: 1,

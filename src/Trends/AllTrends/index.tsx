@@ -141,7 +141,7 @@ export function AllTrends(props: Props) {
       });
   }, [filters, pageSize, trendsOrderBy]);
   return (
-    <div style={{ padding: '0 1rem' }}>
+    <div style={{ padding: '0 1rem' }} className='margin-bottom-09'>
       {trendsList && totalCount !== undefined ? (
         <div>
           <div

@@ -157,7 +157,7 @@ export function AllSignals(props: Props) {
   };
 
   return (
-    <div style={{ padding: '0 1rem' }}>
+    <div className='margin-bottom-09' style={{ padding: '0 1rem' }}>
       {signalList && totalCount !== undefined ? (
         <div>
           <div

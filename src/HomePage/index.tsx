@@ -38,16 +38,56 @@ const Card02ImageEl = styled.div`
 `;
 
 const CardEl = styled.div`
-  background-color: var(--gray-200);
-  color: var(--gray-700);
   flex-grow: 1;
+  color: var(--black);
+  font-size: 1.4rem;
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
-const LinkH6 = styled.h6`
+const LinkH5 = styled.h5`
   color: var(--gray-700);
+  font-weight: bold;
   &:hover {
     color: var(--red);
   }
+`;
+
+const SignalCardEl = styled.div`
+  width: calc(33.33% - 4.67rem);
+  padding: var(--spacing-07);
+  background-color: var(--gray-200);
+  @media (max-width: 800px) {
+    width: calc(50% - 4.67rem);
+  }
+  @media (max-width: 600px) {
+    width: calc(100% - 4.67rem);
+  }
+  &:hover {
+    background-color: var(--gray-300);
+  }
+`;
+const TrendCardEl = styled.div`
+  width: 100%;
+  @media (min-width: 1224px) {
+    width: calc(50% - 4.5rem);
+    padding: var(--spacing-07);
+  }
+  @media (min-width: 1820px) {
+    width: calc(33.33% - 4.67rem);
+    padding: var(--spacing-07);
+  }
+`;
+
+const CardPEl = styled.p`
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
 `;
 
 export function HomePage() {
@@ -85,7 +125,7 @@ export function HomePage() {
   useEffect(() => {
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=4&statuses=Approved`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=5&statuses=Approved`,
         {
           headers: {
             access_token: API_ACCESS_TOKEN,
@@ -121,93 +161,122 @@ export function HomePage() {
         </div>
       </HeroImageEl>
       <div
-        className='margin-top-08 margin-bottom-05'
+        className='margin-top-08'
         style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
       >
         {signalListing ? (
-          <>
-            <div>
+          <div
+            className='flex-div flex-wrap margin-top-09'
+            style={{ alignItems: 'stretch' }}
+          >
+            <SignalCardEl
+              style={{ paddingTop: 0, backgroundColor: 'transparent' }}
+            >
               <h2 className='undp-typography margin-top-05 margin-bottom-05'>
                 Most Recent Signals
               </h2>
-            </div>
-            <div className='flex-div flex-wrap margin-bottom-05'>
-              {signalListing.map((d, i) => (
+              <NavLink
+                to='./signals'
+                style={{
+                  textDecoration: 'auto',
+                  display: 'inline-block',
+                  width: 'fit-content',
+                }}
+              >
+                <div className='flex-div'>
+                  <button
+                    type='button'
+                    className='undp-button button-tertiary button-arrow'
+                  >
+                    Explore All Signals
+                  </button>
+                </div>
+              </NavLink>
+            </SignalCardEl>
+            {signalListing.map((d, i) => (
+              <SignalCardEl
+                key={i}
+                style={{
+                  display: 'flex',
+                }}
+              >
                 <NavLink
                   to={`/signals/${d.id}`}
                   className='simplified-cards'
                   key={i}
                   style={{
                     textDecoration: 'none',
-                    backgroundColor: 'var(--gray-200)',
                     color: 'var(-gray-700)',
-                    padding: 'var(--spacing-07)',
-                    flexGrow: '1',
-                    width: 'calc(20% - 5.8rem)',
-                    minWidth: '20rem',
+                    display: 'flex',
                   }}
                 >
                   <CardEl>
-                    <LinkH6 className='undp-typography margin-bottom-00'>
-                      {d.headline}
-                    </LinkH6>
+                    <div>
+                      <div style={{ padding: '0' }}>
+                        <h6 className='undp-typography margin-bottom-07'>
+                          Signal
+                        </h6>
+                        <LinkH5 className='undp-typography margin-bottom-05'>
+                          {d.headline}
+                        </LinkH5>
+                        <CardPEl className='undp-typography small-font'>
+                          {d.description}
+                        </CardPEl>
+                      </div>
+                    </div>
+                    <div className='margin-top-07'>
+                      <div>
+                        <button
+                          type='button'
+                          className='undp-button button-tertiary button-arrow padding-top-00 padding-bottom-00'
+                        >
+                          Read More
+                        </button>
+                      </div>
+                    </div>
                   </CardEl>
                 </NavLink>
-              ))}
-            </div>
-            <NavLink
-              to='./signals'
-              style={{
-                textDecoration: 'auto',
-                display: 'inline-block',
-                width: 'fit-content',
-              }}
-            >
-              <div className='flex-div'>
-                <button
-                  type='button'
-                  className='undp-button button-primary button-arrow'
-                >
-                  Explore All Signals
-                </button>
-              </div>
-            </NavLink>
-          </>
+              </SignalCardEl>
+            ))}
+          </div>
         ) : (
           <div className='undp-loader-container'>
             <div className='undp-loader' />
           </div>
         )}
-        <div className='margin-top-11'>
-          <h2 className='undp-typography margin-top-07 margin-bottom-05'>
-            Most Recent Trends
-          </h2>
-        </div>
         {trendListing ? (
-          <>
-            <div className='flex-div flex-wrap margin-bottom-05'>
-              {trendListing.map((d, i) => (
-                <TrendCard key={i} data={d} />
-              ))}
-            </div>
-            <NavLink
-              to='./trends'
-              style={{
-                textDecoration: 'auto',
-                display: 'inline-block',
-                width: 'fit-content',
-              }}
+          <div
+            className='flex-div flex-wrap margin-top-13 padding-bottom-13'
+            style={{ alignItems: 'stretch' }}
+          >
+            <TrendCardEl
+              style={{ paddingTop: 0, backgroundColor: 'transparent' }}
             >
-              <div className='flex-div'>
-                <button
-                  type='button'
-                  className='undp-button button-primary button-arrow'
-                >
-                  Explore All Trends
-                </button>
-              </div>
-            </NavLink>
-          </>
+              <h2 className='undp-typography margin-top-05 margin-bottom-05'>
+                Most Recent Trends
+              </h2>
+              <NavLink
+                to='./trends'
+                style={{
+                  textDecoration: 'auto',
+                  display: 'inline-block',
+                  width: 'fit-content',
+                }}
+              >
+                <div className='flex-div'>
+                  <button
+                    type='button'
+                    className='undp-button button-tertiary button-arrow'
+                  >
+                    Explore All Trends
+                  </button>
+                </div>
+              </NavLink>
+            </TrendCardEl>
+            {trendListing.map((d, i) => (
+              <TrendCard key={i} data={d} forHomePage />
+            ))}
+          </div>
         ) : (
           <div className='undp-loader-container'>
             <div className='undp-loader' />
@@ -221,8 +290,8 @@ export function HomePage() {
           </div>
         )}
         <div
-          className='flex-div margin-top-09 flex-wrap'
-          style={{ alignItems: 'stretch', gap: '4px' }}
+          className='flex-div flex-wrap'
+          style={{ alignItems: 'stretch', gap: '4px', margin: '0 -1rem' }}
         >
           <Card01ImageEl>
             <div

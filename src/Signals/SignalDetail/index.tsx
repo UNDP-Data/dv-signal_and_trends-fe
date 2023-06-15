@@ -188,7 +188,7 @@ export function SignalDetail() {
             </div>
           </HeroImageEl>
           <div
-            className='margin-top-09 flex-div gap-07 max-width'
+            className='margin-top-09 flex-div gap-07 max-width margin-bottom-09'
             style={{
               marginLeft: 'auto',
               marginRight: 'auto',

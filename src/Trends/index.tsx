@@ -52,7 +52,7 @@ export function TrendsListing() {
         </div>
       </HeroImageEl>
       <div
-        className='flex-div margin-top-07 margin-bottom-05 flex-wrap flex-vert-align-center'
+        className='flex-div margin-top-07 margin-bottom-09 flex-wrap flex-vert-align-center'
         style={{
           paddingLeft: '1rem',
           paddingRight: '1rem',
