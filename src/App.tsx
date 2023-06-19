@@ -33,7 +33,6 @@ function App() {
   };
 
   const [state, dispatch] = useReducer(Reducer, initialState);
-
   const updateNotificationText = (d?: string) => {
     dispatch({
       type: 'UPDATE_NOTIFICATION_TEXT',

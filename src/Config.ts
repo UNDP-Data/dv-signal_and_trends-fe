@@ -2,9 +2,11 @@ import { REDIRECT_URL } from './Constants';
 
 export const msalConfig = {
   auth: {
-    clientId: 'b2654b80-5b9a-4452-bc77-f39f3e834d4d',
+    clientId: '4b179bfc-6621-409a-a1ed-ad141c12eb11',
     redirectUri: REDIRECT_URL,
-    authority: 'https://login.microsoftonline.com/common',
+    clientSecret: process.env.INPUT_CLIENT_SECRET_FOR_MSAL,
+    authority:
+      'https://login.microsoftonline.com/b3e5db5e-2944-4837-99f5-7488ace54319',
   },
   cache: {
     cacheLocation: 'localStorage',

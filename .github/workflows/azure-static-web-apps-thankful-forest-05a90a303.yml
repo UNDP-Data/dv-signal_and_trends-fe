@@ -32,6 +32,7 @@ jobs:
           output_location: "build" # Built app content directory - optional
           access_token_for_api: ${{ secrets.ACCESS_CODE_FOR_API }}
           redirect_uri_for_msal: ${{ secrets.REDIRECT_URI_FOR_MSAL }}
+          client_secret_for_msal: ${{ secrets.CLIENT_SECRET_FOR_MSAL }}
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
