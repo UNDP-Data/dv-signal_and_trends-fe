@@ -66,14 +66,9 @@ export function Header(props: Props) {
           />
           <div className='undp-site-title'>
             <span>
-              <a
-                href='https://data.undp.org/'
-                className='logo-sub-head'
-                target='_blank'
-                rel='noreferrer'
-              >
+              <NavLink to='./' className='logo-sub-head'>
                 Data Futures Platform
-              </a>
+              </NavLink>
             </span>
             <NavLink
               to='./'
@@ -174,32 +169,34 @@ export function Header(props: Props) {
           showMenu ? 'undp-mobile-nav mobile-nav-show' : 'undp-mobile-nav'
         }
       >
-        <div>
-          <NavLink
-            to='./signals'
-            className={({ isActive }) =>
-              isActive ? 'header-link-active' : 'header-link'
-            }
-            onClick={() => {
-              setShowMenu(false);
-            }}
-          >
-            All Signals
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
-            to='./trends'
-            className={({ isActive }) =>
-              isActive ? 'header-link-active' : 'header-link'
-            }
-            onClick={() => {
-              setShowMenu(false);
-            }}
-          >
-            All Trends
-          </NavLink>
-        </div>
+        <AuthenticatedTemplate>
+          <div>
+            <NavLink
+              to='./signals'
+              className={({ isActive }) =>
+                isActive ? 'header-link-active' : 'header-link'
+              }
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              All Signals
+            </NavLink>
+          </div>
+          <div>
+            <NavLink
+              to='./trends'
+              className={({ isActive }) =>
+                isActive ? 'header-link-active' : 'header-link'
+              }
+              onClick={() => {
+                setShowMenu(false);
+              }}
+            >
+              All Trends
+            </NavLink>
+          </div>
+        </AuthenticatedTemplate>
         {role === 'Admin' || role === 'Curator' ? (
           <div>
             <NavLink

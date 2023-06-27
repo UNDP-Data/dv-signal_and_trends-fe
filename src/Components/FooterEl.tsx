@@ -16,9 +16,11 @@ export function Footer() {
               className='flex-div flex-vert-align-center'
               style={{ margin: 0 }}
             >
-              <img alt='undp logo' src={UNDPLogo} style={{ width: '72px' }} />
+              <a href='https://www.undp.org/' target='_blank' rel='noreferrer'>
+                <img alt='undp logo' src={UNDPLogo} style={{ width: '72px' }} />
+              </a>
               <h5 className='undp-typography margin-bottom-00'>
-                UNDP
+                United Nations Development Programme
                 <br />
                 Data Futures Platform
               </h5>
@@ -46,12 +48,30 @@ export function Footer() {
               </div>
             </div>
           </div>
-          <p
-            className='small-font margin-top-05'
-            style={{ padding: '0 0.75rem' }}
-          >
-            © 2023 United Nations Development Programme
-          </p>
+          <div className='flex-div flex-space-between'>
+            <p
+              className='small-font undp-typography margin-top-05'
+              style={{ padding: '0 0.75rem' }}
+            >
+              © 2023 United Nations Development Programme
+            </p>
+            <a
+              href='https://www.undp.org/copyright-terms-use'
+              target='_blank'
+              rel='noreferrer'
+            >
+              <p
+                className='small-font undp-typography margin-top-05'
+                style={{
+                  padding: '0 0.75rem',
+                  color: 'var(--white)',
+                  textDecoration: 'none',
+                }}
+              >
+                Terms Of Use
+              </p>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
