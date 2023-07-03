@@ -1,4 +1,15 @@
+import styled from 'styled-components';
 import UNDPLogo from '../assets/logo.png';
+
+const FooterP = styled.p`
+  padding: 0 0.75rem;
+  color: var(--white);
+  text-decoration: none;
+  font-size: 1rem !important;
+  &:hover {
+    opacity: 0.7;
+  }
+`;
 
 export function Footer() {
   return (
@@ -20,9 +31,9 @@ export function Footer() {
                 <img alt='undp logo' src={UNDPLogo} style={{ width: '72px' }} />
               </a>
               <h5 className='undp-typography margin-bottom-00'>
-                United Nations Development Programme
+                United Nations
                 <br />
-                Data Futures Platform
+                Development Programme
               </h5>
             </div>
             <div>
@@ -49,27 +60,33 @@ export function Footer() {
             </div>
           </div>
           <div className='flex-div flex-space-between'>
-            <p
-              className='small-font undp-typography margin-top-05'
-              style={{ padding: '0 0.75rem' }}
-            >
-              © 2023 United Nations Development Programme
-            </p>
+            <div>
+              <p
+                className='undp-typography margin-top-05 margin-bottom-00'
+                style={{ padding: '0 0.75rem', fontSize: '1rem' }}
+              >
+                © 2023 United Nations Development Programme
+              </p>
+              <p
+                className='undp-typography margin-top-03 margin-bottom-00'
+                style={{
+                  padding: '0 0.75rem',
+                  fontSize: '1rem',
+                }}
+              >
+                Disclaimer: Signals and trends are individuals&apos;
+                observations and do not represent the official views of UNDP
+              </p>
+            </div>
             <a
               href='https://www.undp.org/copyright-terms-use'
               target='_blank'
               rel='noreferrer'
+              style={{ textDecoration: 'none' }}
             >
-              <p
-                className='small-font undp-typography margin-top-05'
-                style={{
-                  padding: '0 0.75rem',
-                  color: 'var(--white)',
-                  textDecoration: 'none',
-                }}
-              >
+              <FooterP className='undp-typography margin-top-05'>
                 Terms Of Use
-              </p>
+              </FooterP>
             </a>
           </div>
         </div>

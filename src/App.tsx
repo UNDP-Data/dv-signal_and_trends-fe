@@ -110,7 +110,6 @@ function App() {
       .catch(err => {
         // eslint-disable-next-line no-console
         console.warn(err);
-        updateChoices(CHOICES);
       });
   }, []);
   useEffect(() => {
@@ -210,7 +209,6 @@ function App() {
       >
         <MainBody />
         <Footer />
-        {}
       </div>
       <Modal open={openModal} className='undp-modal'>
         <h5 className='undp-typography bold margin-bottom-07'>
@@ -234,6 +232,15 @@ function App() {
             </Select.Option>
           ))}
         </Select>
+        <p className='undp-typography italics small-font margin-top-07 margin-bottom-07'>
+          The Future Trends and Signals System is internal to UNDP staff only.
+          If you submit a signal, you are consenting that UNDP staff will be
+          able to view the information you provide in the “Add signal” form,
+          including your email address. The signals you submit may also be
+          printed by a staff member and shared with external partners. This
+          print view will include all signal information, with the exception of
+          your name, email address, and CO/Unit.
+        </p>
         {selectedUnit ? (
           <SignUpButton
             name={name}

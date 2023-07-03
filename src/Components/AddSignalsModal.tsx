@@ -13,15 +13,7 @@ import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN } from '../Constants';
-import {
-  SDGList,
-  SignalDataType,
-  SignalFiltersDataType,
-  SSList,
-  STEEPVList,
-  LocationList,
-  ScoreList,
-} from '../Types';
+import { SignalDataType, SignalFiltersDataType } from '../Types';
 import Context from '../Context/Context';
 
 interface Props {
@@ -80,7 +72,7 @@ export function AddSignalsModal(props: Props) {
           `https://signals-and-trends-api.azurewebsites.net/v1/signals/fetch?ids=${signalIds}`,
           {
             headers: {
-              access_token: API_ACCESS_TOKEN,
+              access_token: accessToken || API_ACCESS_TOKEN,
             },
           },
         )
@@ -288,9 +280,7 @@ export function AddSignalsModal(props: Props) {
                     allowClear
                     disabled={loading}
                     onChange={values => {
-                      const val = values
-                        ? (`${values}` as STEEPVList)
-                        : 'All STEEP+V';
+                      const val = values ? `${values}` : 'All STEEP+V';
                       setFilters({
                         ...filters,
                         steep: val,
@@ -321,7 +311,7 @@ export function AddSignalsModal(props: Props) {
                     disabled={loading}
                     onChange={values => {
                       const val = values
-                        ? (`${values}` as SSList)
+                        ? `${values}`
                         : 'All Signature Solutions/Enabler';
                       setFilters({
                         ...filters,
@@ -352,9 +342,7 @@ export function AddSignalsModal(props: Props) {
                     allowClear
                     disabled={loading}
                     onChange={values => {
-                      const val = values
-                        ? (`${values}` as SDGList)
-                        : 'All SDGs';
+                      const val = values ? `${values}` : 'All SDGs';
                       setFilters({
                         ...filters,
                         sdg: val,
@@ -384,9 +372,7 @@ export function AddSignalsModal(props: Props) {
                     allowClear
                     disabled={loading}
                     onChange={values => {
-                      const val = values
-                        ? (`${values}` as ScoreList)
-                        : 'All Scores';
+                      const val = values ? `${values}` : 'All Scores';
                       setFilters({
                         ...filters,
                         score: val,
@@ -425,7 +411,7 @@ export function AddSignalsModal(props: Props) {
                     onChange={values => {
                       setFilters({
                         ...filters,
-                        location: (values as LocationList) || 'All Locations',
+                        location: values || 'All Locations',
                       });
                     }}
                     clearIcon={<div className='clearIcon' />}

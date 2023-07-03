@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
+import UNDPColorModule from 'undp-viz-colors';
 import { TrendDataType } from '../Types';
 import Background from '../assets/UNDP-hero-image.jpg';
-import { HORIZONVALUES } from '../Constants';
 import Context from '../Context/Context';
 
 import '../styles.css';
@@ -178,11 +178,12 @@ export function TrendCard(props: Props) {
                       circleColor={
                         !choices
                           ? 'var(--black)'
-                          : HORIZONVALUES[
-                              choices?.horizons.findIndex(
-                                el => el === data.time_horizon,
-                              )
-                            ].textColor
+                          : UNDPColorModule.categoricalColors.colors[
+                              8 -
+                                (choices?.horizons.findIndex(
+                                  el => el === data.time_horizon,
+                                ) as number)
+                            ]
                       }
                     />
                   </div>

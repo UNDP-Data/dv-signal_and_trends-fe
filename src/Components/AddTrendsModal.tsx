@@ -13,12 +13,7 @@ import sortBy from 'lodash.sortby';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN } from '../Constants';
-import {
-  HorizonList,
-  RatingList,
-  TrendDataType,
-  TrendFiltersDataType,
-} from '../Types';
+import { TrendDataType, TrendFiltersDataType } from '../Types';
 import Context from '../Context/Context';
 
 interface Props {
@@ -73,7 +68,7 @@ export function AddTrendsModal(props: Props) {
           `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
           {
             headers: {
-              access_token: API_ACCESS_TOKEN,
+              access_token: accessToken || API_ACCESS_TOKEN,
             },
           },
         )
@@ -255,9 +250,7 @@ export function AddTrendsModal(props: Props) {
                     allowClear
                     disabled={loading}
                     onChange={values => {
-                      const val = values
-                        ? (`${values}` as HorizonList)
-                        : 'All Horizons';
+                      const val = values ? `${values}` : 'All Horizons';
                       setFilters({
                         ...filters,
                         horizon: val,
@@ -287,9 +280,7 @@ export function AddTrendsModal(props: Props) {
                     disabled={loading}
                     allowClear
                     onChange={values => {
-                      const val = values
-                        ? (`${values}` as RatingList)
-                        : 'All Ratings';
+                      const val = values ? `${values}` : 'All Ratings';
                       setFilters({
                         ...filters,
                         impact: val,

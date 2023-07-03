@@ -14,7 +14,7 @@ import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Context from '../../Context/Context';
 import { TrendDataType } from '../../Types';
-import { CHOICES, API_ACCESS_TOKEN } from '../../Constants';
+import { API_ACCESS_TOKEN } from '../../Constants';
 
 interface Props {
   svgWidth: number;
@@ -78,14 +78,14 @@ export function Viz(props: Props) {
 
   const navigate = useNavigate();
   const colorScale = scaleOrdinal()
-    .domain(choices?.ratings || CHOICES.ratings)
+    .domain(choices?.ratings as string[])
     .range(['var(--blue-200)', 'var(--blue-500)', 'var(--blue-700)']);
   const sqrtScale = scaleSqrt().range([5, 15]);
   const xCenter = scaleOrdinal()
-    .domain(choices?.horizons || CHOICES.horizons)
+    .domain(choices?.horizons as string[])
     .range([gridSize.width * 0.5, 1.5 * gridSize.width, 2.5 * gridSize.width]);
   const yCenter = scaleOrdinal()
-    .domain(choices?.ratings || CHOICES.ratings)
+    .domain(choices?.ratings as string[])
     .range([
       gridSize.height * 2.5,
       1.5 * gridSize.height,

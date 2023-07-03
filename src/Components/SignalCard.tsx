@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import UNDPColorModule from 'undp-viz-colors';
 import { useContext } from 'react';
 import { SignalDataType } from '../Types';
 import Background from '../assets/UNDP-hero-image.jpg';
-import { STEEPVCOLOR } from '../Constants';
 import Context from '../Context/Context';
 
 import '../styles.css';
@@ -101,18 +101,41 @@ export function SignalCard(props: Props) {
             </HeroImageEl>
           </NavLink>
           <div style={{ padding: '1rem 1rem 0 1rem' }}>
-            <ChipEl
-              text={data.steep ? data.steep?.split(' – ')[0] : 'No tags'}
-              circleColor={
-                data.steep
-                  ? !choices
-                    ? 'var(--black)'
-                    : STEEPVCOLOR[
-                        choices?.steepv.findIndex(el => el === data.steep)
-                      ].textColor
-                  : 'var(--gray-600)'
-              }
-            />
+            <div className='flex-div flex-wrap'>
+              <ChipEl
+                text={
+                  data.steep_primary
+                    ? data.steep_primary.split(' – ')[0]
+                    : 'No tags'
+                }
+                circleColor={
+                  data.steep_primary
+                    ? !choices
+                      ? 'var(--black)'
+                      : UNDPColorModule.categoricalColors.colors[
+                          choices?.steepv.findIndex(
+                            el => el === data.steep_primary,
+                          )
+                        ]
+                    : 'var(--gray-600)'
+                }
+              />
+              {data.steep_secondary
+                ?.filter(s => s !== data.steep_primary)
+                .map((s, j) => (
+                  <ChipEl
+                    key={j}
+                    text={s.split(' – ')[0]}
+                    circleColor={
+                      !choices
+                        ? 'var(--black)'
+                        : UNDPColorModule.categoricalColors.colors[
+                            choices?.steepv.findIndex(el => el === s)
+                          ]
+                    }
+                  />
+                ))}
+            </div>
             <NavLink
               to={
                 isDraft

@@ -7,14 +7,10 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import styled from 'styled-components';
+import UNDPColorModule from 'undp-viz-colors';
 import Background from '../../assets/UNDP-hero-image.jpg';
 import { SignalDataType, TrendDataType } from '../../Types';
-import {
-  API_ACCESS_TOKEN,
-  MONTHS,
-  SSCOLOR,
-  STEEPVCOLOR,
-} from '../../Constants';
+import { API_ACCESS_TOKEN, MONTHS, SSCOLOR } from '../../Constants';
 import { TrendCard } from '../../Components/TrendCard';
 import { SignInButton } from '../../Components/SignInButton';
 import Context from '../../Context/Context';
@@ -84,7 +80,7 @@ export function SignalDetail() {
               `https://signals-and-trends-api.azurewebsites.net/v1/trends/fetch?ids=${trendsIds}`,
               {
                 headers: {
-                  access_token: API_ACCESS_TOKEN,
+                  access_token: accessToken || API_ACCESS_TOKEN,
                 },
               },
             )
@@ -184,7 +180,6 @@ export function SignalDetail() {
                   {data.status === 'New' ? 'Awaiting Approval' : data.status}
                 </div>
               ) : null}
-              <h5 className='undp-typography'>{data.description}</h5>
             </div>
           </HeroImageEl>
           <div
@@ -227,18 +222,35 @@ export function SignalDetail() {
                   STEEP+V Category
                 </h6>
                 <div className='flex-div flex-wrap'>
-                  {data.steep ? (
+                  {data.steep_primary ? (
                     <ChipEl
-                      text={data.steep?.split(' – ')[0]}
+                      text={data.steep_primary?.split(' – ')[0]}
                       circleColor={
                         !choices
                           ? 'var(--black)'
-                          : STEEPVCOLOR[
-                              choices.steepv.findIndex(el => el === data.steep)
-                            ].textColor
+                          : UNDPColorModule.categoricalColors.colors[
+                              choices.steepv.findIndex(
+                                el => el === data.steep_primary,
+                              )
+                            ]
                       }
                     />
                   ) : null}
+                  {data.steep_secondary
+                    ?.filter(d => d !== data.steep_primary)
+                    .map((d, j) => (
+                      <ChipEl
+                        key={j}
+                        text={d.split(' – ')[0]}
+                        circleColor={
+                          !choices
+                            ? 'var(--black)'
+                            : UNDPColorModule.categoricalColors.colors[
+                                choices.steepv.findIndex(el => el === d)
+                              ]
+                        }
+                      />
+                    ))}
                 </div>
               </div>
               <div className='margin-top-07'>
@@ -277,6 +289,12 @@ export function SignalDetail() {
                     ))}
                 </div>
               </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Created for
+                </h6>
+                <div className='small-font'>{data.created_for || 'NA'}</div>
+              </div>
               {role === 'Admin' || role === 'Curator' ? (
                 <div className='margin-top-07'>
                   <h6 className='undp-typography margin-top-00 margin-bottom-03'>
@@ -300,6 +318,18 @@ export function SignalDetail() {
                     </p>
                   </div>
                 </div>
+                {data.created_unit ? (
+                  <div className='margin-top-07'>
+                    <div>
+                      <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                        Unit
+                      </h6>
+                      <p className='undp-typography small-font'>
+                        {data.created_unit}
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
               </AuthenticatedTemplate>
               <hr className='undp-style light margin-top-07' />
               <div className='margin-top-07'>
@@ -417,6 +447,12 @@ export function SignalDetail() {
             </div>
             <div style={{ width: 'calc(66.67% - 2rem)', flexGrow: 1 }}>
               <div>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Description
+                </h6>
+                <p className='undp-typography'>{data.description}</p>
+              </div>
+              <div className='margin-top-07'>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>
                   Relevance
                 </h6>

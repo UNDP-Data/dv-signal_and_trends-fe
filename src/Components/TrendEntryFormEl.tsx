@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { API_ACCESS_TOKEN } from '../Constants';
-import { TrendDataType, SignalDataType, HorizonList } from '../Types';
+import { TrendDataType, SignalDataType, NewTrendDataType } from '../Types';
 import { AddSignalsModal } from './AddSignalsModal';
 import Context from '../Context/Context';
 
@@ -62,46 +62,68 @@ const UploadButtonEl = styled.div`
     background-color: var(--gray-300);
   }
 `;
+
 const FileAttachmentButton = styled.input`
   display: none;
 `;
+
+export function isTrendInvalid(trend: TrendDataType | NewTrendDataType) {
+  if (
+    trend.headline &&
+    trend.description &&
+    trend.description.length > 30 &&
+    trend.steep_primary &&
+    trend.signature_primary &&
+    trend.sdgs &&
+    trend.sdgs?.length > 0 &&
+    trend.impact_description &&
+    trend.impact_description.length > 30 &&
+    trend.impact_rating &&
+    trend.time_horizon
+  )
+    return false;
+  return true;
+}
+
 export function TrendEntryFormEl(props: Props) {
   const { updateTrend } = props;
-  const { accessToken, updateNotificationText, choices } = useContext(Context);
+  const { accessToken, updateNotificationText, choices, userName } =
+    useContext(Context);
   const navigate = useNavigate();
+  const [trendData, updateTrendData] = useState<
+    TrendDataType | NewTrendDataType
+  >(
+    updateTrend || {
+      status: 'New',
+      created_by: userName,
+      created_for: undefined,
+      headline: undefined,
+      description: undefined,
+      attachment: undefined,
+      steep_primary: undefined,
+      steep_secondary: [],
+      signature_primary: undefined,
+      signature_secondary: [],
+      sdgs: [],
+      assigned_to: undefined,
+      time_horizon: undefined,
+      impact_rating: undefined,
+      impact_description: undefined,
+      connected_signals: [],
+    },
+  );
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
     undefined,
   );
   const [signalModal, setSignalModal] = useState(false);
-  const [headline, setHeadline] = useState<undefined | string>(
-    updateTrend ? updateTrend.headline : undefined,
-  );
-  const [description, setDescription] = useState<undefined | string>(
-    updateTrend ? updateTrend.description : undefined,
-  );
-  const [timeHorizon, setTimeHorizon] = useState<undefined | HorizonList>(
-    updateTrend ? updateTrend.time_horizon : undefined,
-  );
 
-  const [impactRating, setImpactRating] = useState<string | null>(
-    updateTrend ? updateTrend.impact_rating : null,
-  );
-  const [impactDescription, setImpactDescription] = useState<string | null>(
-    updateTrend ? updateTrend.impact_description : null,
-  );
   const [trendsSignal, setTrendsSignal] = useState<number[]>(
     updateTrend ? updateTrend.connected_signals || [] : [],
   );
   const [connectedSignal, setConnectedSignals] = useState<
     SignalDataType[] | null
   >(null);
-  const [trendStatus, setTrendStatus] = useState<string>(
-    updateTrend?.status || 'New',
-  );
-  const [selectedFile, setSelectedFile] = useState<string | undefined>(
-    updateTrend?.attachment || undefined,
-  );
   const confirmDelete = (id: number, navigatePath: string) => {
     axios({
       method: 'delete',
@@ -157,9 +179,10 @@ export function TrendEntryFormEl(props: Props) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         reader.onloadend = (e: any) => {
           const base64String = btoa(e.target.result);
-          setSelectedFile(
-            `${event.target.files[0].type};base64,${base64String}`,
-          );
+          updateTrendData({
+            ...trendData,
+            attachment: `${event.target.files[0].type};base64,${base64String}`,
+          });
         };
       }
       setSelectedFileName(event.target.files[0].name);
@@ -172,16 +195,20 @@ export function TrendEntryFormEl(props: Props) {
         <Input
           className='undp-input'
           placeholder='Enter trend headline (max 100 characters)'
+          value={trendData.headline}
           maxLength={100}
           onChange={d => {
-            setHeadline(d.target.value);
+            updateTrendData({
+              ...trendData,
+              headline: d.target.value,
+            });
           }}
-          value={headline}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           A concise, self-sufficient headline that conveys the essence of the
           trend without needing further explanation.{' '}
-          {headline ? 100 - headline.length : 100} characters left
+          {trendData.headline ? 100 - trendData.headline.length : 100}{' '}
+          characters left
         </p>
       </div>
       <div className='margin-bottom-07'>
@@ -190,16 +217,26 @@ export function TrendEntryFormEl(props: Props) {
           className='undp-input'
           placeholder='Enter trend description (max 400 characters)'
           maxLength={400}
-          status={description ? (description.length > 30 ? '' : 'error') : ''}
+          status={
+            trendData.description
+              ? trendData.description.length > 30
+                ? ''
+                : 'error'
+              : ''
+          }
           onChange={e => {
-            setDescription(e.target.value);
+            updateTrendData({
+              ...trendData,
+              description: e.target.value,
+            });
           }}
-          value={description}
+          value={trendData.description}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           A concise definition of the trend that makes it easy to decide which
           signals link to it. Min 30 characters required.{' '}
-          {description ? 400 - description.length : 400} characters left
+          {trendData.description ? 400 - trendData.description.length : 400}{' '}
+          characters left
         </p>
       </div>
       <div className='flex-div'>
@@ -209,9 +246,12 @@ export function TrendEntryFormEl(props: Props) {
             className='undp-select'
             placeholder='Select time horizon'
             onChange={e => {
-              setTimeHorizon(e);
+              updateTrendData({
+                ...trendData,
+                time_horizon: e,
+              });
             }}
-            value={timeHorizon}
+            value={trendData.time_horizon}
           >
             {choices?.horizons.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -229,9 +269,12 @@ export function TrendEntryFormEl(props: Props) {
             className='undp-select'
             placeholder='Select impact rating'
             onChange={e => {
-              setImpactRating(e);
+              updateTrendData({
+                ...trendData,
+                impact_rating: e,
+              });
             }}
-            value={impactRating || undefined}
+            value={trendData.impact_rating || undefined}
           >
             {choices?.ratings.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -251,15 +294,18 @@ export function TrendEntryFormEl(props: Props) {
           className='undp-input'
           placeholder='Enter impact description'
           status={
-            impactDescription
-              ? impactDescription.length > 30
+            trendData.impact_description
+              ? trendData.impact_description.length > 30
                 ? ''
                 : 'error'
               : ''
           }
-          value={impactDescription || undefined}
+          value={trendData.impact_description || undefined}
           onChange={e => {
-            setImpactDescription(e.target.value);
+            updateTrendData({
+              ...trendData,
+              impact_description: e.target.value,
+            });
           }}
         />
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
@@ -269,15 +315,18 @@ export function TrendEntryFormEl(props: Props) {
       </div>
       <div className='margin-bottom-07'>
         <p className='undp-typography margin-bottom-01'>Cover Image</p>
-        {selectedFile ? (
+        {trendData.attachment ? (
           <div className='flex-div padding-bottom-05'>
-            <UploadedImgEl bgImage={selectedFile} />
+            <UploadedImgEl bgImage={trendData.attachment} />
             <button
               type='button'
               className='undp-button button-tertiary flex'
               onClick={() => {
                 setSelectedFileName('');
-                setSelectedFile('');
+                updateTrendData({
+                  ...trendData,
+                  attachment: undefined,
+                });
               }}
               style={{
                 backgroundColor: 'var(--gray-300)',
@@ -311,7 +360,7 @@ export function TrendEntryFormEl(props: Props) {
           />
         </UploadEl>
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
-          {selectedFile
+          {trendData.attachment
             ? 'Uploading file with replace the already uploaded image shown above. '
             : ''}
           Attach an image here to illustrate this Trend, if available. Use only
@@ -319,7 +368,155 @@ export function TrendEntryFormEl(props: Props) {
           must be maximum 1 MBs. Compress larger images, if applicable.
         </p>
       </div>
-
+      <div className='margin-bottom-07'>
+        <div className='flex-div flex-wrap margin-bottom-00'>
+          <div style={{ width: 'calc(50% - 0.5rem)' }}>
+            <p className='undp-typography margin-bottom-01'>Primary STEEP+V*</p>
+            <Select
+              className='undp-select'
+              placeholder='Select STEEP+V'
+              onChange={e => {
+                updateTrendData({
+                  ...trendData,
+                  steep_primary: e,
+                });
+              }}
+              value={trendData.steep_primary}
+            >
+              {choices?.steepv.map((d, i) => (
+                <Select.Option className='undp-select-option' key={i} value={d}>
+                  {d}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div style={{ width: 'calc(50% - 0.5rem)' }}>
+            <p className='undp-typography margin-bottom-01'>
+              Secondary STEEP+V
+            </p>
+            <Select
+              className='undp-select'
+              placeholder='Select STEEP+V'
+              mode='multiple'
+              onChange={e => {
+                if (e.length > 1) {
+                  updateTrendData({
+                    ...trendData,
+                    steep_secondary: [e[0], e[e.length - 1]],
+                  });
+                } else {
+                  updateTrendData({
+                    ...trendData,
+                    steep_secondary: e.length === 0 || !e ? [] : e,
+                  });
+                }
+              }}
+              value={trendData.steep_secondary}
+            >
+              {choices?.steepv.map((d, i) => (
+                <Select.Option className='undp-select-option' key={i} value={d}>
+                  {d}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <p className='undp-typography margin-top-02 margin-bottom-07 small-font'>
+          STEEP+V analysis methodology stands for Social, Technological,
+          Economic, Environmental (or Ecological), Political and Values
+        </p>
+      </div>
+      <div className='flex-div flex-wrap margin-bottom-07'>
+        <div style={{ width: 'calc(50% - 1rem)' }}>
+          <p className='undp-typography margin-bottom-01'>
+            Primary Signature Solution/Enabler*
+          </p>
+          <Select
+            className='undp-select'
+            placeholder='Select Signature Solution'
+            onChange={e => {
+              updateTrendData({
+                ...trendData,
+                signature_primary: e,
+              });
+            }}
+            value={trendData.signature_primary}
+          >
+            {choices?.signatures.map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+        <div style={{ width: 'calc(50% - 1rem)' }}>
+          <p className='undp-typography margin-bottom-01'>
+            Secondary Signature Solution/Enabler
+          </p>
+          <Select
+            className='undp-select'
+            placeholder='Select Signature Solution'
+            onChange={e => {
+              if (e.length > 1) {
+                updateTrendData({
+                  ...trendData,
+                  signature_secondary: [e[0], e[e.length - 1]],
+                });
+              } else {
+                updateTrendData({
+                  ...trendData,
+                  signature_secondary: e.length === 0 || !e ? [] : e,
+                });
+              }
+            }}
+            mode='multiple'
+            value={trendData.signature_secondary}
+            clearIcon={<div className='clearIcon' />}
+            allowClear
+          >
+            {choices?.signatures.map((d, i) => (
+              <Select.Option className='undp-select-option' key={i} value={d}>
+                {d}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+      <div className='margin-bottom-07' style={{ width: '100%' }}>
+        <p className='undp-typography margin-bottom-01'>SDGs*</p>
+        <Select
+          className='undp-select'
+          mode='multiple'
+          placeholder='Select SDG'
+          maxTagCount='responsive'
+          onChange={e => {
+            if (e.length > 1) {
+              updateTrendData({
+                ...trendData,
+                sdgs: [e[0], e[e.length - 1]],
+              });
+            } else {
+              updateTrendData({
+                ...trendData,
+                sdgs: e.length === 0 || !e ? [] : e,
+              });
+            }
+          }}
+          clearIcon={<div className='clearIcon' />}
+          allowClear
+          value={trendData.sdgs}
+        >
+          {choices?.sdgs.map((d, i) => (
+            <Select.Option className='undp-select-option' key={i} value={d}>
+              {d}
+            </Select.Option>
+          ))}
+        </Select>
+        <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
+          Which SDG is it most closely connected to? Select relevant SDGs. Max 2
+          SDGs allowed.
+        </p>
+      </div>
       <div className='margin-bottom-09'>
         <p className='undp-typography bold'>Signals related to the trend</p>
         {connectedSignal ? (
@@ -375,6 +572,26 @@ export function TrendEntryFormEl(props: Props) {
           <p className='undp-typography'>Loading signals...</p>
         )}
       </div>
+      <div className='margin-bottom-07'>
+        <p className='undp-typography margin-bottom-01'>Created For</p>
+        <Select
+          className='undp-select'
+          placeholder='Created For'
+          onChange={e => {
+            updateTrendData({
+              ...trendData,
+              created_for: e,
+            });
+          }}
+          value={trendData.created_for}
+        >
+          {choices?.created_for.map((d, i) => (
+            <Select.Option className='undp-select-option' key={i} value={d}>
+              {d}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
       {updateTrend ? (
         <div className='margin-bottom-07'>
           <p className='undp-typography margin-bottom-01'>
@@ -384,9 +601,16 @@ export function TrendEntryFormEl(props: Props) {
             className='undp-select'
             placeholder='Select Status'
             onChange={e => {
-              setTrendStatus(e === 'Awaiting Approval' ? 'New' : e);
+              updateTrendData({
+                ...trendData,
+                status: e === 'Awaiting Approval' ? 'New' : e,
+              });
             }}
-            value={trendStatus === 'New' ? 'Awaiting Approval' : trendStatus}
+            value={
+              trendData.status === 'New'
+                ? 'Awaiting Approval'
+                : trendData.status
+            }
           >
             {['Approved', 'Archived', 'Awaiting Approval'].map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -401,28 +625,10 @@ export function TrendEntryFormEl(props: Props) {
           <div className='flex-div flex-vert-align-center'>
             <button
               className={`${
-                !headline ||
-                !description ||
-                description?.length < 30 ||
-                !impactDescription ||
-                impactDescription?.length < 30 ||
-                !impactRating ||
-                !timeHorizon ||
-                buttonDisabled
-                  ? 'disabled '
-                  : ''
+                isTrendInvalid(trendData) || buttonDisabled ? 'disabled ' : ''
               }undp-button button-secondary button-arrow`}
               type='button'
-              disabled={
-                !headline ||
-                !description ||
-                description?.length < 30 ||
-                !impactDescription ||
-                impactDescription?.length < 30 ||
-                !impactRating ||
-                !timeHorizon ||
-                buttonDisabled
-              }
+              disabled={isTrendInvalid(trendData) || buttonDisabled}
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
@@ -430,14 +636,9 @@ export function TrendEntryFormEl(props: Props) {
                   method: 'post',
                   url: `https://signals-and-trends-api.azurewebsites.net/v1/trends/submit`,
                   data: {
-                    attachment: selectedFile,
-                    description,
-                    headline,
-                    status: 'New',
-                    impact_description: impactDescription,
-                    time_horizon: timeHorizon,
-                    impact_rating: impactRating,
+                    ...trendData,
                     connected_signals: trendsSignal,
+                    status: 'New',
                   },
                   headers: {
                     'Content-Type': 'application/json',
@@ -481,28 +682,10 @@ export function TrendEntryFormEl(props: Props) {
           <div className='flex-div flex-vert-align-center'>
             <button
               className={`${
-                !headline ||
-                !description ||
-                description?.length < 30 ||
-                !impactDescription ||
-                impactDescription?.length < 30 ||
-                !impactRating ||
-                !timeHorizon ||
-                buttonDisabled
-                  ? 'disabled '
-                  : ''
+                isTrendInvalid(trendData) || buttonDisabled ? 'disabled ' : ''
               }undp-button button-secondary button-arrow`}
               type='button'
-              disabled={
-                !headline ||
-                !description ||
-                description?.length < 30 ||
-                !impactDescription ||
-                impactDescription?.length < 30 ||
-                !impactRating ||
-                !timeHorizon ||
-                buttonDisabled
-              }
+              disabled={isTrendInvalid(trendData) || buttonDisabled}
               onClick={() => {
                 setButtonDisabled(true);
                 setSubmittingError(undefined);
@@ -510,16 +693,8 @@ export function TrendEntryFormEl(props: Props) {
                   method: 'put',
                   url: 'https://signals-and-trends-api.azurewebsites.net/v1/trends/update',
                   data: {
-                    attachment: selectedFile,
-                    created_by: updateTrend.created_by,
-                    description,
-                    headline,
-                    status: trendStatus,
-                    impact_description: impactDescription,
-                    time_horizon: timeHorizon,
-                    impact_rating: impactRating,
+                    ...trendData,
                     connected_signals: trendsSignal,
-                    id: updateTrend.id,
                   },
                   headers: {
                     'Content-Type': 'application/json',

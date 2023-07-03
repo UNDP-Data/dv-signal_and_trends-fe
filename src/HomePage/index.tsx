@@ -5,7 +5,8 @@ import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Background from '../assets/UNDP-hero-image.jpg';
-import CardImage from '../assets/card-image.jpg';
+import SSBannerImage from '../assets/ssBannerImage.jpg';
+import FODBannerImage from '../assets/fodBannerImage.jpg';
 import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { TrendCard } from '../Components/TrendCard';
@@ -20,8 +21,7 @@ const HeroImageEl = styled.div`
 `;
 
 const Card01ImageEl = styled.div`
-  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-    url(${CardImage}) no-repeat center;
+  background: url(${SSBannerImage}) no-repeat center;
   background-size: cover;
   flex-grow: 1;
   width: calc(50% - 2px);
@@ -29,8 +29,8 @@ const Card01ImageEl = styled.div`
 `;
 
 const Card02ImageEl = styled.div`
-  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-    url(${Background}) no-repeat center;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url(${FODBannerImage}) no-repeat center;
   background-size: cover;
   flex-grow: 1;
   width: calc(50% - 2px);
@@ -97,14 +97,14 @@ export function HomePage() {
   const [trendListing, setTrendList] = useState<undefined | TrendDataType[]>(
     undefined,
   );
-  const { choices } = useContext(Context);
+  const { choices, accessToken } = useContext(Context);
   useEffect(() => {
     axios
       .get(
         `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=5&statuses=Approved`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -128,7 +128,7 @@ export function HomePage() {
         `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=5&statuses=Approved`,
         {
           headers: {
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken || API_ACCESS_TOKEN,
           },
         },
       )
@@ -306,11 +306,12 @@ export function HomePage() {
                 Signals Spotlight
               </h2>
               <h5 className='undp-typography margin-bottom-07'>
-                This Signals Spotlight – is part of our effort to become more
-                agile and anticipatory. The Spotlight highlights some of their
-                most interesting observations, sketches connections and
-                patterns, and asks what these might mean for the future of
-                development.
+                The UNDP Signals Spotlight highlights some of the signals and
+                trends that we consider will be significant for development.
+                Inspired by some 500 signals of change observed by UNDP
+                colleagues around the world, the Spotlight highlights some of
+                the most interesting and traces the patterns and trends they
+                reveal
               </h5>
               <a
                 href='https://www.undp.org/future-development/signals-spotlight'
@@ -344,8 +345,7 @@ export function HomePage() {
               <h5 className='undp-typography margin-bottom-07'>
                 Explore our vision for a brighter future. Learn how we are
                 imagining the future of development and sharing our ideas for
-                progress towards a more sustainable and equitable
-                tomorrow.Insights from UNDP&apos;s Future Network
+                progress towards a more sustainable and equitable tomorrow.
               </h5>
               <a
                 href='https://www.undp.org/future-development'

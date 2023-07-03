@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useContext } from 'react';
-import { SSCOLOR, STEEPVCOLOR } from '../../Constants';
+import UNDPColorModule from 'undp-viz-colors';
+import { SSCOLOR } from '../../Constants';
 import { SignalDataType } from '../../Types';
 import Context from '../../Context/Context';
 import { ChipEl } from '../../Components/ChipEl';
@@ -119,18 +120,37 @@ export function ListView(props: Props) {
             style={{ width: '12.5%', minWidth: '10rem' }}
             className='undp-table-row-cell'
           >
-            {d.steep ? (
+            {d.steep_primary ? (
               <CellDiv>
-                <ChipEl
-                  circleColor={
-                    !choices
-                      ? 'var(--black)'
-                      : STEEPVCOLOR[
-                          choices.steepv.findIndex(el => el === d.steep)
-                        ].textColor
-                  }
-                  text={d.steep.split(' – ')[0]}
-                />
+                <div className='flex-div flex-wrap'>
+                  <ChipEl
+                    circleColor={
+                      !choices
+                        ? 'var(--black)'
+                        : UNDPColorModule.categoricalColors.colors[
+                            choices?.steepv.findIndex(
+                              el => el === d.steep_primary,
+                            )
+                          ]
+                    }
+                    text={d.steep_primary.split(' – ')[0]}
+                  />
+                  {d.steep_secondary
+                    ?.filter(el => el !== d.steep_primary)
+                    .map((el, j) => (
+                      <ChipEl
+                        key={j}
+                        circleColor={
+                          !choices
+                            ? 'var(--black)'
+                            : UNDPColorModule.categoricalColors.colors[
+                                choices?.steepv.findIndex(c => c === el)
+                              ]
+                        }
+                        text={el.split(' – ')[0]}
+                      />
+                    ))}
+                </div>
               </CellDiv>
             ) : null}
           </div>

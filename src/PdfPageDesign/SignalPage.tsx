@@ -45,13 +45,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textDecoration: 'underline',
   },
-  listTextWOLink: {
-    fontSize: '12px',
-    textAlign: 'left',
-    fontFamily: font,
-    marginBottom: 10,
-    color: '#000',
-  },
   linkText: {
     fontSize: '10px',
     textAlign: 'left',
@@ -115,13 +108,24 @@ export function SignalPage(props: Props) {
           <Text style={styles.titleFirst}>Location</Text>
           <Text style={styles.text}>{data.location}</Text>
           <Text style={styles.title}>STEEP+V</Text>
-          {data.steep ? (
-            <Text style={styles.text}>{data.steep.split(' – ')[0]}</Text>
+          {data.steep_primary ? (
+            <>
+              <Text style={styles.text}>
+                {data.steep_primary.split(' – ')[0]}
+              </Text>
+              {data.steep_secondary
+                ?.filter(d => d !== data.steep_primary)
+                .map((d, i) => (
+                  <Text key={i} style={styles.text}>
+                    {d.split(' – ')[0]}
+                  </Text>
+                ))}
+            </>
           ) : (
             <Text style={styles.text}>Not Available</Text>
           )}
           <Text style={styles.title}>Signature Solutions</Text>
-          <Text style={styles.listTextWOLink}>{data.signature_primary}</Text>
+          <Text style={styles.text}>{data.signature_primary}</Text>
           {data?.signature_secondary
             ?.filter(d => d !== data.signature_primary)
             .map((d, i) => (
@@ -190,7 +194,7 @@ export function SignalPage(props: Props) {
           <Text style={styles.text}>{data.url}</Text>
           <Text style={styles.title}>SDGs</Text>
           {data.sdgs.map((sdg, i) => (
-            <Text style={styles.listTextWOLink} key={i}>
+            <Text style={styles.text} key={i}>
               {sdg}
             </Text>
           ))}
@@ -202,6 +206,12 @@ export function SignalPage(props: Props) {
           </Link>
         </View>
       </View>
+      <Text
+        render={() =>
+          "Signals and trends are individuals' observations and do not represent the official views of UNDP"
+        }
+        fixed
+      />
     </Page>
   );
 }

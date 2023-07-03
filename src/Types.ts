@@ -1,109 +1,98 @@
-export type STEEPVList =
-  | 'All STEEP+V'
-  | 'Social – Issues related to human culture, demography, communication, movement and migration, work and education'
-  | 'Technological – Made culture, tools, devices, systems, infrastructure and networks'
-  | 'Economic – Issues of value, money, financial tools and systems, business and business models, exchanges and transactions'
-  | 'Environmental – The natural world, living environment, sustainability, resources, climate and health'
-  | 'Political – Legal issues, policy, governance, rules and regulations and organizational systems'
-  | 'Values – Ethics, spirituality, ideology or other forms of values';
-
-export type SDGList =
-  | 'GOAL 1: No Poverty'
-  | 'GOAL 2: Zero Hunger'
-  | 'GOAL 3: Good Health and Well-being'
-  | 'GOAL 4: Quality Education'
-  | 'GOAL 5: Gender Equality'
-  | 'GOAL 6: Clean Water and Sanitation'
-  | 'GOAL 7: Affordable and Clean Energy'
-  | 'GOAL 8: Decent Work and Economic Growth'
-  | 'GOAL 9: Industry, Innovation and Infrastructure'
-  | 'GOAL 10: Reduced Inequality'
-  | 'GOAL 11: Sustainable Cities and Communities'
-  | 'GOAL 12: Responsible Consumption and Production'
-  | 'GOAL 13: Climate Action'
-  | 'GOAL 14: Life Below Water'
-  | 'GOAL 15: Life on Land'
-  | 'GOAL 16: Peace and Justice Strong Institutions'
-  | 'GOAL 17: Partnerships to achieve the Goal';
-
-export type SSList =
-  | 'Poverty and Inequality'
-  | 'Governance'
-  | 'Resilience'
-  | 'Environment'
-  | 'Energy'
-  | 'Gender Equality'
-  | 'Digitalisation'
-  | 'Strategic Innovation'
-  | 'Development Financing';
-
-export type HorizonList =
-  | 'Horizon 1 (0-3 years)'
-  | 'Horizon 2 (3-7 years)'
-  | 'Horizon 3 (7-10 years)';
-
-export type RatingList =
-  | '1 — Notable but not significant impact within the assigned Horizon'
-  | '2 — Moderate impact within the assigned Horizon'
-  | '3 — Significant impact within the assigned Horizon';
-
 export type StatusList = 'New' | 'Approved' | 'Archived' | 'Draft';
 
-export type ScoreList =
-  | '1 — Non-novel (known, but potentially notable in particular context)'
-  | '2'
-  | '3 — Potentially novel or uncertain, but not clear in its potential impact'
-  | '4'
-  | '5 — Something that introduces or points to a potentially interesting or consequential change in direction of trends';
-
-export type LocationList =
-  | 'Global'
-  | 'Region: Asia Pacific'
-  | 'Region: Arab States'
-  | 'Region: Africa'
-  | 'Region: Latin America and Caribbean'
-  | 'Region: Europe and Central Asia'
-  | 'Region: North America';
-
 export interface SignalDataType {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attachment?: any;
+  id: number;
+  status: string;
   created_at: string;
   created_by: string;
-  description: string;
+  modified_at?: string;
+  modified_by?: string;
   headline: string;
-  keywords: string[];
-  location: string | null;
-  modified_at: string;
-  modified_by: string;
-  status?: StatusList;
-  relevance: string;
-  sdgs: SDGList[];
-  signature_primary: SSList | '';
-  signature_secondary: SSList[] | null;
-  steep: STEEPVList;
+  description: string;
+  attachment?: string;
+  steep_primary: string;
+  steep_secondary?: string[];
+  signature_primary: string;
+  signature_secondary?: string[];
+  sdgs: string[];
+  created_unit: string;
   url: string;
-  id: number;
-  connected_trends: number[] | null;
-  score: string | null;
+  relevance: string;
+  keywords: string[];
+  location: string;
+  score?: string;
+  connected_trends: number[];
+  created_for?: string;
+}
+
+export interface NewSignalDataType {
+  id?: number;
+  status: string;
+  created_at?: string;
+  created_by?: string;
+  modified_at?: string;
+  modified_by?: string;
+  headline?: string;
+  description?: string;
+  attachment?: string;
+  steep_primary?: string;
+  steep_secondary?: string[];
+  signature_primary?: string;
+  signature_secondary?: string[];
+  sdgs?: string[];
+  created_unit?: string;
+  url?: string;
+  relevance?: string;
+  keywords: string[];
+  location?: string;
+  score?: string;
+  connected_trends?: number[];
+  created_for?: string;
 }
 
 export interface TrendDataType {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attachment?: any;
+  id: number;
+  status: string;
   created_at: string;
   created_by: string;
-  modified_at: string;
-  modified_by: string;
-  description: string;
+  created_for?: null;
+  modified_at?: string;
+  modified_by?: string;
   headline: string;
+  description: string;
+  attachment?: string;
+  steep_primary?: string;
+  steep_secondary?: string[];
+  signature_primary?: string;
+  signature_secondary?: string[];
+  sdgs?: string[];
+  assigned_to?: string;
+  time_horizon: string;
+  impact_rating: string;
   impact_description: string;
-  impact_rating: RatingList;
-  status?: StatusList;
-  time_horizon: HorizonList;
-  signals: number[];
-  id: number;
-  connected_signals: number[] | null;
+  connected_signals: number[];
+}
+export interface NewTrendDataType {
+  id?: number;
+  status: string;
+  created_at?: string;
+  created_by?: string;
+  created_for?: null;
+  modified_at?: string;
+  modified_by?: string;
+  headline?: string;
+  description?: string;
+  attachment?: string;
+  steep_primary?: string;
+  steep_secondary?: string[];
+  signature_primary?: string;
+  signature_secondary?: string[];
+  sdgs?: string[];
+  assigned_to?: string;
+  time_horizon?: string;
+  impact_rating?: string;
+  impact_description?: string;
+  connected_signals: number[];
 }
 
 export interface UserDataType {
@@ -116,31 +105,33 @@ export interface UserDataType {
 }
 
 export interface SignalFiltersDataType {
-  steep: 'All STEEP+V' | STEEPVList;
-  sdg: 'All SDGs' | SDGList;
-  ss: 'All Signature Solutions/Enabler' | SSList;
-  status: 'All Status' | StatusList;
-  score: 'All Scores' | ScoreList;
+  steep: 'All STEEP+V' | string;
+  sdg: 'All SDGs' | string;
+  ss: 'All Signature Solutions/Enabler' | string;
+  status: 'All Status' | string;
+  score: 'All Scores' | string;
   location: string;
   search?: string;
 }
 
 export interface TrendFiltersDataType {
-  horizon: 'All Horizons' | HorizonList;
-  impact: 'All Ratings' | RatingList;
-  status: 'All Status' | StatusList;
+  horizon: 'All Horizons' | string;
+  impact: 'All Ratings' | string;
+  status: 'All Status' | string;
   search?: string;
 }
 
 export interface ChoicesDataType {
   horizons: string[];
+  created_for: string[];
   locations: string[];
   ratings: string[];
   roles: string[];
   sdgs: string[];
   signatures: string[];
   steepv: string[];
-  units: string[];
+  unit_names: string[];
+  unit_regions: string[];
   scores: string[];
 }
 

@@ -180,6 +180,32 @@ export function TrendsPage(props: Props) {
           )}
           <Text style={styles.title}>Horizon</Text>
           <Text style={styles.text}>{data.time_horizon}</Text>
+          <Text style={styles.title}>STEEP+V</Text>
+          {data.steep_primary ? (
+            <>
+              <Text style={styles.text}>
+                {data.steep_primary.split(' – ')[0]}
+              </Text>
+              {data.steep_secondary
+                ?.filter(d => d !== data.steep_primary)
+                .map((d, i) => (
+                  <Text key={i} style={styles.text}>
+                    {d.split(' – ')[0]}
+                  </Text>
+                ))}
+            </>
+          ) : (
+            <Text style={styles.text}>Not Available</Text>
+          )}
+          <Text style={styles.title}>Signature Solutions</Text>
+          <Text style={styles.text}>{data.signature_primary}</Text>
+          {data?.signature_secondary
+            ?.filter(d => d !== data.signature_primary)
+            .map((d, i) => (
+              <Text style={styles.text} key={i}>
+                {d}
+              </Text>
+            ))}
           <View
             style={{
               display: 'flex',
@@ -210,6 +236,12 @@ export function TrendsPage(props: Props) {
           <Text style={styles.text}>{data.description}</Text>
           <Text style={styles.title}>Impact on Development</Text>
           <Text style={styles.text}>{data.impact_description}</Text>
+          <Text style={styles.title}>SDGs</Text>
+          {data.sdgs?.map((sdg, i) => (
+            <Text style={styles.text} key={i}>
+              {sdg}
+            </Text>
+          ))}
           {data.connected_signals?.length === 0 ||
           data.connected_signals === null ? (
             <Text style={styles.title}>No signals in this trend</Text>
@@ -242,6 +274,12 @@ export function TrendsPage(props: Props) {
           </Link>
         </View>
       </View>
+      <Text
+        render={() =>
+          "Signals and trends are individuals' observations and do not represent the official views of UNDP"
+        }
+        fixed
+      />
     </Page>
   );
 }

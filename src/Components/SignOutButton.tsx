@@ -286,7 +286,7 @@ export function SignOutButton(props: Props) {
               value={selectedUnit || unit}
               showSearch
             >
-              {choices?.units.map((d, i) => (
+              {choices?.unit_names.map((d, i) => (
                 <Select.Option className='undp-select-option' key={i} value={d}>
                   {d}
                 </Select.Option>

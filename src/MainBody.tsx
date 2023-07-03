@@ -37,6 +37,7 @@ function signOutClickHandler() {
 function MainBody() {
   const {
     name,
+    choices,
     notificationText,
     updateNotificationText,
     cardsToPrint,
@@ -195,7 +196,7 @@ function MainBody() {
   return (
     <>
       <AuthenticatedTemplate>
-        {name ? (
+        {name && choices ? (
           <>
             <Header signOutClickHandler={signOutClickHandler} />
             <Routes>

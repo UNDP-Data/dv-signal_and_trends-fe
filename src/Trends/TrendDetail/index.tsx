@@ -7,14 +7,16 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import styled from 'styled-components';
+import UNDPColorModule from 'undp-viz-colors';
 import Background from '../../assets/UNDP-hero-image.jpg';
 import { SignalDataType, TrendDataType } from '../../Types';
-import { API_ACCESS_TOKEN, HORIZONVALUES, MONTHS } from '../../Constants';
+import { API_ACCESS_TOKEN, MONTHS, SSCOLOR } from '../../Constants';
 import { SignalCard } from '../../Components/SignalCard';
 import { SignInButton } from '../../Components/SignInButton';
 import Context from '../../Context/Context';
 import { ChipEl } from '../../Components/ChipEl';
 import { ImpactCircleEl } from '../../Components/ImpactRatingEl';
+import { getSDGIcon } from '../../Utils/GetSDGIcons';
 
 interface HeroImageProps {
   bgImage?: string;
@@ -180,7 +182,6 @@ export function TrendDetail() {
                   {data.status === 'New' ? 'Awaiting Approval' : data.status}
                 </div>
               ) : null}
-              <h5 className='undp-typography'>{data.description}</h5>
             </div>
           </HeroImageEl>
           <div
@@ -210,11 +211,12 @@ export function TrendDetail() {
                     circleColor={
                       !choices
                         ? 'var(--black)'
-                        : HORIZONVALUES[
-                            choices.horizons.findIndex(
-                              el => el === data.time_horizon,
-                            )
-                          ].textColor
+                        : UNDPColorModule.categoricalColors.colors[
+                            8 -
+                              (choices.horizons.findIndex(
+                                el => el === data.time_horizon,
+                              ) as number)
+                          ]
                     }
                   />
                 </div>
@@ -225,6 +227,82 @@ export function TrendDetail() {
                 </h6>
                 <div className='flex-div flex-wrap margin-bottom-07'>
                   <ImpactCircleEl impact={data.impact_rating} />
+                </div>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  STEEP+V Category
+                </h6>
+                <div className='flex-div flex-wrap'>
+                  {data.steep_primary ? (
+                    <ChipEl
+                      text={data.steep_primary?.split(' – ')[0]}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : UNDPColorModule.categoricalColors.colors[
+                              choices.steepv.findIndex(
+                                el => el === data.steep_primary,
+                              )
+                            ]
+                      }
+                    />
+                  ) : (
+                    'NA'
+                  )}
+                  {data.steep_secondary
+                    ?.filter(d => d !== data.steep_primary)
+                    .map((d, j) => (
+                      <ChipEl
+                        key={j}
+                        text={d.split(' – ')[0]}
+                        circleColor={
+                          !choices
+                            ? 'var(--black)'
+                            : UNDPColorModule.categoricalColors.colors[
+                                choices.steepv.findIndex(el => el === d)
+                              ]
+                        }
+                      />
+                    ))}
+                </div>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Signature Solutions
+                </h6>
+                <div className='flex-div flex-wrap'>
+                  {data.signature_primary !== '' && data.signature_primary ? (
+                    <ChipEl
+                      text={data.signature_primary}
+                      circleColor={
+                        !choices
+                          ? 'var(--black)'
+                          : SSCOLOR[
+                              choices.signatures.findIndex(
+                                el => el === data.signature_primary,
+                              )
+                            ].textColor
+                      }
+                    />
+                  ) : (
+                    'NA'
+                  )}
+                  {data.signature_secondary
+                    ?.filter(d => d !== data.signature_primary)
+                    .map((d, i) => (
+                      <ChipEl
+                        text={d}
+                        key={i}
+                        circleColor={
+                          !choices
+                            ? 'var(--black)'
+                            : SSCOLOR[
+                                choices.signatures.findIndex(el => el === d)
+                              ].textColor
+                        }
+                      />
+                    ))}
                 </div>
               </div>
               {role === 'Admin' || role === 'Curator' ? (
@@ -360,9 +438,31 @@ export function TrendDetail() {
             <div style={{ width: 'calc(66.67% - 2rem)', flexGrow: 1 }}>
               <div>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  Description
+                </h6>
+                <p className='undp-typography'>{data.description}</p>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
                   Impact Description
                 </h6>
                 <p className='undp-typography'>{data.impact_description}</p>
+              </div>
+              <div className='margin-top-07'>
+                <h6 className='undp-typography margin-top-00 margin-bottom-03'>
+                  SDGs
+                </h6>
+                <div className='flex-div'>
+                  {data.sdgs && data.sdgs.length > 0 ? (
+                    <>
+                      {data.sdgs.map((sdg, j) => (
+                        <div key={j}>{getSDGIcon(sdg.split(':')[0], 48)}</div>
+                      ))}
+                    </>
+                  ) : (
+                    'NA'
+                  )}
+                </div>
               </div>
               <div className='margin-top-07'>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>

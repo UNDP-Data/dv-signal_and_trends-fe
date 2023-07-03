@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useContext } from 'react';
-import { HORIZONVALUES } from '../../Constants';
+import UNDPColorModule from 'undp-viz-colors';
 import { TrendDataType } from '../../Types';
 import Context from '../../Context/Context';
 import { ImpactCircleEl } from '../../Components/ImpactRatingEl';
@@ -119,11 +119,12 @@ export function ListView(props: Props) {
                   circleColor={
                     !choices
                       ? 'var(--black)'
-                      : HORIZONVALUES[
-                          choices?.horizons.findIndex(
-                            el => el === d.time_horizon,
-                          )
-                        ].textColor
+                      : UNDPColorModule.categoricalColors.colors[
+                          8 -
+                            (choices?.horizons.findIndex(
+                              el => el === d.time_horizon,
+                            ) as number)
+                        ]
                   }
                 />
               ) : null}

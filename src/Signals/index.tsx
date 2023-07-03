@@ -8,15 +8,7 @@ import {
 import Background from '../assets/UNDP-hero-image.jpg';
 import { AllSignals } from './AllSignals';
 import Context from '../Context/Context';
-import {
-  SDGList,
-  SignalFiltersDataType,
-  SSList,
-  StatusList,
-  STEEPVList,
-  LocationList,
-  ScoreList,
-} from '../Types';
+import { SignalFiltersDataType, StatusList } from '../Types';
 import { SignInButton } from '../Components/SignInButton';
 import { SIGNAL_ORDER_BY_OPTIONS } from '../Constants';
 
@@ -230,7 +222,7 @@ export function SignalsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  steep: (values as STEEPVList) || 'All STEEP+V',
+                  steep: values || 'All STEEP+V',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -263,7 +255,7 @@ export function SignalsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  ss: (values as SSList) || 'All Signature Solutions/Enabler',
+                  ss: values || 'All Signature Solutions/Enabler',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -297,7 +289,7 @@ export function SignalsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  sdg: (values as SDGList) || 'All SDGs',
+                  sdg: values || 'All SDGs',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -328,7 +320,7 @@ export function SignalsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  location: (values as LocationList) || 'All Locations',
+                  location: values || 'All Locations',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -359,7 +351,7 @@ export function SignalsListing() {
                   onChange={values => {
                     setTempFilters({
                       ...tempFilters,
-                      score: (values as ScoreList) || 'All Scores',
+                      score: values || 'All Scores',
                     });
                   }}
                   clearIcon={<div className='clearIcon' />}
