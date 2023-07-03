@@ -6,7 +6,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import Background from '../assets/UNDP-hero-image.jpg';
-import { HorizonList, RatingList, TrendFiltersDataType } from '../Types';
+import { TrendFiltersDataType } from '../Types';
 import { AllTrends } from './AllTrends';
 import Context from '../Context/Context';
 import { SignInButton } from '../Components/SignInButton';
@@ -201,7 +201,7 @@ export function TrendsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  impact: (values as RatingList) || 'All Ratings',
+                  impact: values || 'All Ratings',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
@@ -232,7 +232,7 @@ export function TrendsListing() {
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  horizon: (values as HorizonList) || 'All Horizons',
+                  horizon: values || 'All Horizons',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
