@@ -150,14 +150,16 @@ export function HomePage() {
     <>
       <HeroImageEl className='undp-hero-image'>
         <div className='max-width'>
-          <h1 className='undp-typography'>
-            UNDP Future Trends and Signals System
-          </h1>
-          <h5 className='undp-typography'>
-            The Future Trends and Signals System captures signals of change
-            noticed across UNDP, and identifies the trends emerging – helping us
-            all make stronger, more future-aware decisions.
-          </h5>
+          <div style={{ maxWidth: '1272px' }}>
+            <h1 className='undp-typography'>
+              UNDP Future Trends and Signals System
+            </h1>
+            <h5 className='undp-typography'>
+              The Future Trends and Signals System captures signals of change
+              noticed across UNDP, and identifies the trends emerging – helping
+              us all make stronger, more future-aware decisions.
+            </h5>
+          </div>
         </div>
       </HeroImageEl>
       <div

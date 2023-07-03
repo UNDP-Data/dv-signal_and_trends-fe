@@ -11,6 +11,8 @@ import Reducer from './Context/Reducer';
 import MainBody from './MainBody';
 import { CardsToPrintDataType, ChoicesDataType } from './Types';
 
+import './App.css';
+
 function App() {
   const isAuthenticated = useIsAuthenticated();
   const [openModal, setOpenModal] = useState(false);

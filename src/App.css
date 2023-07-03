@@ -1,0 +1,9 @@
+/* MyComponent.css */
+@font-face {
+    font-family: 'SohneBreit';
+    src: url('./assets/soehne-breit-web-fett.woff2') format('woff2');
+}
+
+h1.undp-typography {
+    font-family: var(--fontFamilyHeadings) !important;
+}
