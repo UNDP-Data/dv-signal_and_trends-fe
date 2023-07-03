@@ -34,6 +34,7 @@ const HeroImageEl = styled.div<HeroImageProps>`
 `;
 
 const CardEl = styled.div`
+  max-width: 100%;
   flex-grow: 1;
   font-size: 1.4rem;
   word-wrap: break-word;
