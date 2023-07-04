@@ -8,8 +8,8 @@ const font = 'Helvetica';
 const styles = StyleSheet.create({
   page: {
     backgroundColor: '#fff',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 50,
     paddingRight: 50,
   },
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     fontSize: '12px',
     textAlign: 'left',
     fontFamily: font,
-    marginBottom: 10,
+    marginBottom: 7,
     color: '#000',
   },
   subNote: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: font,
     marginTop: 5,
-    marginBottom: 10,
+    marginBottom: 7,
     color: '#999',
   },
   listText: {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     fontSize: '10px',
     textAlign: 'left',
     fontFamily: font,
-    marginTop: 10,
+    marginTop: 7,
     color: '#006EB5',
     fontStyle: 'italic',
     textDecoration: 'underline',
@@ -73,6 +73,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#006EB5',
     width: 'calc(100% - 20px)',
   },
+  disclaimerText: {
+    fontSize: '10px',
+    textAlign: 'left',
+    fontFamily: font,
+    marginBottom: 0,
+    color: '#999',
+  },
+  disclaimerTitle: {
+    fontSize: '10px',
+    fontWeight: 'bold',
+    fontFamily: `${font}-Bold`,
+    color: '#999',
+    marginTop: 10,
+    marginBottom: 3,
+  },
   pageBoxBG: {
     paddingTop: 10,
     paddingLeft: 10,
@@ -82,7 +97,7 @@ const styles = StyleSheet.create({
     width: 'calc(100% - 20px)',
   },
   pageTitle: {
-    fontSize: '18px',
+    fontSize: '14px',
     fontWeight: 'bold',
     fontFamily: `${font}-Bold`,
     color: '#FFF',
@@ -116,7 +131,7 @@ export function TrendsPage(props: Props) {
             <View
               style={{
                 width: '100%',
-                height: '150px',
+                height: '125px',
               }}
             >
               <Image
@@ -129,57 +144,70 @@ export function TrendsPage(props: Props) {
               />
             </View>
           ) : null}
-          <Text style={styles.title}>Impact Rating</Text>
-          {data.impact_rating ? (
-            <>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: '2',
-                  marginBottom: 5,
-                }}
-              >
-                <View
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 10,
-                    backgroundColor: '#006EB5',
-                  }}
-                />
-                <View
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 10,
-                    backgroundColor:
-                      parseInt(data.impact_rating?.split(' — ')[0], 10) > 1
-                        ? '#006EB5'
-                        : '#AAA',
-                  }}
-                />
-                <View
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 10,
-                    backgroundColor:
-                      parseInt(data.impact_rating?.split(' — ')[0], 10) > 2
-                        ? '#006EB5'
-                        : '#AAA',
-                  }}
-                />
-              </View>
-              <Text style={styles.subNote}>
-                {data.impact_rating?.split(' — ')[1]}
-              </Text>
-            </>
-          ) : (
-            <Text style={styles.subNote}>Not Available</Text>
-          )}
-          <Text style={styles.title}>Horizon</Text>
-          <Text style={styles.text}>{data.time_horizon}</Text>
+
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}
+          >
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Impact Rating</Text>
+              {data.impact_rating ? (
+                <>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: '2',
+                      marginBottom: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 10,
+                        backgroundColor: '#006EB5',
+                      }}
+                    />
+                    <View
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 10,
+                        backgroundColor:
+                          parseInt(data.impact_rating?.split(' — ')[0], 10) > 1
+                            ? '#006EB5'
+                            : '#AAA',
+                      }}
+                    />
+                    <View
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 10,
+                        backgroundColor:
+                          parseInt(data.impact_rating?.split(' — ')[0], 10) > 2
+                            ? '#006EB5'
+                            : '#AAA',
+                      }}
+                    />
+                  </View>
+                  <Text style={styles.subNote}>
+                    {data.impact_rating?.split(' — ')[1]}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.subNote}>Not Available</Text>
+              )}
+            </View>
+            <View style={{ width: '50%' }}>
+              <Text style={styles.title}>Horizon</Text>
+              <Text style={styles.text}>{data.time_horizon}</Text>
+            </View>
+          </View>
           <Text style={styles.title}>STEEP+V</Text>
           {data.steep_primary ? (
             <>
@@ -198,7 +226,9 @@ export function TrendsPage(props: Props) {
             <Text style={styles.text}>Not Available</Text>
           )}
           <Text style={styles.title}>Signature Solutions</Text>
-          <Text style={styles.text}>{data.signature_primary}</Text>
+          <Text style={styles.text}>
+            {data.signature_primary || 'Not Available'}
+          </Text>
           {data?.signature_secondary
             ?.filter(d => d !== data.signature_primary)
             .map((d, i) => (
@@ -226,6 +256,11 @@ export function TrendsPage(props: Props) {
               </Text>
             </View>
           </View>
+          <Text style={styles.disclaimerTitle}>Disclaimer</Text>
+          <Text style={styles.disclaimerText}>
+            Signals and trends are individuals&apos; observations and do not
+            represent the official views of UNDP
+          </Text>
         </View>
         <View
           style={{
@@ -237,11 +272,13 @@ export function TrendsPage(props: Props) {
           <Text style={styles.title}>Impact on Development</Text>
           <Text style={styles.text}>{data.impact_description}</Text>
           <Text style={styles.title}>SDGs</Text>
-          {data.sdgs?.map((sdg, i) => (
-            <Text style={styles.text} key={i}>
-              {sdg}
-            </Text>
-          ))}
+          {data.sdgs && data.sdgs.length > 0
+            ? data.sdgs?.map((sdg, i) => (
+                <Text style={styles.text} key={i}>
+                  {sdg}
+                </Text>
+              ))
+            : 'Not Available'}
           {data.connected_signals?.length === 0 ||
           data.connected_signals === null ? (
             <Text style={styles.title}>No signals in this trend</Text>
@@ -274,12 +311,6 @@ export function TrendsPage(props: Props) {
           </Link>
         </View>
       </View>
-      <Text
-        render={() =>
-          "Signals and trends are individuals' observations and do not represent the official views of UNDP"
-        }
-        fixed
-      />
     </Page>
   );
 }

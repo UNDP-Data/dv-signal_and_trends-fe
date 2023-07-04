@@ -240,7 +240,10 @@ export function TrendEntryFormEl(props: Props) {
         </p>
       </div>
       <div className='flex-div'>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+        <div
+          className='margin-bottom-07'
+          style={{ width: 'calc(50% - 0.5rem)' }}
+        >
           <p className='undp-typography margin-bottom-01'>Time Horizon*</p>
           <Select
             className='undp-select'
@@ -263,7 +266,10 @@ export function TrendEntryFormEl(props: Props) {
             Timeframe/period during which this trend might apply
           </p>
         </div>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+        <div
+          className='margin-bottom-07'
+          style={{ width: 'calc(50% - 0.5rem)' }}
+        >
           <p className='undp-typography margin-bottom-01'>Impact Rating*</p>
           <Select
             className='undp-select'
@@ -411,7 +417,14 @@ export function TrendEntryFormEl(props: Props) {
                   });
                 }
               }}
-              value={trendData.steep_secondary}
+              value={
+                trendData.steep_secondary
+                  ? trendData.steep_secondary?.length > 0 &&
+                    trendData.steep_secondary
+                    ? trendData.steep_secondary
+                    : undefined
+                  : undefined
+              }
             >
               {choices?.steepv.map((d, i) => (
                 <Select.Option className='undp-select-option' key={i} value={d}>
@@ -427,7 +440,7 @@ export function TrendEntryFormEl(props: Props) {
         </p>
       </div>
       <div className='flex-div flex-wrap margin-bottom-07'>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
+        <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Primary Signature Solution/Enabler*
           </p>
@@ -449,7 +462,7 @@ export function TrendEntryFormEl(props: Props) {
             ))}
           </Select>
         </div>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
+        <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Secondary Signature Solution/Enabler
           </p>
@@ -470,7 +483,14 @@ export function TrendEntryFormEl(props: Props) {
               }
             }}
             mode='multiple'
-            value={trendData.signature_secondary}
+            value={
+              trendData.signature_secondary
+                ? trendData.signature_secondary?.length > 0 &&
+                  trendData.signature_secondary
+                  ? trendData.signature_secondary
+                  : undefined
+                : undefined
+            }
             clearIcon={<div className='clearIcon' />}
             allowClear
           >
@@ -504,7 +524,13 @@ export function TrendEntryFormEl(props: Props) {
           }}
           clearIcon={<div className='clearIcon' />}
           allowClear
-          value={trendData.sdgs}
+          value={
+            trendData.sdgs
+              ? trendData.sdgs?.length > 0 && trendData.sdgs
+                ? trendData.sdgs
+                : undefined
+              : undefined
+          }
         >
           {choices?.sdgs.map((d, i) => (
             <Select.Option className='undp-select-option' key={i} value={d}>

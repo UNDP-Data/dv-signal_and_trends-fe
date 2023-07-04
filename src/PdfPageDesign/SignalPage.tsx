@@ -8,8 +8,8 @@ const font = 'Helvetica';
 const styles = StyleSheet.create({
   page: {
     backgroundColor: '#fff',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 50,
     paddingRight: 50,
   },
@@ -33,8 +33,23 @@ const styles = StyleSheet.create({
     fontSize: '12px',
     textAlign: 'left',
     fontFamily: font,
-    marginBottom: 10,
+    marginBottom: 7,
     color: '#000',
+  },
+  disclaimerText: {
+    fontSize: '10px',
+    textAlign: 'left',
+    fontFamily: font,
+    marginBottom: 0,
+    color: '#999',
+  },
+  disclaimerTitle: {
+    fontSize: '10px',
+    fontWeight: 'bold',
+    fontFamily: `${font}-Bold`,
+    color: '#999',
+    marginTop: 10,
+    marginBottom: 3,
   },
   listText: {
     fontSize: '10px',
@@ -49,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: '10px',
     textAlign: 'left',
     fontFamily: font,
-    marginTop: 10,
+    marginTop: 7,
     color: '#59BA47',
     fontStyle: 'italic',
     textDecoration: 'underline',
@@ -75,7 +90,7 @@ const styles = StyleSheet.create({
     width: 'calc(100% - 20px)',
   },
   pageTitle: {
-    fontSize: '18px',
+    fontSize: '14px',
     fontWeight: 'bold',
     fontFamily: `${font}-Bold`,
     color: '#FFF',
@@ -101,6 +116,7 @@ export function SignalPage(props: Props) {
       </View>
       <View style={styles.insidePageSection}>
         <View
+          fixed
           style={{
             width: 'calc(33.33% - 10px)',
           }}
@@ -180,6 +196,11 @@ export function SignalPage(props: Props) {
               </Text>
             </View>
           </View>
+          <Text style={styles.disclaimerTitle}>Disclaimer</Text>
+          <Text style={styles.disclaimerText}>
+            Signals and trends are individuals&apos; observations and do not
+            represent the official views of UNDP
+          </Text>
         </View>
         <View
           style={{
@@ -206,12 +227,6 @@ export function SignalPage(props: Props) {
           </Link>
         </View>
       </View>
-      <Text
-        render={() =>
-          "Signals and trends are individuals' observations and do not represent the official views of UNDP"
-        }
-        fixed
-      />
     </Page>
   );
 }

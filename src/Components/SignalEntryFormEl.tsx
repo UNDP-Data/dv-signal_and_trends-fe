@@ -271,7 +271,10 @@ export function SignalEntryFormEl(props: Props) {
         </p>
       </div>
       <div className='flex-div'>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+        <div
+          className='margin-bottom-07'
+          style={{ width: 'calc(50% - 0.5rem)' }}
+        >
           <p className='undp-typography margin-bottom-01'>Signal Source*</p>
           <Input
             className='undp-input'
@@ -289,7 +292,10 @@ export function SignalEntryFormEl(props: Props) {
             meeting with Minister X; or taxi in country X
           </p>
         </div>
-        <div className='margin-bottom-07' style={{ width: 'calc(50% - 1rem)' }}>
+        <div
+          className='margin-bottom-07'
+          style={{ width: 'calc(50% - 0.5rem)' }}
+        >
           <p className='undp-typography margin-bottom-01'>
             Location of the signal*
           </p>
@@ -376,7 +382,14 @@ export function SignalEntryFormEl(props: Props) {
                   });
                 }
               }}
-              value={signalData.steep_secondary}
+              value={
+                signalData.steep_secondary
+                  ? signalData.steep_secondary?.length > 0 &&
+                    signalData.steep_secondary
+                    ? signalData.steep_secondary
+                    : undefined
+                  : undefined
+              }
             >
               {choices?.steepv.map((d, i) => (
                 <Select.Option className='undp-select-option' key={i} value={d}>
@@ -479,7 +492,7 @@ export function SignalEntryFormEl(props: Props) {
         </p>
       </div>
       <div className='flex-div flex-wrap margin-bottom-07'>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
+        <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Primary Signature Solution/Enabler*
           </p>
@@ -501,7 +514,7 @@ export function SignalEntryFormEl(props: Props) {
             ))}
           </Select>
         </div>
-        <div style={{ width: 'calc(50% - 1rem)' }}>
+        <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
             Secondary Signature Solution/Enabler
           </p>
@@ -522,7 +535,14 @@ export function SignalEntryFormEl(props: Props) {
               }
             }}
             mode='multiple'
-            value={signalData.signature_secondary}
+            value={
+              signalData.signature_secondary
+                ? signalData.signature_secondary?.length > 0 &&
+                  signalData.signature_secondary
+                  ? signalData.signature_secondary
+                  : undefined
+                : undefined
+            }
             clearIcon={<div className='clearIcon' />}
             allowClear
           >
@@ -556,7 +576,13 @@ export function SignalEntryFormEl(props: Props) {
           }}
           clearIcon={<div className='clearIcon' />}
           allowClear
-          value={signalData.sdgs}
+          value={
+            signalData.sdgs
+              ? signalData.sdgs?.length > 0 && signalData.sdgs
+                ? signalData.sdgs
+                : undefined
+              : undefined
+          }
         >
           {choices?.sdgs.map((d, i) => (
             <Select.Option className='undp-select-option' key={i} value={d}>
