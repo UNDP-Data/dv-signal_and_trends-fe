@@ -105,18 +105,30 @@ export interface UserDataType {
 }
 
 export interface SignalFiltersDataType {
-  steep: 'All STEEP+V' | string;
+  steep_primary: 'All Primary STEEP+V' | string;
+  steep_secondary: 'All Secondary STEEP+V' | string;
   sdg: 'All SDGs' | string;
-  ss: 'All Signature Solutions/Enabler' | string;
+  signature_primary: 'All Primary Signature Solutions/Enabler' | string;
+  signature_secondary: 'All Secondary Signature Solutions/Enabler' | string;
   status: 'All Status' | string;
   score: 'All Scores' | string;
+  created_for: 'All Options' | string;
+  created_by?: string;
   location: string;
+  unit_region: 'All Units' | string;
   search?: string;
 }
 
 export interface TrendFiltersDataType {
   horizon: 'All Horizons' | string;
   impact: 'All Ratings' | string;
+  steep_primary: 'All Primary STEEP+V' | string;
+  steep_secondary: 'All Secondary STEEP+V' | string;
+  sdg: 'All SDGs' | string;
+  signature_primary: 'All Primary Signature Solutions/Enabler' | string;
+  signature_secondary: 'All Secondary Signature Solutions/Enabler' | string;
+  created_for: 'All Options' | string;
+  assigned_to?: string;
   status: 'All Status' | string;
   search?: string;
 }

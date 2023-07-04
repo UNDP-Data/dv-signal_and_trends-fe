@@ -283,8 +283,8 @@ export const SIGNAL_ORDER_BY_OPTIONS = [
     value: 'Modified On',
   },
   {
-    key: 'steep',
-    value: 'STEEP+V',
+    key: 'steep_primary',
+    value: 'Primary STEEP+V',
   },
   {
     key: 'signature_primary',
@@ -309,12 +309,20 @@ export const TREND_ORDER_BY_OPTIONS = [
     key: 'impact_rating',
     value: 'Impact Rating',
   },
+  {
+    key: 'steep_primary',
+    value: 'Primary STEEP+V',
+  },
+  {
+    key: 'signature_primary',
+    value: 'Primary Signature Solution',
+  },
 ];
 
 export const WEB_ADDRESS =
   'https://thankful-forest-05a90a303.3.azurestaticapps.net';
 
-export const API_ACCESS_TOKEN = process.env.INPUT_ACCESS_TOKEN_FOR_API;
-// export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
-export const REDIRECT_URL = process.env.INPUT_REDIRECT_URI_FOR_MSAL;
-// export const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
+// export const API_ACCESS_TOKEN = process.env.INPUT_ACCESS_TOKEN_FOR_API;
+export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
+// export const REDIRECT_URL = process.env.INPUT_REDIRECT_URI_FOR_MSAL;
+export const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;

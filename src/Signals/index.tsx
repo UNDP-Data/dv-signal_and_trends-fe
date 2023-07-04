@@ -27,21 +27,31 @@ export function SignalsListing() {
   const [searchQuery, setSearchQuery] = useState<undefined | string>(undefined);
 
   const [filters, setFilters] = useState<SignalFiltersDataType>({
-    steep: 'All STEEP+V',
+    steep_primary: 'All Primary STEEP+V',
+    steep_secondary: 'All Secondary STEEP+V',
     sdg: 'All SDGs',
-    ss: 'All Signature Solutions/Enabler',
+    signature_primary: 'All Primary Signature Solutions/Enabler',
+    signature_secondary: 'All Secondary Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
     score: 'All Scores',
+    created_for: 'All Options',
+    created_by: undefined,
+    unit_region: 'All Units',
     search: undefined,
   });
   const [tempFilters, setTempFilters] = useState<SignalFiltersDataType>({
-    steep: 'All STEEP+V',
+    steep_primary: 'All Primary STEEP+V',
+    steep_secondary: 'All Secondary STEEP+V',
     sdg: 'All SDGs',
-    ss: 'All Signature Solutions/Enabler',
+    signature_primary: 'All Primary Signature Solutions/Enabler',
+    signature_secondary: 'All Secondary Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
     score: 'All Scores',
+    created_for: 'All Options',
+    created_by: undefined,
+    unit_region: 'All Units',
     search: undefined,
   });
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -146,21 +156,44 @@ export function SignalsListing() {
             paddingRight: '1rem',
           }}
         >
-          {filters.steep !== 'All STEEP+V' ? (
+          {filters.steep_primary !== 'All Primary STEEP+V' ? (
             <div className='undp-chip undp-chip-blue'>
-              STEEP+V: {filters.steep.split('–')[0]}
+              Primary STEEP+V: {filters.steep_primary.split('–')[0]}
+            </div>
+          ) : null}
+          {filters.steep_secondary !== 'All Secondary STEEP+V' ? (
+            <div className='undp-chip undp-chip-blue'>
+              Secondary STEEP+V: {filters.steep_secondary.split('–')[0]}
             </div>
           ) : null}
           {filters.sdg !== 'All SDGs' ? (
             <div className='undp-chip undp-chip-blue'>{filters.sdg}</div>
           ) : null}
-          {filters.ss !== 'All Signature Solutions/Enabler' ? (
+          {filters.signature_primary !==
+          'All Primary Signature Solutions/Enabler' ? (
             <div className='undp-chip undp-chip-blue'>
-              Signature Solutions/Enabler: {filters.ss}
+              Primary Signature Solutions/Enabler: {filters.signature_primary}
+            </div>
+          ) : null}
+          {filters.signature_secondary !==
+          'All Secondary Signature Solutions/Enabler' ? (
+            <div className='undp-chip undp-chip-blue'>
+              Secondary Signature Solutions/Enabler:{' '}
+              {filters.signature_secondary}
             </div>
           ) : null}
           {filters.location !== 'All Locations' ? (
             <div className='undp-chip undp-chip-blue'>{filters.location}</div>
+          ) : null}
+          {filters.unit_region !== 'All Units' ? (
+            <div className='undp-chip undp-chip-blue'>
+              {filters.unit_region}
+            </div>
+          ) : null}
+          {filters.created_for !== 'All Options' ? (
+            <div className='undp-chip undp-chip-blue'>
+              {filters.created_for}
+            </div>
           ) : null}
           {filters.status !== 'All Status' ? (
             <div className='undp-chip undp-chip-blue'>
@@ -168,7 +201,12 @@ export function SignalsListing() {
             </div>
           ) : null}
           {filters.score !== 'All Scores' ? (
-            <div className='undp-chip undp-chip-blue'>{filters.score}</div>
+            <div className='undp-chip undp-chip-blue'>
+              Score: {filters.score}
+            </div>
+          ) : null}
+          {filters.created_by !== undefined ? (
+            <div className='undp-chip undp-chip-blue'>{filters.created_by}</div>
           ) : null}
           <button
             type='button'
@@ -177,12 +215,18 @@ export function SignalsListing() {
               setNoOfFilter(0);
               setSearchQuery(undefined);
               setFilters({
-                steep: 'All STEEP+V',
+                steep_primary: 'All Primary STEEP+V',
+                steep_secondary: 'All Secondary STEEP+V',
                 sdg: 'All SDGs',
-                ss: 'All Signature Solutions/Enabler',
+                signature_primary: 'All Primary Signature Solutions/Enabler',
+                signature_secondary:
+                  'All Secondary Signature Solutions/Enabler',
                 status: 'All Status',
                 location: 'All Locations',
                 score: 'All Scores',
+                created_for: 'All Options',
+                created_by: undefined,
+                unit_region: 'All Units',
                 search: undefined,
               });
             }}
@@ -206,72 +250,173 @@ export function SignalsListing() {
       >
         <h2 className='undp-typography'>Filter Signals</h2>
         <div className='margin-bottom-07'>
-          <div className='margin-top-07'>
-            <p className='undp-typography label'>Filter by STEEP+V</p>
-            <Select
-              className='undp-select'
+          <div className='flex-div margin-top-07'>
+            <div
               style={{
                 flexGrow: 1,
-                minWidth: '15rem',
+                width: 'calc(50% - 0.667rem)',
               }}
-              placeholder='Please select'
-              defaultValue='All STEEP+V'
-              value={tempFilters.steep}
-              showSearch
-              allowClear
-              onChange={values => {
-                setTempFilters({
-                  ...tempFilters,
-                  steep: values || 'All STEEP+V',
-                });
-              }}
-              clearIcon={<div className='clearIcon' />}
             >
-              <Select.Option className='undp-select-option' key='All STEEP+V'>
-                All STEEP+V
-              </Select.Option>
-              {choices?.steepv.map(d => (
-                <Select.Option className='undp-select-option' key={d}>
-                  {d}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-          <div className='margin-top-07'>
-            <p className='undp-typography label'>
-              Filter by Signature Solutions/Enabler
-            </p>
-            <Select
-              className='undp-select'
-              style={{
-                flexGrow: 1,
-                minWidth: '15rem',
-              }}
-              placeholder='Please select'
-              defaultValue='All Signature Solutions/Enabler'
-              value={tempFilters.ss}
-              showSearch
-              allowClear
-              onChange={values => {
-                setTempFilters({
-                  ...tempFilters,
-                  ss: values || 'All Signature Solutions/Enabler',
-                });
-              }}
-              clearIcon={<div className='clearIcon' />}
-            >
-              <Select.Option
-                className='undp-select-option'
-                key='All Signature Solutions/Enabler'
+              <p className='undp-typography label'>Filter by Primary STEEP+V</p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Primary STEEP+V'
+                value={tempFilters.steep_primary}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    steep_primary: values || 'All Primary STEEP+V',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
               >
-                All Signature Solutions/Enabler
-              </Select.Option>
-              {choices?.signatures.map(d => (
-                <Select.Option className='undp-select-option' key={d}>
-                  {d}
+                <Select.Option
+                  className='undp-select-option'
+                  key='All Primary STEEP+V'
+                >
+                  All Primary STEEP+V
                 </Select.Option>
-              ))}
-            </Select>
+                {choices?.steepv.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div
+              style={{
+                flexGrow: 1,
+                width: 'calc(50% - 0.667rem)',
+              }}
+            >
+              <p className='undp-typography label'>
+                Filter by Secondary STEEP+V
+              </p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Secondary STEEP+V'
+                value={tempFilters.steep_secondary}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    steep_secondary: values || 'All Secondary STEEP+V',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                <Select.Option
+                  className='undp-select-option'
+                  key='All Secondary STEEP+V'
+                >
+                  All Secondary STEEP+V
+                </Select.Option>
+                {choices?.steepv.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          </div>
+          <div className='flex-div margin-top-07'>
+            <div
+              style={{
+                flexGrow: 1,
+                width: 'calc(50% - 0.667rem)',
+              }}
+            >
+              <p className='undp-typography label'>
+                Filter by Primary Signature Solutions/Enabler
+              </p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Primary Signature Solutions/Enabler'
+                value={tempFilters.signature_primary}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    signature_primary:
+                      values || 'All Primary Signature Solutions/Enabler',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                <Select.Option
+                  className='undp-select-option'
+                  key='All Primary Signature Solutions/Enabler'
+                >
+                  All Primary Signature Solutions/Enabler
+                </Select.Option>
+                {choices?.signatures.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div
+              style={{
+                flexGrow: 1,
+                width: 'calc(50% - 0.667rem)',
+              }}
+            >
+              <p className='undp-typography label'>
+                Filter by Secondary Signature Solutions/Enabler
+              </p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Secondary Signature Solutions/Enabler'
+                value={tempFilters.signature_secondary}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    signature_secondary:
+                      values || 'All Secondary Signature Solutions/Enabler',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                <Select.Option
+                  className='undp-select-option'
+                  key='All Secondary Signature Solutions/Enabler'
+                >
+                  All Secondary Signature Solutions/Enabler
+                </Select.Option>
+                {choices?.signatures.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
           </div>
           <div className='margin-top-07'>
             <p className='undp-typography label'>Filter by SDGs</p>
@@ -304,8 +449,79 @@ export function SignalsListing() {
               ))}
             </Select>
           </div>
+          <div className='flex-div margin-top-07'>
+            <div
+              style={{
+                flexGrow: 1,
+                width: 'calc(50% - 0.667rem)',
+              }}
+            >
+              <p className='undp-typography label'>Filter by Location</p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Locations'
+                value={tempFilters.location}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    location: values || 'All Locations',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                {choices?.locations.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div
+              style={{
+                flexGrow: 1,
+                width: 'calc(50% - 0.667rem)',
+              }}
+            >
+              <p className='undp-typography label'>Filter by Unit</p>
+              <Select
+                className='undp-select'
+                style={{
+                  flexGrow: 1,
+                  minWidth: '15rem',
+                }}
+                placeholder='Please select'
+                defaultValue='All Units'
+                value={tempFilters.unit_region}
+                showSearch
+                allowClear
+                onChange={values => {
+                  setTempFilters({
+                    ...tempFilters,
+                    unit_region: values || 'All Units',
+                  });
+                }}
+                clearIcon={<div className='clearIcon' />}
+              >
+                <Select.Option className='undp-select-option' key='All Units'>
+                  All Units
+                </Select.Option>
+                {choices?.unit_regions.map(d => (
+                  <Select.Option className='undp-select-option' key={d}>
+                    {d}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          </div>
           <div className='margin-top-07'>
-            <p className='undp-typography label'>Filter by Location</p>
+            <p className='undp-typography label'>Filter by Created for</p>
             <Select
               className='undp-select'
               style={{
@@ -313,19 +529,22 @@ export function SignalsListing() {
                 minWidth: '15rem',
               }}
               placeholder='Please select'
-              defaultValue='All Locations'
-              value={tempFilters.location}
+              defaultValue='All Options'
+              value={tempFilters.created_for}
               showSearch
               allowClear
               onChange={values => {
                 setTempFilters({
                   ...tempFilters,
-                  location: values || 'All Locations',
+                  created_for: values || 'All Options',
                 });
               }}
               clearIcon={<div className='clearIcon' />}
             >
-              {choices?.locations.map(d => (
+              <Select.Option className='undp-select-option' key='All SDGs'>
+                All Options
+              </Select.Option>
+              {choices?.created_for.map(d => (
                 <Select.Option className='undp-select-option' key={d}>
                   {d}
                 </Select.Option>
@@ -404,6 +623,27 @@ export function SignalsListing() {
                   ))}
                 </Select>
               </div>
+              <div className='margin-top-07'>
+                <p className='label'>Created by (email address)</p>
+                <div
+                  style={{ width: '100%' }}
+                  className='flex-div margin-bottom-06'
+                >
+                  <div
+                    className='gap-00 flex-div'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                  >
+                    <Input
+                      placeholder='Created by'
+                      className='undp-input'
+                      size='large'
+                    />
+                  </div>
+                </div>
+              </div>
             </>
           ) : null}
         </div>
@@ -412,22 +652,40 @@ export function SignalsListing() {
           className='undp-button button-secondary'
           onClick={() => {
             let i = 0;
+            if (
+              tempFilters.signature_primary !==
+              'All Primary Signature Solutions/Enabler'
+            ) {
+              i += 1;
+            }
+            if (
+              tempFilters.signature_secondary !==
+              'All Secondary Signature Solutions/Enabler'
+            ) {
+              i += 1;
+            }
+            if (tempFilters.steep_primary !== 'All Primary STEEP+V') {
+              i += 1;
+            }
+            if (tempFilters.steep_secondary !== 'All Secondary STEEP+V') {
+              i += 1;
+            }
             if (tempFilters.sdg !== 'All SDGs') {
-              i += 1;
-            }
-            if (tempFilters.ss !== 'All Signature Solutions/Enabler') {
-              i += 1;
-            }
-            if (tempFilters.status !== 'All Status') {
-              i += 1;
-            }
-            if (tempFilters.steep !== 'All STEEP+V') {
               i += 1;
             }
             if (tempFilters.location !== 'All Locations') {
               i += 1;
             }
             if (tempFilters.score !== 'All Scores') {
+              i += 1;
+            }
+            if (tempFilters.unit_region !== 'All Units') {
+              i += 1;
+            }
+            if (tempFilters.created_for !== 'All Options') {
+              i += 1;
+            }
+            if (tempFilters.status !== 'All Status') {
               i += 1;
             }
             setFilters(tempFilters);
@@ -487,12 +745,17 @@ export function ArchivedSignalsListing() {
         {role === 'Admin' || role === 'Curator' ? (
           <AllSignals
             filters={{
-              steep: 'All STEEP+V',
               sdg: 'All SDGs',
-              ss: 'All Signature Solutions/Enabler',
               location: 'All Locations',
               score: 'All Scores',
               status: 'Archived',
+              unit_region: 'All Units',
+              steep_primary: 'All Primary STEEP+V',
+              steep_secondary: 'All Secondary STEEP+V',
+              signature_primary: 'All Primary Signature Solutions/Enabler',
+              signature_secondary: 'All Secondary Signature Solutions/Enabler',
+              created_for: 'All Options',
+              created_by: 'All',
             }}
             view={viewType}
             signalOrderBy='modified_at'

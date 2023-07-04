@@ -33,6 +33,37 @@ export function AllTrends(props: Props) {
   useEffect(() => {
     setTrendsList(undefined);
     setError(undefined);
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
+        ? ''
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const horizonQueryParameter =
       filters.horizon === 'All Horizons'
         ? ''
@@ -57,7 +88,7 @@ export function AllTrends(props: Props) {
     }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&${statusQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -87,6 +118,37 @@ export function AllTrends(props: Props) {
   useEffect(() => {
     setTrendsList(undefined);
     setError(undefined);
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
+        ? ''
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const horizonQueryParameter =
       filters.horizon === 'All Horizons'
         ? ''
@@ -111,7 +173,7 @@ export function AllTrends(props: Props) {
     }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&${statusQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

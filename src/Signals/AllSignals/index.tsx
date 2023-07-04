@@ -26,12 +26,29 @@ export function AllSignals(props: Props) {
   );
   useEffect(() => {
     setSignalList(undefined);
-    const steepQueryParameter =
-      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
-    const ssQueryParameter =
-      filters.ss === 'All Signature Solutions/Enabler'
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
         ? ''
-        : `&signature_primary=${filters.ss.replaceAll(' ', '%20')}`;
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
     const statusQueryParameter =
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
@@ -39,7 +56,9 @@ export function AllSignals(props: Props) {
           : `&statuses=${filters.status}`
         : '&statuses=Approved';
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
     const locationQueryParameter =
       filters.location === 'All Locations'
         ? ''
@@ -48,8 +67,19 @@ export function AllSignals(props: Props) {
       filters.score === 'All Scores'
         ? ''
         : `&score=${filters.score.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
+      : '';
+    const unitQueryParameter =
+      filters.unit_region === 'All Units'
+        ? ''
+        : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
+    const createdByQueryParameter = filters.created_by
+      ? `&created_by=${filters.created_by}`
       : '';
     const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
       signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
@@ -58,7 +88,7 @@ export function AllSignals(props: Props) {
     }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${locationQueryParameter}${createdForQueryParameter}${createdByQueryParameter}${unitQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -88,30 +118,60 @@ export function AllSignals(props: Props) {
   useEffect(() => {
     setError(undefined);
     setSignalList(undefined);
-    const steepQueryParameter =
-      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
-    const ssQueryParameter =
-      filters.ss === 'All Signature Solutions/Enabler'
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
         ? ''
-        : `&signature_primary=${filters.ss}`;
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
     const statusQueryParameter =
       role === 'Curator' || role === 'Admin'
         ? filters.status === 'All Status'
-          ? 'statuses=New&statuses=Approved'
-          : `statuses=${filters.status}`
-        : 'statuses=Approved';
+          ? '&statuses=New&statuses=Approved'
+          : `&statuses=${filters.status}`
+        : '&statuses=Approved';
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
     const locationQueryParameter =
       filters.location === 'All Locations'
         ? ''
         : `&location=${filters.location}`;
-    const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
     const scoreQueryParameter =
       filters.score === 'All Scores'
         ? ''
         : `&score=${filters.score.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
+      : '';
+    const unitQueryParameter =
+      filters.unit_region === 'All Units'
+        ? ''
+        : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
+    const createdByQueryParameter = filters.created_by
+      ? `&created_by=${filters.created_by}`
       : '';
     const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
       signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
@@ -120,7 +180,7 @@ export function AllSignals(props: Props) {
     }`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${locationQueryParameter}${createdForQueryParameter}${createdByQueryParameter}${unitQueryParameter}${scoreQueryParameter}${searchQueryParameter}${orderByQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

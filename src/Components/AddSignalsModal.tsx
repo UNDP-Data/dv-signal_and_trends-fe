@@ -47,12 +47,16 @@ export function AddSignalsModal(props: Props) {
   const [signalList, setSignalList] = useState<SignalDataType[]>([]);
   const [idsList, setIdsList] = useState<string[]>([]);
   const [filters, setFilters] = useState<SignalFiltersDataType>({
-    steep: 'All STEEP+V',
+    steep_primary: 'All Primary STEEP+V',
+    steep_secondary: 'All Secondary STEEP+V',
     sdg: 'All SDGs',
-    ss: 'All Signature Solutions/Enabler',
+    signature_primary: 'All Primary Signature Solutions/Enabler',
+    signature_secondary: 'All Secondary Signature Solutions/Enabler',
     status: 'All Status',
     location: 'All Locations',
     score: 'All Scores',
+    created_for: 'All Options',
+    unit_region: 'All Units',
     search: undefined,
   });
   const [loading, setLoading] = useState(true);
@@ -108,12 +112,16 @@ export function AddSignalsModal(props: Props) {
         });
     } else {
       setFilters({
-        steep: 'All STEEP+V',
+        steep_primary: 'All Primary STEEP+V',
+        steep_secondary: 'All Secondary STEEP+V',
         sdg: 'All SDGs',
-        ss: 'All Signature Solutions/Enabler',
+        signature_primary: 'All Primary Signature Solutions/Enabler',
+        signature_secondary: 'All Secondary Signature Solutions/Enabler',
         status: 'All Status',
         location: 'All Locations',
         score: 'All Scores',
+        created_for: 'All Options',
+        unit_region: 'All Units',
         search: undefined,
       });
     }
@@ -122,15 +130,34 @@ export function AddSignalsModal(props: Props) {
     setLoading(true);
     setError(undefined);
     setSignalList([]);
-    const steepQueryParameter =
-      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
-    const ssQueryParameter =
-      filters.ss === 'All Signature Solutions/Enabler'
-        ? ''
-        : `&signature_primary=${filters.ss.replaceAll(' ', '%20')}`;
     const statusQueryParameter = '&statuses=Approved';
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
+        ? ''
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
     const locationQueryParameter =
       filters.location === 'All Locations'
         ? ''
@@ -139,12 +166,20 @@ export function AddSignalsModal(props: Props) {
       filters.score === 'All Scores'
         ? ''
         : `&score=${filters.score.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const unitQueryParameter =
+      filters.unit_region === 'All Units'
+        ? ''
+        : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${sdgQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -177,15 +212,34 @@ export function AddSignalsModal(props: Props) {
     setSignalList([]);
     setError(undefined);
     setLoading(true);
-    const steepQueryParameter =
-      filters.steep === 'All STEEP+V' ? '' : `&steep=${filters.steep}`;
-    const ssQueryParameter =
-      filters.ss === 'All Signature Solutions/Enabler'
+    const statusQueryParameter = '&statuses=Approved';
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
         ? ''
-        : `&signature_primary=${filters.ss}`;
-    const statusQueryParameter = 'statuses=Approved';
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
     const sdgQueryParameter =
-      filters.sdg === 'All SDGs' ? '' : `&sdg=${filters.sdg}`;
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
     const locationQueryParameter =
       filters.location === 'All Locations'
         ? ''
@@ -194,12 +248,20 @@ export function AddSignalsModal(props: Props) {
       filters.score === 'All Scores'
         ? ''
         : `&score=${filters.score.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
+    const unitQueryParameter =
+      filters.unit_region === 'All Units'
+        ? ''
+        : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${statusQueryParameter}${steepQueryParameter}${sdgQueryParameter}${ssQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${sdgQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -253,12 +315,16 @@ export function AddSignalsModal(props: Props) {
         onChange={e => {
           setActiveTab(e);
           setFilters({
-            steep: 'All STEEP+V',
+            steep_primary: 'All Primary STEEP+V',
+            steep_secondary: 'All Secondary STEEP+V',
             sdg: 'All SDGs',
-            ss: 'All Signature Solutions/Enabler',
+            signature_primary: 'All Primary Signature Solutions/Enabler',
+            signature_secondary: 'All Secondary Signature Solutions/Enabler',
             status: 'All Status',
             location: 'All Locations',
             score: 'All Scores',
+            created_for: 'All Options',
+            unit_region: 'All Units',
             search: undefined,
           });
           setIdsList([]);
@@ -274,25 +340,25 @@ export function AddSignalsModal(props: Props) {
                     className='undp-select'
                     style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
-                    defaultValue='All STEEP+V'
-                    value={filters.steep}
+                    defaultValue='All Primary STEEP+V'
+                    value={filters.steep_primary}
                     showSearch
                     allowClear
                     disabled={loading}
                     onChange={values => {
-                      const val = values ? `${values}` : 'All STEEP+V';
+                      const val = values ? `${values}` : 'All Primary STEEP+V';
                       setFilters({
                         ...filters,
-                        steep: val,
+                        steep_primary: val,
                       });
                     }}
                     clearIcon={<div className='clearIcon' />}
                   >
                     <Select.Option
                       className='undp-select-option'
-                      key='All STEEP+V'
+                      key='All Primary STEEP+V'
                     >
-                      All STEEP+V
+                      All Primary STEEP+V
                     </Select.Option>
                     {choices?.steepv.map(d => (
                       <Select.Option className='undp-select-option' key={d}>
@@ -304,27 +370,91 @@ export function AddSignalsModal(props: Props) {
                     className='undp-select'
                     style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
-                    defaultValue='All Signature Solutions/Enabler'
-                    value={filters.ss}
+                    defaultValue='All Secondary STEEP+V'
+                    value={filters.steep_secondary}
                     showSearch
                     allowClear
                     disabled={loading}
                     onChange={values => {
                       const val = values
                         ? `${values}`
-                        : 'All Signature Solutions/Enabler';
+                        : 'All Secondary STEEP+V';
                       setFilters({
                         ...filters,
-                        ss: val,
+                        steep_secondary: val,
                       });
                     }}
                     clearIcon={<div className='clearIcon' />}
                   >
                     <Select.Option
                       className='undp-select-option'
-                      key='All Signature Solutions/Enabler'
+                      key='All Secondary STEEP+V'
                     >
-                      All Signature Solutions/Enabler
+                      All Secondary STEEP+V
+                    </Select.Option>
+                    {choices?.steepv.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Primary Signature Solutions/Enabler'
+                    value={filters.signature_primary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? `${values}`
+                        : 'All Primary Signature Solutions/Enabler';
+                      setFilters({
+                        ...filters,
+                        signature_primary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Primary Signature Solutions/Enabler'
+                    >
+                      All Primary Signature Solutions/Enabler
+                    </Select.Option>
+                    {choices?.signatures.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Secondary Signature Solutions/Enabler'
+                    value={filters.signature_secondary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? `${values}`
+                        : 'All Secondary Signature Solutions/Enabler';
+                      setFilters({
+                        ...filters,
+                        signature_secondary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Secondary Signature Solutions/Enabler'
+                    >
+                      All Secondary Signature Solutions/Enabler
                     </Select.Option>
                     {choices?.signatures.map(d => (
                       <Select.Option className='undp-select-option' key={d}>
@@ -367,7 +497,7 @@ export function AddSignalsModal(props: Props) {
                     style={{ width: 'calc(25% - 0.75rem)' }}
                     placeholder='Please select'
                     defaultValue='All Scores'
-                    value={filters.sdg}
+                    value={filters.score}
                     showSearch
                     allowClear
                     disabled={loading}
@@ -392,6 +522,66 @@ export function AddSignalsModal(props: Props) {
                       </Select.Option>
                     ))}
                   </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Locations'
+                    value={filters.location}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values ? `${values}` : 'All Locations';
+                      setFilters({
+                        ...filters,
+                        location: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Locations'
+                    >
+                      All Locations
+                    </Select.Option>
+                    {choices?.locations.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Units'
+                    value={filters.unit_region}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values ? `${values}` : 'All Units';
+                      setFilters({
+                        ...filters,
+                        unit_region: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Units'
+                    >
+                      All Units
+                    </Select.Option>
+                    {choices?.unit_regions.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </div>
                 <div
                   style={{ width: '100%' }}
@@ -404,19 +594,19 @@ export function AddSignalsModal(props: Props) {
                       width: 'calc(50% - 0.667rem)',
                     }}
                     placeholder='Please select'
-                    defaultValue='All Locations'
-                    value={filters.location}
+                    defaultValue='All Options'
+                    value={filters.created_for}
                     showSearch
                     allowClear
                     onChange={values => {
                       setFilters({
                         ...filters,
-                        location: values || 'All Locations',
+                        created_for: values || 'All Options',
                       });
                     }}
                     clearIcon={<div className='clearIcon' />}
                   >
-                    {choices?.locations.map(d => (
+                    {choices?.created_for.map(d => (
                       <Select.Option className='undp-select-option' key={d}>
                         {d}
                       </Select.Option>
