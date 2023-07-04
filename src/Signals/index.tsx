@@ -623,27 +623,6 @@ export function SignalsListing() {
                   ))}
                 </Select>
               </div>
-              <div className='margin-top-07'>
-                <p className='label'>Created by (email address)</p>
-                <div
-                  style={{ width: '100%' }}
-                  className='flex-div margin-bottom-06'
-                >
-                  <div
-                    className='gap-00 flex-div'
-                    style={{
-                      flexGrow: 1,
-                      width: 'calc(50% - 0.667rem)',
-                    }}
-                  >
-                    <Input
-                      placeholder='Created by'
-                      className='undp-input'
-                      size='large'
-                    />
-                  </div>
-                </div>
-              </div>
             </>
           ) : null}
         </div>

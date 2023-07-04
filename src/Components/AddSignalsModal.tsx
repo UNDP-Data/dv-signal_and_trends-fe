@@ -179,7 +179,7 @@ export function AddSignalsModal(props: Props) {
         : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${sdgQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=${paginationValue}&per_page=${pageSize}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -261,7 +261,7 @@ export function AddSignalsModal(props: Props) {
         : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${sdgQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/signals/list?page=1&per_page=${pageSize}&${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${statusQueryParameter}${unitQueryParameter}${locationQueryParameter}${scoreQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,

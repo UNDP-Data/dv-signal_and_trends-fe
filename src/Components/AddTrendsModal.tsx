@@ -49,6 +49,12 @@ export function AddTrendsModal(props: Props) {
   const [filters, setFilters] = useState<TrendFiltersDataType>({
     impact: 'All Ratings',
     horizon: 'All Horizons',
+    steep_primary: 'All Primary STEEP+V',
+    steep_secondary: 'All Secondary STEEP+V',
+    sdg: 'All SDGs',
+    signature_primary: 'All Primary Signature Solutions/Enabler',
+    signature_secondary: 'All Secondary Signature Solutions/Enabler',
+    created_for: 'All Options',
     status: 'All Status',
     search: undefined,
   });
@@ -106,6 +112,12 @@ export function AddTrendsModal(props: Props) {
       setFilters({
         impact: 'All Ratings',
         horizon: 'All Horizons',
+        steep_primary: 'All Primary STEEP+V',
+        steep_secondary: 'All Secondary STEEP+V',
+        sdg: 'All SDGs',
+        signature_primary: 'All Primary Signature Solutions/Enabler',
+        signature_secondary: 'All Secondary Signature Solutions/Enabler',
+        created_for: 'All Options',
         status: 'All Status',
         search: undefined,
       });
@@ -122,12 +134,43 @@ export function AddTrendsModal(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
+        ? ''
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=${paginationValue}&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -167,12 +210,43 @@ export function AddTrendsModal(props: Props) {
       filters.impact === 'All Ratings'
         ? ''
         : `&impact_rating=${filters.impact}`;
+    const steepPrimaryQueryParameter =
+      filters.steep_primary === 'All Primary STEEP+V'
+        ? ''
+        : `&steep_primary=${filters.steep_primary}`;
+    const steepSecondaryQueryParameter =
+      filters.steep_secondary === 'All Secondary STEEP+V'
+        ? ''
+        : `&steep_secondary=${filters.steep_secondary}`;
+    const ss1QueryParameter =
+      filters.signature_primary === 'All Primary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_primary=${filters.signature_primary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const ss2QueryParameter =
+      filters.signature_secondary ===
+      'All Secondary Signature Solutions/Enabler'
+        ? ''
+        : `&signature_secondary=${filters.signature_secondary.replaceAll(
+            ' ',
+            '%20',
+          )}`;
+    const sdgQueryParameter =
+      filters.sdg === 'All SDGs'
+        ? ''
+        : `&sdgs=${filters.sdg.replaceAll(' ', '%20')}`;
+    const createdForQueryParameter =
+      filters.created_for === 'All Options'
+        ? ''
+        : `&created_for=${filters.created_for.replaceAll(' ', '%20')}`;
     const searchQueryParameter = filters.search
       ? `&query=${filters.search}`
       : '';
     axios
       .get(
-        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${searchQueryParameter}`,
+        `https://signals-and-trends-api.azurewebsites.net/v1/trends/list?page=1&per_page=${pageSize}&statuses=Approved${horizonQueryParameter}${ratingQueryParameter}${steepPrimaryQueryParameter}${steepSecondaryQueryParameter}${sdgQueryParameter}${ss1QueryParameter}${ss2QueryParameter}${createdForQueryParameter}${searchQueryParameter}`,
         {
           headers: {
             access_token: accessToken || API_ACCESS_TOKEN,
@@ -227,6 +301,12 @@ export function AddTrendsModal(props: Props) {
           setFilters({
             impact: 'All Ratings',
             horizon: 'All Horizons',
+            steep_primary: 'All Primary STEEP+V',
+            steep_secondary: 'All Secondary STEEP+V',
+            sdg: 'All SDGs',
+            signature_primary: 'All Primary Signature Solutions/Enabler',
+            signature_secondary: 'All Secondary Signature Solutions/Enabler',
+            created_for: 'All Options',
             status: 'All Status',
             search: undefined,
           });
@@ -235,14 +315,17 @@ export function AddTrendsModal(props: Props) {
         }}
         items={[
           {
-            label: 'Filter signals',
+            label: 'Filter trends',
             key: '1',
             children: (
               <div>
                 <div className='flex-div margin-top-00 margin-bottom-05 flex-wrap'>
                   <Select
                     className='undp-select'
-                    style={{ width: 'calc(50% - 0.667rem)' }}
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
                     placeholder='Please select'
                     defaultValue='All Horizons'
                     value={filters.horizon}
@@ -272,7 +355,10 @@ export function AddTrendsModal(props: Props) {
                   </Select>
                   <Select
                     className='undp-select'
-                    style={{ width: 'calc(50% - 0.667rem)' }}
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
                     placeholder='Please select'
                     defaultValue='All Ratings'
                     value={filters.impact}
@@ -295,6 +381,190 @@ export function AddTrendsModal(props: Props) {
                       All Ratings
                     </Select.Option>
                     {choices?.ratings.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Primary STEEP+V'
+                    value={filters.steep_primary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values ? `${values}` : 'All Primary STEEP+V';
+                      setFilters({
+                        ...filters,
+                        steep_primary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Primary STEEP+V'
+                    >
+                      All Primary STEEP+V
+                    </Select.Option>
+                    {choices?.steepv.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Secondary STEEP+V'
+                    value={filters.steep_secondary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? `${values}`
+                        : 'All Secondary STEEP+V';
+                      setFilters({
+                        ...filters,
+                        steep_secondary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Secondary STEEP+V'
+                    >
+                      All Secondary STEEP+V
+                    </Select.Option>
+                    {choices?.steepv.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Primary Signature Solutions/Enabler'
+                    value={filters.signature_primary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? `${values}`
+                        : 'All Primary Signature Solutions/Enabler';
+                      setFilters({
+                        ...filters,
+                        signature_primary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Primary Signature Solutions/Enabler'
+                    >
+                      All Primary Signature Solutions/Enabler
+                    </Select.Option>
+                    {choices?.signatures.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{ width: 'calc(25% - 0.75rem)' }}
+                    placeholder='Please select'
+                    defaultValue='All Secondary Signature Solutions/Enabler'
+                    value={filters.signature_secondary}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values
+                        ? `${values}`
+                        : 'All Secondary Signature Solutions/Enabler';
+                      setFilters({
+                        ...filters,
+                        signature_secondary: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All Secondary Signature Solutions/Enabler'
+                    >
+                      All Secondary Signature Solutions/Enabler
+                    </Select.Option>
+                    {choices?.signatures.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                    placeholder='Please select'
+                    defaultValue='All SDGs'
+                    value={filters.sdg}
+                    showSearch
+                    allowClear
+                    disabled={loading}
+                    onChange={values => {
+                      const val = values ? `${values}` : 'All SDGs';
+                      setFilters({
+                        ...filters,
+                        sdg: val,
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    <Select.Option
+                      className='undp-select-option'
+                      key='All SDGs'
+                    >
+                      All SDGs
+                    </Select.Option>
+                    {choices?.sdgs.map(d => (
+                      <Select.Option className='undp-select-option' key={d}>
+                        {d}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className='undp-select'
+                    style={{
+                      flexGrow: 1,
+                      width: 'calc(50% - 0.667rem)',
+                    }}
+                    placeholder='Please select'
+                    defaultValue='All Options'
+                    value={filters.created_for}
+                    showSearch
+                    allowClear
+                    onChange={values => {
+                      setFilters({
+                        ...filters,
+                        created_for: values || 'All Options',
+                      });
+                    }}
+                    clearIcon={<div className='clearIcon' />}
+                  >
+                    {choices?.created_for.map(d => (
                       <Select.Option className='undp-select-option' key={d}>
                         {d}
                       </Select.Option>
