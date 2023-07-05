@@ -67,7 +67,7 @@ export function AllTrends(props: Props) {
     const horizonQueryParameter =
       filters.horizon === 'All Horizons'
         ? ''
-        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
+        : `&time_horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''
@@ -152,7 +152,7 @@ export function AllTrends(props: Props) {
     const horizonQueryParameter =
       filters.horizon === 'All Horizons'
         ? ''
-        : `&horizon=${filters.horizon.replace('+', '%2B')}`;
+        : `&time_horizon=${filters.horizon.replace('+', '%2B')}`;
     const ratingQueryParameter =
       filters.impact === 'All Ratings'
         ? ''
