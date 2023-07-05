@@ -250,7 +250,7 @@ export function TrendCard(props: Props) {
                     paddingBottom: '1rem',
                   }}
                 >
-                  Add to print
+                  Download
                 </button>
               </div>
             </div>

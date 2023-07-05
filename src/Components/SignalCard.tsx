@@ -232,7 +232,7 @@ export function SignalCard(props: Props) {
                 paddingBottom: 0,
               }}
             >
-              Add to print
+              Download
             </button>
           </div>
         </div>

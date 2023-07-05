@@ -419,7 +419,7 @@ export function TrendDetail() {
                     updateCardsToPrint(cardToPrintTemp);
                   }}
                 >
-                  Add to print
+                  Download
                 </button>
                 {buttonDisabled ? <div className='undp-loader' /> : null}
                 {submittingError ? (

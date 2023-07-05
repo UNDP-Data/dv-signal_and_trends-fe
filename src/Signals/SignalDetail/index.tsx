@@ -429,7 +429,7 @@ export function SignalDetail() {
                     updateCardsToPrint(cardToPrintTemp);
                   }}
                 >
-                  Add to print
+                  Download
                 </button>
                 {buttonDisabled ? <div className='undp-loader' /> : null}
                 {submittingError ? (
