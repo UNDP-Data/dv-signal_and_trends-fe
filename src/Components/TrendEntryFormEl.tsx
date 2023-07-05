@@ -215,8 +215,8 @@ export function TrendEntryFormEl(props: Props) {
         <p className='undp-typography margin-bottom-01'>Trend Description*</p>
         <Input.TextArea
           className='undp-input'
-          placeholder='Enter trend description (max 400 characters)'
-          maxLength={400}
+          placeholder='Enter trend description (max 1000 characters)'
+          maxLength={1000}
           status={
             trendData.description
               ? trendData.description.length > 30
@@ -235,7 +235,7 @@ export function TrendEntryFormEl(props: Props) {
         <p className='undp-typography margin-top-02 margin-bottom-00 small-font'>
           A concise definition of the trend that makes it easy to decide which
           signals link to it. Min 30 characters required.{' '}
-          {trendData.description ? 400 - trendData.description.length : 400}{' '}
+          {trendData.description ? 1000 - trendData.description.length : 1000}{' '}
           characters left
         </p>
       </div>
@@ -464,7 +464,7 @@ export function TrendEntryFormEl(props: Props) {
         </div>
         <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
-            Secondary Signature Solution/Enabler
+            Additional Signature Solution/Enabler
           </p>
           <Select
             className='undp-select'

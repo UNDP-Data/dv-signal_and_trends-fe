@@ -244,8 +244,8 @@ export function SignalEntryFormEl(props: Props) {
         <p className='undp-typography margin-bottom-01'>Signal Description*</p>
         <Input.TextArea
           className='undp-input'
-          placeholder='Enter signal description (max 200 characters)'
-          maxLength={200}
+          placeholder='Enter signal description (max 1000 characters)'
+          maxLength={1000}
           status={
             signalData.description
               ? signalData.description.length > 30
@@ -266,7 +266,7 @@ export function SignalEntryFormEl(props: Props) {
           about using commonly used terms and clear language. This should be
           your summarised description, not cut-and-paste from article. Min 30
           characters required.{' '}
-          {signalData.description ? 200 - signalData.description.length : 200}{' '}
+          {signalData.description ? 1000 - signalData.description.length : 1000}{' '}
           characters left
         </p>
       </div>
@@ -309,6 +309,7 @@ export function SignalEntryFormEl(props: Props) {
               });
             }}
             value={signalData.location}
+            showSearch
           >
             {choices?.locations.map((d, i) => (
               <Select.Option className='undp-select-option' key={i} value={d}>
@@ -516,7 +517,7 @@ export function SignalEntryFormEl(props: Props) {
         </div>
         <div style={{ width: 'calc(50% - 0.5rem)' }}>
           <p className='undp-typography margin-bottom-01'>
-            Secondary Signature Solution/Enabler
+            Additional Signature Solution/Enabler
           </p>
           <Select
             className='undp-select'

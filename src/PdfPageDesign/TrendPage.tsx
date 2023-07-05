@@ -290,7 +290,7 @@ export function TrendsPage(props: Props) {
                   .filter((_cs, i) => i < 5)
                   .map((cs, j) => (
                     <Link
-                      src={`${WEB_ADDRESS}signals/${cs}`}
+                      src={`${WEB_ADDRESS}/signals/${cs}`}
                       key={j}
                       style={styles.listText}
                     >
@@ -306,7 +306,10 @@ export function TrendsPage(props: Props) {
               </View>
             </>
           )}
-          <Link src={`${WEB_ADDRESS}trends/${data.id}`} style={styles.linkText}>
+          <Link
+            src={`${WEB_ADDRESS}/trends/${data.id}`}
+            style={styles.linkText}
+          >
             View Details
           </Link>
         </View>

@@ -160,7 +160,7 @@ export function SignalPage(props: Props) {
                   .filter((_cs, i) => i < 5)
                   .map((cs, j) => (
                     <Link
-                      src={`${WEB_ADDRESS}trends/${cs}`}
+                      src={`${WEB_ADDRESS}/trends/${cs}`}
                       key={j}
                       style={styles.listText}
                     >
@@ -220,7 +220,7 @@ export function SignalPage(props: Props) {
             </Text>
           ))}
           <Link
-            src={`${WEB_ADDRESS}signals/${data.id}`}
+            src={`${WEB_ADDRESS}/signals/${data.id}`}
             style={styles.linkText}
           >
             View Details
