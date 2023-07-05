@@ -774,6 +774,7 @@ export function SignalEntryFormEl(props: Props) {
                     data: {
                       ...signalData,
                       connected_trends: selectedTrendsList,
+                      status: 'New',
                       keywords: [keyword1, keyword2, keyword3].filter(
                         d => d !== null && d !== undefined,
                       ),
@@ -819,6 +820,9 @@ export function SignalEntryFormEl(props: Props) {
                     data: {
                       ...signalData,
                       connected_trends: selectedTrendsList,
+                      keywords: [keyword1, keyword2, keyword3].filter(
+                        d => d !== null && d !== undefined,
+                      ),
                       status: 'Draft',
                     },
                     headers: {
