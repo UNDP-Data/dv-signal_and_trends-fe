@@ -58,29 +58,46 @@ export function Header(props: Props) {
     <header className='undp-country-header'>
       <div className='undp-header-bg flex-space-between flex-div flex-vert-align-center'>
         <div className='flex-div flex-vert-align-center'>
-          <img
-            src='https://design.undp.org/static/media/undp-logo-blue.4f32e17f.svg'
-            alt='UNDP Logo'
-            width='60'
-            height='122'
-          />
-          <div className='undp-site-title'>
-            <span>
-              <NavLink to='./' className='logo-sub-head'>
+          <NavLink
+            to='./'
+            style={{ textDecoration: 'none' }}
+            className='logo-sub-head flex-div flex-vert-align-center'
+          >
+            <img
+              src='https://design.undp.org/static/media/undp-logo-blue.4f32e17f.svg'
+              alt='UNDP Logo'
+              width='60'
+              height='122'
+            />
+            <div className='undp-site-title'>
+              <span
+                style={{
+                  borderBottom: '1px solid var(--gray-500)',
+                  color: 'var(--gray-600)',
+                  display: 'inline-block',
+                  fontSize: '.75rem',
+                  margin: 0,
+                  marginBottom: 'var(--spacing-02)',
+                  textTransform: 'uppercase',
+                  lineHeight: 1,
+                  fontWeight: 400,
+                  paddingBottom: '1px',
+                  textDecoration: 'none !important',
+                }}
+              >
                 Data Futures Platform
-              </NavLink>
-            </span>
-            <NavLink
-              to='./'
-              style={{
-                textDecoration: 'none',
-                color: 'var(--black)',
-                lineHeight: 1.25,
-              }}
-            >
-              UNDP Future Trends and Signals System
-            </NavLink>
-          </div>
+              </span>
+              <span
+                style={{
+                  textDecoration: 'none',
+                  color: 'var(--black)',
+                  lineHeight: 1.25,
+                }}
+              >
+                UNDP Future Trends and Signals System
+              </span>
+            </div>
+          </NavLink>
         </div>
         <div
           className='undp-nav-div flex-div'
