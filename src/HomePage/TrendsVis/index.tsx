@@ -57,7 +57,7 @@ export function TrendsVis() {
                       className='margin-top-00 margin-bottom-00'
                       style={{ fontSize: '1rem' }}
                     >
-                      1: Notable but not significant
+                      1: Low
                     </p>
                   </div>
                   <div className='flex-div gap-02 flex-vert-align-center'>
@@ -98,13 +98,6 @@ export function TrendsVis() {
                 <div className='label'>Group Trends by Impact</div>
               </Checkbox>
             </div>
-            <p
-              className='undp-typography italics'
-              style={{ color: 'var(--gray-600)', fontSize: '1rem' }}
-            >
-              Size of the circle represents the number of signals connected to
-              each trend
-            </p>
             <div
               style={{
                 flexGrow: 1,

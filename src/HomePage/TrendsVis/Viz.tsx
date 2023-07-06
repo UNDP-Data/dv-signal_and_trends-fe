@@ -8,8 +8,7 @@ import {
   forceX,
   forceY,
 } from 'd3-force';
-import { scaleSqrt, scaleOrdinal } from 'd3-scale';
-import { max } from 'd3-array';
+import { scaleOrdinal } from 'd3-scale';
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Context from '../../Context/Context';
@@ -63,7 +62,6 @@ export function Viz(props: Props) {
   );
   const [hoveredDot, setHoveredDot] = useState<null | DotHoveredProps>(null);
   const [error, setError] = useState<undefined | string>(undefined);
-  const [maxSignals, setMaxSignals] = useState(0);
   const { choices, accessToken } = useContext(Context);
   const margin = {
     top: 75,
@@ -75,12 +73,12 @@ export function Viz(props: Props) {
     width: (svgWidth - margin.left - margin.right) / 3,
     height: (svgHeight - margin.top - margin.bottom) / 3,
   };
+  const radius = 7;
 
   const navigate = useNavigate();
   const colorScale = scaleOrdinal()
     .domain(choices?.ratings as string[])
     .range(['var(--blue-200)', 'var(--blue-500)', 'var(--blue-700)']);
-  const sqrtScale = scaleSqrt().range([5, 15]);
   const xCenter = scaleOrdinal()
     .domain(choices?.horizons as string[])
     .range([gridSize.width * 0.5, 1.5 * gridSize.width, 2.5 * gridSize.width]);
@@ -94,7 +92,6 @@ export function Viz(props: Props) {
 
   useEffect(() => {
     setTrendsList([]);
-    setMaxSignals(0);
     setNodesList(undefined);
     setError(undefined);
     axios
@@ -108,14 +105,6 @@ export function Viz(props: Props) {
       )
       .then((response: AxiosResponse) => {
         setTrendsList(response.data.data);
-        const maxConnected =
-          max(response.data.data, (d: TrendDataType) =>
-            d.connected_signals === undefined || d.connected_signals === null
-              ? 0
-              : d.connected_signals.length,
-          ) || 0;
-        setMaxSignals(maxConnected);
-        sqrtScale.domain([0, maxSignals]);
       })
       .catch(err => {
         if (err.response?.status === 404) {
@@ -148,18 +137,7 @@ export function Viz(props: Props) {
     } else {
       simulation.force('y', forceY().y(svgHeight / 2));
     }
-    simulation
-      .force(
-        'collision',
-        forceCollide().radius(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (d: any) =>
-            sqrtScale(
-              d.connected_signals !== null ? d.connected_signals.length : 0,
-            ) + 1,
-        ),
-      )
-      .tick(100);
+    simulation.force('collision', forceCollide().radius(radius)).tick(100);
     simulation.on('tick', () => {
       setNodesList([...simulation.nodes()]);
     });
@@ -178,11 +156,7 @@ export function Viz(props: Props) {
                 {nodesList.map((d, i) => (
                   <circle
                     key={i}
-                    r={sqrtScale(
-                      d.connected_signals !== null
-                        ? d.connected_signals.length
-                        : 0,
-                    )}
+                    r={radius}
                     cx={d.x}
                     cy={d.y}
                     style={{
@@ -232,9 +206,7 @@ export function Viz(props: Props) {
                   {choices.ratings.map((d, i) => (
                     <g
                       key={i}
-                      transform={`translate(60,${
-                        yCenter(d) as number
-                      }) rotate(-90)`}
+                      transform={`translate(30,${yCenter(d) as number})`}
                     >
                       <text
                         key={i}
@@ -243,7 +215,12 @@ export function Viz(props: Props) {
                         fontSize='1rem'
                         fontWeight='bold'
                       >
-                        Impact {d.split(' — ')[0]}
+                        <tspan dy='0' x='0'>
+                          IMPACT {d.split('–')[0]}
+                        </tspan>
+                        <tspan dy='18' x='0'>
+                          {d.split('–')[1]}
+                        </tspan>
                       </text>
                     </g>
                   ))}
