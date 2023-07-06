@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext, useRef } from 'react';
 import { Checkbox } from 'antd';
 import styled from 'styled-components';
+import UNDPColorModule from 'undp-viz-colors';
 import Context from '../../Context/Context';
 import { Viz } from './Viz';
 
@@ -45,46 +46,29 @@ export function TrendsVis() {
               style={{ alignItems: 'flex-end' }}
             >
               <div>
-                <h6 className='undp-typography'>Impact</h6>
-                <div className='flex-div'>
-                  <div className='flex-div gap-02 flex-vert-align-center'>
-                    <LegendCircleEl
-                      style={{
-                        backgroundColor: 'var(--blue-200)',
-                      }}
-                    />
-                    <p
-                      className='margin-top-00 margin-bottom-00'
-                      style={{ fontSize: '1rem' }}
-                    >
-                      1: Low
-                    </p>
-                  </div>
-                  <div className='flex-div gap-02 flex-vert-align-center'>
-                    <LegendCircleEl
-                      style={{
-                        backgroundColor: 'var(--blue-500)',
-                      }}
-                    />
-                    <p
-                      className='margin-top-00 margin-bottom-00'
-                      style={{ fontSize: '1rem' }}
-                    >
-                      2: Moderate
-                    </p>
-                  </div>
-                  <div className='flex-div gap-02 flex-vert-align-center'>
-                    <LegendCircleEl
-                      style={{
-                        backgroundColor: 'var(--blue-700)',
-                      }}
-                    />
-                    <p
-                      className='margin-top-00 margin-bottom-00'
-                      style={{ fontSize: '1rem' }}
-                    >
-                      3: Significant
-                    </p>
+                <h6 className='undp-typography margin-bottom-01'>STEEP+V</h6>
+                <div className='flex-div margin-bottom-02 flex-wrap'>
+                  <div className='flex-div flex-vert-align-center flex-wrap'>
+                    {choices?.steepv.map((d, i) => (
+                      <div
+                        key={i}
+                        className='flex-div flex-vert-align-center gap-02'
+                      >
+                        <LegendCircleEl
+                          style={{
+                            backgroundColor: !choices
+                              ? 'var(--black)'
+                              : UNDPColorModule.categoricalColors.colors[i],
+                          }}
+                        />
+                        <p
+                          className='margin-top-00 margin-bottom-00'
+                          style={{ fontSize: '1rem' }}
+                        >
+                          {d.split('–')[0]}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

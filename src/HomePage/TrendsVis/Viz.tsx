@@ -11,6 +11,7 @@ import {
 import { scaleOrdinal } from 'd3-scale';
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import UNDPColorModule from 'undp-viz-colors';
 import Context from '../../Context/Context';
 import { TrendDataType } from '../../Types';
 import { API_ACCESS_TOKEN } from '../../Constants';
@@ -66,7 +67,7 @@ export function Viz(props: Props) {
   const margin = {
     top: 75,
     bottom: 25,
-    left: 70,
+    left: 100,
     right: 25,
   };
   const gridSize = {
@@ -76,9 +77,6 @@ export function Viz(props: Props) {
   const radius = 7;
 
   const navigate = useNavigate();
-  const colorScale = scaleOrdinal()
-    .domain(choices?.ratings as string[])
-    .range(['var(--blue-200)', 'var(--blue-500)', 'var(--blue-700)']);
   const xCenter = scaleOrdinal()
     .domain(choices?.horizons as string[])
     .range([gridSize.width * 0.5, 1.5 * gridSize.width, 2.5 * gridSize.width]);
@@ -160,7 +158,13 @@ export function Viz(props: Props) {
                     cx={d.x}
                     cy={d.y}
                     style={{
-                      fill: colorScale(d.impact_rating) as string,
+                      fill: !choices
+                        ? 'var(--black)'
+                        : UNDPColorModule.categoricalColors.colors[
+                            choices?.steepv.findIndex(
+                              el => el === d.steep_primary,
+                            )
+                          ],
                       cursor: 'pointer',
                     }}
                     onMouseEnter={event => {
@@ -187,7 +191,7 @@ export function Viz(props: Props) {
                   />
                 ))}
               </g>
-              <g transform={`translate(${margin.left},90)`}>
+              <g transform={`translate(${margin.left},80)`}>
                 {choices.horizons.map((d, i) => (
                   <text
                     key={i}
