@@ -438,7 +438,7 @@ export function TrendsListing() {
             </Select>
           </div>
           <div className='margin-top-07'>
-            <p className='undp-typography label'>Filter by Rating</p>
+            <p className='undp-typography label'>Filter by Impact Rating</p>
             <Select
               className='undp-select'
               style={{
