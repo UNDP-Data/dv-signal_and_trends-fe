@@ -26,7 +26,7 @@ const ImageContainerEl = styled.div<HeroImageProps>`
 `;
 const HeroImageEl = styled.div<HeroImageProps>`
   background: ${props =>
-      props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
+      props.bgImage ? `url(${props.bgImage})` : `url(${Background})`}
     no-repeat center;
   background-size: cover;
   height: 0;

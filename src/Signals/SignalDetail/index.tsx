@@ -23,8 +23,8 @@ interface HeroImageProps {
 
 const HeroImageEl = styled.div<HeroImageProps>`
   background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-    url(${props => (props.bgImage ? `data:${props.bgImage}` : Background)})
-      no-repeat center;
+    url(${props => (props.bgImage ? props.bgImage : Background)}) no-repeat
+      center;
   background-size: cover;
   margin-top: 7.1875rem;
 `;

@@ -20,7 +20,7 @@ interface HeroImageProps {
 
 const HeroImageEl = styled.div<HeroImageProps>`
   background: ${props =>
-      props.bgImage ? `url(data:${props.bgImage})` : `url(${Background})`}
+      props.bgImage ? `url(${props.bgImage})` : `url(${Background})`}
     no-repeat center;
   background-size: cover;
   width: 100%;

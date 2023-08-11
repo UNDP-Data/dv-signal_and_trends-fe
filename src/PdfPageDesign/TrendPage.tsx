@@ -135,7 +135,7 @@ export function TrendsPage(props: Props) {
               }}
             >
               <Image
-                src={`data:${data.attachment}`}
+                src={data.attachment}
                 style={{
                   width: '100%',
                   maxHeight: '200px',
