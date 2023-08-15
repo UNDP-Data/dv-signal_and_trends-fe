@@ -78,9 +78,10 @@ export function AllSignals(props: Props) {
       filters.unit_region === 'All Units'
         ? ''
         : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
-    const createdByQueryParameter = filters.created_by
-      ? `&created_by=${filters.created_by}`
-      : '';
+    const createdByQueryParameter =
+      filters.created_by && filters.created_by !== 'All'
+        ? `&created_by=${filters.created_by}`
+        : '';
     const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
       signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
         ? 'desc'
@@ -170,9 +171,10 @@ export function AllSignals(props: Props) {
       filters.unit_region === 'All Units'
         ? ''
         : `&unit_region=${filters.unit_region.replaceAll(' ', '%20')}`;
-    const createdByQueryParameter = filters.created_by
-      ? `&created_by=${filters.created_by}`
-      : '';
+    const createdByQueryParameter =
+      filters.created_by && filters.created_by !== 'All'
+        ? `&created_by=${filters.created_by}`
+        : '';
     const orderByQueryParameter = `&order_by_field=${signalOrderBy}&order_by_direction=${
       signalOrderBy === 'created_at' || signalOrderBy === 'modified_at'
         ? 'desc'
