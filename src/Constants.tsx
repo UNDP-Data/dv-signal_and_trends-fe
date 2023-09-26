@@ -319,8 +319,7 @@ export const TREND_ORDER_BY_OPTIONS = [
   },
 ];
 
-export const WEB_ADDRESS =
-  'https://thankful-forest-05a90a303.3.azurestaticapps.net';
+export const WEB_ADDRESS = 'https://signals.data.undp.org/';
 
 export const API_ACCESS_TOKEN = process.env.INPUT_ACCESS_TOKEN_FOR_API;
 // export const API_ACCESS_TOKEN = import.meta.env.VITE_ACCESS_CODE;
