@@ -31,6 +31,7 @@ function App() {
     expiresOn: undefined,
     notificationText: undefined,
     choices: undefined,
+    isAcceleratorLab: undefined,
     cardsToPrint: [],
   };
 
@@ -38,6 +39,13 @@ function App() {
   const updateNotificationText = (d?: string) => {
     dispatch({
       type: 'UPDATE_NOTIFICATION_TEXT',
+      payload: d,
+    });
+  };
+
+  const updateIsAcceleratorLab = (d?: boolean) => {
+    dispatch({
+      type: 'UPDATE_IS_ACCELERATOR_LAB',
       payload: d,
     });
   };
@@ -143,6 +151,7 @@ function App() {
               updateUnit(res.data.unit);
               updateRole(res.data.role);
               updateUserID(res.data.id);
+              updateIsAcceleratorLab(res.data.acclab !== null);
             })
             .catch((err: AxiosError) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,6 +191,7 @@ function App() {
       updateUserID,
       updateNotificationText,
       updateCardsToPrint,
+      updateIsAcceleratorLab,
     }),
     [
       state,
@@ -194,6 +204,7 @@ function App() {
       updateUserID,
       updateNotificationText,
       updateCardsToPrint,
+      updateIsAcceleratorLab,
     ],
   );
   return (

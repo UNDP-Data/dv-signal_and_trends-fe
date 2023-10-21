@@ -1,5 +1,5 @@
 import { AuthenticatedTemplate } from '@azure/msal-react';
-import { Dropdown, Input, MenuProps, Modal, Select } from 'antd';
+import { Dropdown, Input, MenuProps, Modal, Select, Switch } from 'antd';
 import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -22,9 +22,12 @@ export function SignOutButton(props: Props) {
     accessToken,
     userID,
     updateNotificationText,
+    updateIsAcceleratorLab,
+    isAcceleratorLab,
     choices,
   } = useContext(Context);
   const [selectedUnit, setSelectedUnit] = useState(unit);
+  const [acceleratorLab, setAcceleratorLab] = useState(isAcceleratorLab);
   const [nameOfUser, setNameOfUser] = useState(name);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [submittingError, setSubmittingError] = useState<undefined | string>(
@@ -33,7 +36,8 @@ export function SignOutButton(props: Props) {
   useEffect(() => {
     setNameOfUser(name);
     setSelectedUnit(unit);
-  }, [name, unit]);
+    setAcceleratorLab(isAcceleratorLab);
+  }, [name, unit, isAcceleratorLab]);
   const [openModal, setOpenModal] = useState(false);
   const items: MenuProps['items'] =
     role === 'Admin'
@@ -239,7 +243,27 @@ export function SignOutButton(props: Props) {
         open={openModal}
       >
         <h5 className='undp-typography'>My Profile</h5>
-        <div className='flex-div flex-wrap flex-space-between margin-top-07 margin-bottom-05'>
+        {role === 'User' ? (
+          <div
+            className='margin-top-07'
+            style={{
+              padding: 'var(--spacing-05)',
+              backgroundColor: 'var(--gray-200)',
+              border: '1px solid var(--gray-400)',
+            }}
+          >
+            <h6 className='undp-typography margin-bottom-00'>
+              Want to be a signal scanner?{' '}
+              <a
+                href='https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGYk-3BWZzm5BkSonyo1IdkBUN0RSVlFFSFlRS0RQWEpMU1hPNlFONDNRSy4u'
+                className='undp-style'
+              >
+                Sign up here
+              </a>
+            </h6>
+          </div>
+        ) : null}
+        <div className='flex-div flex-wrap flex-space-between margin-top-05 margin-bottom-05'>
           <div
             style={{
               flexGrow: 1,
@@ -268,7 +292,7 @@ export function SignOutButton(props: Props) {
             <Input className='undp-input' disabled value={userName} />
           </div>
         </div>
-        <div className='flex-div flex-wrap flex-space-between margin-bottom-07'>
+        <div className='flex-div flex-wrap flex-space-between'>
           <div
             style={{
               flexGrow: 1,
@@ -278,7 +302,7 @@ export function SignOutButton(props: Props) {
           >
             <p className='undp-typography margin-bottom-02'>Unit</p>
             <Select
-              className='undp-select margin-bottom-07'
+              className='undp-select margin-bottom-05'
               placeholder='Select a unit'
               onChange={e => {
                 setSelectedUnit(e);
@@ -304,6 +328,22 @@ export function SignOutButton(props: Props) {
             <Input className='undp-input' disabled value={role} />
           </div>
         </div>
+        <div className='flex-div flex-wrap flex-space-between margin-bottom-09'>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: '15rem',
+              width: 'calc(50% - 2rem)',
+            }}
+          >
+            <p className='undp-typography margin-bottom-02'>Accelerator Labs</p>
+            <Switch
+              className='undp-switch'
+              checked={acceleratorLab}
+              onChange={d => setAcceleratorLab(d)}
+            />
+          </div>
+        </div>
         <div className='flex-div flex-wrap flex-space-between'>
           <button
             type='button'
@@ -320,6 +360,7 @@ export function SignOutButton(props: Props) {
                   unit: selectedUnit,
                   role,
                   id: userID,
+                  acclab: acceleratorLab,
                 },
                 headers: {
                   'Content-Type': 'application/json',
@@ -331,6 +372,7 @@ export function SignOutButton(props: Props) {
                   setButtonDisabled(false);
                   updateName(nameOfUser);
                   updateUnit(selectedUnit);
+                  updateIsAcceleratorLab(acceleratorLab);
                   updateNotificationText('Successfully updated the profile');
                 })
                 .catch((err: AxiosError) => {
@@ -369,11 +411,11 @@ export function SignOutButton(props: Props) {
             Close
           </button>
         </div>
-        <div className='margin-top-04 margin-bottom-04'>
-          {buttonDisabled ? (
+        {buttonDisabled ? (
+          <div className='margin-top-04 margin-bottom-04'>
             <div className='undp-loader' style={{ margin: '0 auto' }} />
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </Modal>
     </>
   );

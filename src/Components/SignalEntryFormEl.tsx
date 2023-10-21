@@ -621,66 +621,62 @@ export function SignalEntryFormEl(props: Props) {
           </p>
         </div>
       ) : null}
-      {role === 'Curator' || role === 'Admin' ? (
-        <div className='margin-bottom-07'>
-          <p className='undp-typography bold'>Link signal to trend(s)</p>
-          {trendsList ? (
-            <>
-              {trendsList?.map((d, i) => (
-                <div
-                  className='flex-div flex-space-between flex-vert-align-center'
-                  key={i}
-                  style={{
-                    width: 'calc(100% - 2rem)',
-                    padding: 'var(--spacing-05)',
-                    backgroundColor: 'var(--gray-200)',
-                    border: '1px solid var(--gray-400)',
-                    marginBottom: 'var(--spacing-05)',
-                  }}
-                >
-                  <div>
-                    <p className='undp-typography margin-bottom-01'>
-                      {d.headline}
-                    </p>
-                    <p className='undp-typography small-font'>
-                      {d.description}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      const arr = [...trendsList.filter(el => el.id !== d.id)];
-                      setTrendsList(arr);
-                      setSelectedTrendsList(arr.map(k => k.id));
-                    }}
-                    type='button'
-                    className='undp-button button-tertiary padding-bottom-00 padding-top-00'
-                  >
-                    <img
-                      src='https://design.undp.org/icons/times.svg'
-                      alt='close-icon'
-                    />
-                  </button>
-                </div>
-              ))}
-              <button
-                className='undp-button button-tertiary'
-                type='button'
-                onClick={() => {
-                  setTrendModal(true);
-                }}
+      <div className='margin-bottom-07'>
+        <p className='undp-typography bold'>Link signal to trend(s)</p>
+        {trendsList ? (
+          <>
+            {trendsList?.map((d, i) => (
+              <div
+                className='flex-div flex-space-between flex-vert-align-center'
+                key={i}
                 style={{
-                  backgroundColor: 'var(--gray-300)',
+                  width: 'calc(100% - 2rem)',
                   padding: 'var(--spacing-05)',
+                  backgroundColor: 'var(--gray-200)',
+                  border: '1px solid var(--gray-400)',
+                  marginBottom: 'var(--spacing-05)',
                 }}
               >
-                Select trends
-              </button>
-            </>
-          ) : (
-            <p className='undp-typography'>Loading trends...</p>
-          )}
-        </div>
-      ) : null}
+                <div>
+                  <p className='undp-typography margin-bottom-01'>
+                    {d.headline}
+                  </p>
+                  <p className='undp-typography small-font'>{d.description}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const arr = [...trendsList.filter(el => el.id !== d.id)];
+                    setTrendsList(arr);
+                    setSelectedTrendsList(arr.map(k => k.id));
+                  }}
+                  type='button'
+                  className='undp-button button-tertiary padding-bottom-00 padding-top-00'
+                >
+                  <img
+                    src='https://design.undp.org/icons/times.svg'
+                    alt='close-icon'
+                  />
+                </button>
+              </div>
+            ))}
+            <button
+              className='undp-button button-tertiary'
+              type='button'
+              onClick={() => {
+                setTrendModal(true);
+              }}
+              style={{
+                backgroundColor: 'var(--gray-300)',
+                padding: 'var(--spacing-05)',
+              }}
+            >
+              Select trends
+            </button>
+          </>
+        ) : (
+          <p className='undp-typography'>Loading trends...</p>
+        )}
+      </div>
       <div className='margin-bottom-07'>
         <p className='undp-typography margin-bottom-01'>Created For</p>
         <Select

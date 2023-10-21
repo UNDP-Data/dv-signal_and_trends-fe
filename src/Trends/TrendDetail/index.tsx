@@ -466,7 +466,10 @@ export function TrendDetail() {
               </div>
               <div className='margin-top-07'>
                 <h6 className='undp-typography margin-top-00 margin-bottom-03'>
-                  Connected Signals
+                  Connected Signals (
+                  {connectedSignals?.filter(d => d.status === 'Approved')
+                    .length || 0}
+                  )
                 </h6>
                 {connectedSignals ? (
                   <div className='flex-div flex-wrap connected'>

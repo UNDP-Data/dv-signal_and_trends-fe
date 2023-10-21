@@ -1,6 +1,6 @@
 .trend-card{
-  width: calc(33.33% - 0.67rem);
-  min-width: min(100%, 580px);
+  width: calc(50% - 0.5rem);
+  min-width: min(100%, 440px);
   color: var(--black);
   text-decoration: none;
   background-color: var(--gray-200);
@@ -19,7 +19,7 @@
 }
 
 .signal-card{
-  width: calc(25% - 0.75rem);
+  width: calc(33.3% - 0.67rem);
   min-width: min(100%, 320px);
   color: var(--black);
   text-decoration: none;
@@ -64,7 +64,7 @@
 }
 @media(min-width: 1820px){  
   .trend-card{
-    width: calc(33.3% - 0.67rem);
+    width: calc(50% - 0.5rem);
   }
   .trend-card-for-homepage{
     width: calc(33.33% - 0.67rem);
@@ -78,12 +78,12 @@
 }
 @media(min-width: 2196px){
   .signal-card{
-    width: calc(20% - 0.8rem);
+    width: calc(33.3% - 0.67rem);
   }
 }
 @media(min-width: 2416px){  
   .trend-card{
-    width: calc(25% - 0.75rem);
+    width: calc(50% - 0.5rem);
   }
   .trend-card-for-homepage{
     width: calc(33.33% - 0.67rem);

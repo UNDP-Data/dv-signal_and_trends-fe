@@ -21,6 +21,8 @@ export default (state: any, action: any) => {
       return { ...state, choices: action.payload };
     case 'UPDATE_CARDS_TO_PRINT':
       return { ...state, cardsToPrint: action.payload };
+    case 'UPDATE_IS_ACCELERATOR_LAB':
+      return { ...state, isAcceleratorLab: action.payload };
     default:
       return { ...state };
   }

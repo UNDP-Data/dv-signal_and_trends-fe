@@ -158,6 +158,7 @@ export interface CtxDataType {
   unit?: string;
   role?: 'Admin' | 'Curator' | 'User';
   accessToken?: string;
+  isAcceleratorLab?: boolean;
   userID?: number;
   expiresOn?: Date;
   notificationText?: string;
@@ -168,6 +169,7 @@ export interface CtxDataType {
   updateAccessToken: (_d?: string) => void;
   updateUnit: (_d?: string) => void;
   updateUserID: (_d?: number) => void;
+  updateIsAcceleratorLab: (_d?: boolean) => void;
   updateRole: (_d?: 'Admin' | 'Curator' | 'User') => void;
   updateExpiresOn: (_d: Date) => void;
   updateNotificationText: (_d?: string) => void;

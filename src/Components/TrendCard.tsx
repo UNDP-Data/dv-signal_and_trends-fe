@@ -43,6 +43,7 @@ const HeroImageEl = styled.div<HeroImageProps>`
 
 const CardEl = styled.div`
   flex-grow: 1;
+  width: 100%;
   font-size: 1.4rem;
   word-wrap: break-word;
   display: flex;
