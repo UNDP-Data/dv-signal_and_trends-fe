@@ -13,6 +13,7 @@ import { ImpactCircleEl } from './ImpactRatingEl';
 interface Props {
   data: TrendDataType;
   forHomePage?: boolean;
+  forAllTrends?: boolean;
 }
 interface HeroImageProps {
   bgImage?: string;
@@ -76,12 +77,20 @@ const LinkP = styled.p`
 `;
 
 export function TrendCard(props: Props) {
-  const { data, forHomePage } = props;
+  const { data, forHomePage, forAllTrends } = props;
   const { role, choices, cardsToPrint, updateCardsToPrint } =
     useContext(Context);
 
   return (
-    <div className={forHomePage ? 'trend-card-for-homepage' : 'trend-card'}>
+    <div
+      className={
+        forHomePage
+          ? 'trend-card-for-homepage'
+          : forAllTrends
+          ? 'trend-card-for-listing'
+          : 'trend-card'
+      }
+    >
       <CardEl>
         <div
           className='flex-div gap-00'

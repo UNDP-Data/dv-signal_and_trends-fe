@@ -10,7 +10,7 @@ export function CardList(props: Props) {
   return (
     <>
       {data.map((d, i) => (
-        <TrendCard key={i} data={d} />
+        <TrendCard key={i} data={d} forAllTrends />
       ))}
     </>
   );

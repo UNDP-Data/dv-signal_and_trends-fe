@@ -10,7 +10,17 @@
 
 .trend-card-for-homepage{
   width: calc(33.33% - 0.67rem);
-  min-width: min(100%, 580px);
+  min-width: min(100%, 440px);
+  color: var(--black);
+  text-decoration: none;
+  background-color: var(--gray-200);
+  align-items: stretch;
+  display: flex;
+}
+
+.trend-card-for-listing{
+  width: calc(33.33% - 0.67rem);
+  min-width: min(100%, 440px);
   color: var(--black);
   text-decoration: none;
   background-color: var(--gray-200);
@@ -53,6 +63,9 @@
   .trend-card{
     width: calc(50% - 0.5rem);
   }
+  .trend-card-for-listing{
+    width: calc(33.3% - 0.67rem);
+  }
   .trend-card-for-homepage{
     width: calc(50% - 0.5rem);
   }
@@ -65,6 +78,9 @@
 @media(min-width: 1820px){  
   .trend-card{
     width: calc(50% - 0.5rem);
+  }
+  .trend-card-for-listing{
+    width: calc(25% - 0.75rem);
   }
   .trend-card-for-homepage{
     width: calc(33.33% - 0.67rem);
@@ -84,6 +100,9 @@
 @media(min-width: 2416px){  
   .trend-card{
     width: calc(50% - 0.5rem);
+  }
+  .trend-card-for-listing{
+    width: calc(25% - 0.75rem);
   }
   .trend-card-for-homepage{
     width: calc(33.33% - 0.67rem);
