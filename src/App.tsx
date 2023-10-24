@@ -19,6 +19,9 @@ function App() {
   const [selectedUnit, setSelectedUnit] = useState<string | undefined>(
     undefined,
   );
+  const [accessTokenTemp, setAccessTokenTemp] = useState<string | undefined>(
+    undefined,
+  );
   const [accLabs, setAccLabs] = useState(false);
   const [expiresOn, setExpiresOn] = useState<Date | undefined>(undefined);
   const initialState = {
@@ -129,6 +132,7 @@ function App() {
         .acquireTokenSilent(accessTokenRequest)
         .then((accessTokenResponse: AuthenticationResult) => {
           updateAccessToken(accessTokenResponse.accessToken);
+          setAccessTokenTemp(accessTokenResponse.accessToken);
           setExpiresOn(accessTokenResponse.expiresOn as Date);
           updateExpiresOn(accessTokenResponse.expiresOn as Date);
           axios
@@ -259,11 +263,12 @@ function App() {
           print view will include all signal information, with the exception of
           your name, email address, and CO/Unit.
         </p>
-        {selectedUnit ? (
+        {selectedUnit && accessTokenTemp ? (
           <SignUpButton
             unit={selectedUnit}
             setOpenModal={setOpenModal}
             accLabs={accLabs}
+            accessTokenTemp={accessTokenTemp}
           />
         ) : (
           <button

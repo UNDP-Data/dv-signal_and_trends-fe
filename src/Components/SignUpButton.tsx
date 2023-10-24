@@ -6,18 +6,13 @@ interface Props {
   unit: string;
   accLabs: boolean;
   setOpenModal: (_d: boolean) => void;
+  accessTokenTemp: string;
 }
 
 export function SignUpButton(props: Props) {
-  const { unit, setOpenModal, accLabs } = props;
-  const {
-    accessToken,
-    userName,
-    name,
-    userID,
-    updateUnit,
-    updateIsAcceleratorLab,
-  } = useContext(Context);
+  const { unit, setOpenModal, accLabs, accessTokenTemp } = props;
+  const { userName, name, userID, updateUnit, updateIsAcceleratorLab } =
+    useContext(Context);
   return (
     <button
       type='button'
@@ -36,7 +31,7 @@ export function SignUpButton(props: Props) {
           },
           headers: {
             'Content-Type': 'application/json',
-            access_token: accessToken,
+            access_token: accessTokenTemp,
           },
         }).then(() => {
           setOpenModal(false);
