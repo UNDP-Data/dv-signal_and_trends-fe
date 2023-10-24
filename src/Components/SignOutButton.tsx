@@ -336,7 +336,9 @@ export function SignOutButton(props: Props) {
               width: 'calc(50% - 2rem)',
             }}
           >
-            <p className='undp-typography margin-bottom-02'>Accelerator Labs</p>
+            <p className='undp-typography margin-bottom-02'>
+              Are you part of Accelerator Labs
+            </p>
             <Switch
               className='undp-switch'
               checked={acceleratorLab}

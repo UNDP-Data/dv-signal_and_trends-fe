@@ -1,42 +1,47 @@
 import axios from 'axios';
 import { useContext } from 'react';
-import { API_ACCESS_TOKEN } from '../Constants';
 import Context from '../Context/Context';
 
 interface Props {
-  username: string;
-  name?: string;
   unit: string;
+  accLabs: boolean;
   setOpenModal: (_d: boolean) => void;
 }
 
 export function SignUpButton(props: Props) {
-  const { name, username, unit, setOpenModal } = props;
-  const { updateName, updateRole, updateUnit, updateUserName } =
-    useContext(Context);
+  const { unit, setOpenModal, accLabs } = props;
+  const {
+    accessToken,
+    userName,
+    name,
+    userID,
+    updateUnit,
+    updateIsAcceleratorLab,
+  } = useContext(Context);
   return (
     <button
       type='button'
       className='undp-button button-primary button-arrow'
       onClick={() => {
         axios({
-          method: 'post',
-          url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/create',
+          method: 'put',
+          url: 'https://signals-and-trends-api.azurewebsites.net/v1/users/update',
           data: {
-            email: username,
+            email: userName,
             name,
             unit,
+            role: 'User',
+            id: userID,
+            acclab: accLabs,
           },
           headers: {
             'Content-Type': 'application/json',
-            access_token: API_ACCESS_TOKEN,
+            access_token: accessToken,
           },
         }).then(() => {
           setOpenModal(false);
-          updateName(name);
-          updateRole('User');
           updateUnit(unit);
-          updateUserName(username);
+          updateIsAcceleratorLab(accLabs);
         });
       }}
     >

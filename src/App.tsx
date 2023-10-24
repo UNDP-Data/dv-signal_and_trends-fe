@@ -1,6 +1,6 @@
 import { AuthenticationResult } from '@azure/msal-browser';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
-import { Modal, Select } from 'antd';
+import { Modal, Select, Switch } from 'antd';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useEffect, useReducer, useMemo, useState } from 'react';
 import { Footer } from './Components/FooterEl';
@@ -19,8 +19,7 @@ function App() {
   const [selectedUnit, setSelectedUnit] = useState<string | undefined>(
     undefined,
   );
-  const [username, setUsername] = useState<string | undefined>(undefined);
-  const [name, setName] = useState<string | undefined>(undefined);
+  const [accLabs, setAccLabs] = useState(false);
   const [expiresOn, setExpiresOn] = useState<Date | undefined>(undefined);
   const initialState = {
     userName: undefined,
@@ -122,10 +121,6 @@ function App() {
   }, []);
   useEffect(() => {
     if (isAuthenticated) {
-      const usernameFromMSAL = accounts[0].username;
-      const nameFromMSAL = accounts[0].name;
-      setUsername(usernameFromMSAL);
-      setName(nameFromMSAL);
       const accessTokenRequest = {
         scopes: ['user.read'],
         account: accounts[0],
@@ -152,6 +147,10 @@ function App() {
               updateRole(res.data.role);
               updateUserID(res.data.id);
               updateIsAcceleratorLab(res.data.acclab !== null);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if (!res.data.unit) {
+                setOpenModal(true);
+              }
             })
             .catch((err: AxiosError) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -229,7 +228,7 @@ function App() {
           Please select the unit you belong to
         </p>
         <Select
-          className='undp-select margin-bottom-07'
+          className='undp-select margin-bottom-00'
           placeholder='Select a unit'
           onChange={e => {
             setSelectedUnit(e);
@@ -243,7 +242,15 @@ function App() {
             </Select.Option>
           ))}
         </Select>
-        <p className='undp-typography italics small-font margin-top-07 margin-bottom-07'>
+        <p className='undp-typography label margin-top-07'>
+          Are you part of Accelerator Labs?
+        </p>
+        <Switch
+          className='undp-switch'
+          checked={accLabs}
+          onChange={el => setAccLabs(el)}
+        />
+        <p className='undp-typography italics small-font margin-top-07 margin-bottom-05'>
           The Future Trends and Signals System is internal to UNDP staff only.
           If you submit a signal, you are consenting that UNDP staff will be
           able to view the information you provide in the “Add signal” form,
@@ -254,10 +261,9 @@ function App() {
         </p>
         {selectedUnit ? (
           <SignUpButton
-            name={name}
-            username={username as string}
             unit={selectedUnit}
             setOpenModal={setOpenModal}
+            accLabs={accLabs}
           />
         ) : (
           <button
