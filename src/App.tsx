@@ -22,6 +22,9 @@ function App() {
   const [accessTokenTemp, setAccessTokenTemp] = useState<string | undefined>(
     undefined,
   );
+  const [userRoleTemp, setUserRoleTemp] = useState<string | undefined>(
+    undefined,
+  );
   const [accLabs, setAccLabs] = useState(false);
   const [expiresOn, setExpiresOn] = useState<Date | undefined>(undefined);
   const initialState = {
@@ -149,6 +152,7 @@ function App() {
               updateName(res.data.name);
               updateUnit(res.data.unit);
               updateRole(res.data.role);
+              setUserRoleTemp(res.data.role);
               updateUserID(res.data.id);
               updateIsAcceleratorLab(res.data.acclab !== null);
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -263,12 +267,13 @@ function App() {
           print view will include all signal information, with the exception of
           your name, email address, and CO/Unit.
         </p>
-        {selectedUnit && accessTokenTemp ? (
+        {selectedUnit && accessTokenTemp && userRoleTemp ? (
           <SignUpButton
             unit={selectedUnit}
             setOpenModal={setOpenModal}
             accLabs={accLabs}
             accessTokenTemp={accessTokenTemp}
+            userRoleTemp={userRoleTemp}
           />
         ) : (
           <button

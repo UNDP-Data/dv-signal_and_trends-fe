@@ -7,10 +7,11 @@ interface Props {
   accLabs: boolean;
   setOpenModal: (_d: boolean) => void;
   accessTokenTemp: string;
+  userRoleTemp: string;
 }
 
 export function SignUpButton(props: Props) {
-  const { unit, setOpenModal, accLabs, accessTokenTemp } = props;
+  const { unit, setOpenModal, accLabs, accessTokenTemp, userRoleTemp } = props;
   const { userName, name, userID, updateUnit, updateIsAcceleratorLab } =
     useContext(Context);
   return (
@@ -25,7 +26,7 @@ export function SignUpButton(props: Props) {
             email: userName,
             name,
             unit,
-            role: 'User',
+            role: userRoleTemp,
             id: userID,
             acclab: accLabs,
           },
