@@ -26,7 +26,7 @@ export function SignUpButton(props: Props) {
             email: userName,
             name,
             unit,
-            role: userRoleTemp,
+            role: userRoleTemp || 'User',
             id: userID,
             acclab: accLabs,
           },
