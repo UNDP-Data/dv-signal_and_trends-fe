@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Pagination, PaginationProps } from 'antd';
+import { Modal, Pagination, PaginationProps } from 'antd';
 import sortBy from 'lodash.sortby';
 import axios, { AxiosResponse } from 'axios';
 import { TrendDataType, TrendFiltersDataType } from '../../Types';
@@ -18,6 +18,7 @@ export function AllTrends(props: Props) {
   const { filters, view, trendsOrderBy } = props;
   const { role, accessToken } = useContext(Context);
   const [paginationValue, setPaginationValue] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(20);
   const [totalCount, setTotalCount] = useState<undefined | number>(undefined);
   const [error, setError] = useState<undefined | string>(undefined);
@@ -171,6 +172,7 @@ export function AllTrends(props: Props) {
                 type='button'
                 className='undp-button button-primary'
                 onClick={() => {
+                  setLoading(true);
                   axios
                     .get(GetURL(true), {
                       headers: {
@@ -186,10 +188,13 @@ export function AllTrends(props: Props) {
                       link.href = url;
                       link.setAttribute(
                         'download',
-                        `FTSS_trends_${Date.now()}.xlsx`,
+                        `FTSS_trends_${new Date(Date.now()).getFullYear()}-${
+                          new Date(Date.now()).getMonth() + 1
+                        }-${new Date(Date.now()).getDate()}.xlsx`,
                       );
                       document.body.appendChild(link);
                       link.click();
+                      setLoading(false);
                     });
                 }}
               >
@@ -248,6 +253,11 @@ export function AllTrends(props: Props) {
           <div className='undp-loader' />
         </div>
       )}
+      <Modal className='undp-modal undp-loading-modal' title='' open={loading}>
+        <div style={{ margin: 'auto' }}>
+          <div className='undp-loader' style={{ margin: 'auto' }} />
+        </div>
+      </Modal>
     </div>
   );
 }

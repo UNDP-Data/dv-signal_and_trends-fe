@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Pagination, PaginationProps } from 'antd';
+import { Modal, Pagination, PaginationProps } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import sortBy from 'lodash.sortby';
 import { SignalDataType, SignalFiltersDataType } from '../../Types';
@@ -17,6 +17,7 @@ interface Props {
 export function AllSignals(props: Props) {
   const { filters, view, signalOrderBy } = props;
   const [paginationValue, setPaginationValue] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(20);
   const [totalCount, setTotalCount] = useState<number | undefined>(undefined);
   const { role, accessToken } = useContext(Context);
@@ -181,6 +182,7 @@ export function AllSignals(props: Props) {
                 type='button'
                 className='undp-button button-primary'
                 onClick={() => {
+                  setLoading(true);
                   axios
                     .get(GetURL(true), {
                       headers: {
@@ -196,10 +198,13 @@ export function AllSignals(props: Props) {
                       link.href = url;
                       link.setAttribute(
                         'download',
-                        `FTSS_signals_${Date.now()}.xlsx`,
+                        `FTSS_signals_${new Date(Date.now()).getFullYear()}-${
+                          new Date(Date.now()).getMonth() + 1
+                        }-${new Date(Date.now()).getDate()}.xlsx`,
                       );
                       document.body.appendChild(link);
                       link.click();
+                      setLoading(false);
                     });
                 }}
               >
@@ -258,6 +263,11 @@ export function AllSignals(props: Props) {
           <div className='undp-loader' />
         </div>
       )}
+      <Modal className='undp-modal undp-loading-modal' title='' open={loading}>
+        <div style={{ margin: 'auto' }}>
+          <div className='undp-loader' style={{ margin: 'auto' }} />
+        </div>
+      </Modal>
     </div>
   );
 }
