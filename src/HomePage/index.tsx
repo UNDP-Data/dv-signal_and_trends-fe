@@ -393,6 +393,23 @@ export function HomePage() {
                 signal scanner and inspire your colleagues to join our Futures
                 Network!
               </h5>
+              <a
+                href='https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fundp.sharepoint.com%2Fsites%2FFutures-Portal%2FSitePages%2FUNDP-Future-Trends-and-Signals-System.aspx&data=05%7C02%7Cmustafa.saifee%40undp.org%7C38467ed9fbcf48e461e408dc016e9680%7Cb3e5db5e2944483799f57488ace54319%7C0%7C0%7C638386821682838151%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=fq9HJsEqpZ%2BiHb7PZhx9lGqutygbY4mf7f3aLn6WL88%3D&reserved=0'
+                target='_blank'
+                style={{
+                  textDecoration: 'auto',
+                  display: 'inline-block',
+                  width: 'fit-content',
+                }}
+                rel='noreferrer'
+              >
+                <button
+                  type='button'
+                  className='undp-button button-primary button-arrow'
+                >
+                  Explore More
+                </button>
+              </a>
             </div>
           </Card03ImageEl>
         </div>
