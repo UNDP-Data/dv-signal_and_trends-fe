@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Background from '../assets/UNDP-hero-image.jpg';
 import SSBannerImage from '../assets/ssBannerImage.jpg';
 import FODBannerImage from '../assets/fodBannerImage.jpg';
+import ThirdBannerImage from '../assets/ThirdBannerImage.png';
 import { API_ACCESS_TOKEN } from '../Constants';
 import { SignalDataType, TrendDataType } from '../Types';
 import { TrendCard } from '../Components/TrendCard';
@@ -24,7 +25,7 @@ const Card01ImageEl = styled.div`
   background: url(${SSBannerImage}) no-repeat center;
   background-size: cover;
   flex-grow: 1;
-  width: calc(50% - 2px);
+  width: calc(33.33% - 3px);
   min-width: 20rem;
 `;
 
@@ -33,7 +34,16 @@ const Card02ImageEl = styled.div`
     url(${FODBannerImage}) no-repeat center;
   background-size: cover;
   flex-grow: 1;
-  width: calc(50% - 2px);
+  width: calc(33.33% - 3px);
+  min-width: 20rem;
+`;
+
+const Card03ImageEl = styled.div`
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url(${ThirdBannerImage}) no-repeat center;
+  background-size: cover;
+  flex-grow: 1;
+  width: calc(33.33% - 3px);
   min-width: 20rem;
 `;
 
@@ -366,6 +376,25 @@ export function HomePage() {
               </a>
             </div>
           </Card02ImageEl>
+          <Card03ImageEl>
+            <div
+              style={{
+                padding: 'var(--spacing-13) var(--spacing-07)',
+                color: 'var(--white)',
+              }}
+            >
+              <h2 className='undp-typography margin-bottom-03'>
+                Using the Future Trends and Signals System (FTSS)
+              </h2>
+              <h5 className='undp-typography margin-bottom-07'>
+                Explore UNDP&apos;s Futures Portal and gain access to FTSS user
+                guides and case studies demonstrating the system&apos;s use
+                across the organization. Take an active role by registering as a
+                signal scanner and inspire your colleagues to join our Futures
+                Network!
+              </h5>
+            </div>
+          </Card03ImageEl>
         </div>
       </div>
     </>
