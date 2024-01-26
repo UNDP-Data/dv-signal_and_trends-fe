@@ -54,7 +54,7 @@ export function Footer() {
                   target='_blank'
                   rel='noreferrer'
                 >
-                  Data Futures Platform
+                  Data Futures Exchange
                 </a>
               </div>
             </div>

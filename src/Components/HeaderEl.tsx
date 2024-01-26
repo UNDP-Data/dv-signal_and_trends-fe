@@ -85,7 +85,7 @@ export function Header(props: Props) {
                   textDecoration: 'none !important',
                 }}
               >
-                Data Futures Platform
+                Data Futures Exchange
               </span>
               <span
                 style={{
